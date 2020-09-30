@@ -1,4 +1,4 @@
-<table border="0", style="vertical-align: middle;">
+<table border="0" style="vertical-align: middle;">
   <tr>
     <td width="75%">
       <h1>Yu Jianke</h1>
