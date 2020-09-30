@@ -1,4 +1,3 @@
-# Ayaya
 <table border="0">
   <tr>
     <td width="75%">
@@ -8,7 +7,7 @@
       <p><b>Email: jiankey.zjgsu@gmail.com</b></p>
     </td>
     <td width="25%">
-      <img src="/Avatar.jpg" width="100%">      % 插入证件照代码
+      <img src="/Avatar.jpg" width="100%">
     </td>
   </tr>
 </table>
