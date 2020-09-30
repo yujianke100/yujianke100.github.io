@@ -7,7 +7,7 @@
       <p><b>Email: jiankey.zjgsu@gmail.com</b></p>
     </td>
     <td width="25%">
-      <img src="/Avatar.jpg" width="100%">
+      <img src="/Avatar.jpg" width="100%", padding=0, margin=0 border="0">
     </td>
   </tr>
 </table>
