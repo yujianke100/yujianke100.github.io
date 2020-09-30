@@ -1,12 +1,12 @@
 <table border="0" style="vertical-align: middle;">
   <tr>
-    <td width="75%">
+    <td width="75%" style="vertical-align: middle;">
       <h1>Yu Jianke</h1>
       <p><b>Postgraduates</b></p>
       <p><b>Zhejiang Gongshang University</b></p>
       <p><b>Email: jiankey.zjgsu@gmail.com</b></p>
     </td>
-    <td width="25%">
+    <td width="25%" style="vertical-align: middle;">
       <img src="/Avatar.jpg" width="100%">
     </td>
   </tr>
