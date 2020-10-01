@@ -20,7 +20,6 @@ Network Embedding
 
 ## Project
 #### Danmaku Game: <a href='/go-go-aya/index.html' target="_blank"> go go aya!</a>
-
 #### Omikuji Game: <a href='/asakusa/index.html' target="_blank"> Asakusa Omikuji</a>
 
 ## Paper
