@@ -2,8 +2,9 @@
   <tr>
     <td width="75%" style="vertical-align: middle;">
       <h1>Yu Jianke</h1>
-      <p><b>Postgraduates</b></p>
-      <p><b>Zhejiang Gongshang University</b></p>
+      <p><b>Education: Postgraduate</b></p>
+      <p><b>Major: Electronic information</b></p>
+      <p><b>School: Zhejiang Gongshang University</b></p>
       <p><b>Email: jiankey.zjgsu@gmail.com</b></p>
     </td>
     <td width="25%" style="vertical-align: middle;">
