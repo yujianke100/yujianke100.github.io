@@ -16,7 +16,7 @@
 ## Latest Information
 Studying for master's degree in Zhejiang Gongshang University
 
-## Major
+## Direction
 Network Embedding
 
 ## Project
