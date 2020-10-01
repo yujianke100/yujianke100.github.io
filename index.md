@@ -18,7 +18,7 @@ Studying for master's degree in Zhejiang Gongshang University
 ## Major
 Network Embedding
 
-##Project
+## Project
 danmaku game:<a href='/go-go-aya/index.html' target="_blank">go go aya!</a>
 
 ## Paper
