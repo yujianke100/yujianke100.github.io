@@ -1,29 +1,32 @@
-name: Get Citation Data
+name: Update README
 
-on: 
- page_build: 
- schedule:
-  - cron:  '0 8 * * *'
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
 
 jobs:
-  build:
+  update-readme:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Reqs
-      run: |
-        sudo apt-get install python3-setuptools
-    - name: Run
-      run: |
-        cd ./google_scholar_crawler
-        pip3 install -r requirements.txt
-        python3 main.py
-        cd ./results
-        git init
-        git config --local user.name "${GITHUB_ACTOR}"
-        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
-        git add *.json
-        git commit -m "Updated Citation Data"
-        git push "${remote_repo}" HEAD:google-scholar-stats --force
-      env: 
-        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update README
+        run: |
+          cd yujianke100
+          echo '---' >> README.md
+          echo 'permalink: /' >> README.md
+          echo 'title: ""' >> README.md
+          echo 'excerpt: ""' >> README.md
+          echo 'author_profile: true' >> README.md
+          echo 'redirect_from:' >> README.md
+          echo '  - /about/' >> README.md
+          echo '  - /about.html' >> README.md
+          echo '---' >> README.md
+
+      - name: Rename and move file
+        run: |
+          mv yujianke100/README.md yujianke100/about.md
+          mv yujianke100/about.md yujianke100/yujianke100.github.io/_pages/
