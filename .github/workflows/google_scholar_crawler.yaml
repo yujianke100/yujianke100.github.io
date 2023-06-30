@@ -15,18 +15,20 @@ jobs:
 
       - name: Update README
         run: |
-          cd yujianke100
-          echo '---' >> README.md
-          echo 'permalink: /' >> README.md
-          echo 'title: ""' >> README.md
-          echo 'excerpt: ""' >> README.md
-          echo 'author_profile: true' >> README.md
-          echo 'redirect_from:' >> README.md
-          echo '  - /about/' >> README.md
-          echo '  - /about.html' >> README.md
-          echo '---' >> README.md
-
-      - name: Rename and move file
-        run: |
-          mv yujianke100/README.md yujianke100/about.md
-          mv yujianke100/about.md yujianke100/yujianke100.github.io/_pages/
+          git diff
+          git config --global user.email 734962820@qq.com
+          git config --global user.name yujianke100
+          git clone https://github.com/yujianke100/yujianke100.git
+          echo '---' >> ./yujianke100/README.md
+          echo 'permalink: /' >> ./yujianke100/README.md
+          echo 'title: ""' >> ./yujianke100/README.md
+          echo 'excerpt: ""' >> ./yujianke100/README.md
+          echo 'author_profile: true' >> ./yujianke100/README.md
+          echo 'redirect_from:' >> ./yujianke100/README.md
+          echo '  - /about/' >> ./yujianke100/README.md
+          echo '  - /about.html' >> ./yujianke100/README.md
+          echo '---' >> ./yujianke100/README.md
+          mv ./yujianke100/README.md ./_pages/about.md
+          git add ./_pages/about.md
+          git commit -m "Github Action Auto Updated"
+          git push
