@@ -20,7 +20,7 @@ My research focuses on developing machine learning algorithms for graph structur
 <br/>  
 
 # 🔥 News
-- 🏫 I’m currently studying at University of Technology Sydney as a Ph.D.  
+- 🏫 I’m currently studying at University of Technology Sydney as a Ph.D student.  
   
 
 - 📚 I’m currently researching Graph Neural Networks.  
@@ -57,7 +57,7 @@ My research focuses on developing machine learning algorithms for graph structur
 
 <!--BLOG_START-->
 # ✒️ Recent Blog Posts
- *Update Time: 2023-07-10 10:49 (UTC+8) | Updated by Github Actions*
+ *Update Time: 2023-07-10 18:39 (UTC+8) | Updated by Github Actions*
 
 - [Efficient GPU-Accelerated Subgraph Matching - yujianke100](https://www.cnblogs.com/yujianke100/p/17539180.html)
 
