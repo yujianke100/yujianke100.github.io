@@ -30,6 +30,8 @@ My research focuses on developing machine learning algorithms for graph structur
 
 # 📝 Publications 
 
+- [[KDD 2023] Group-based Fraud Detection Network on e-Commerce Platforms](https://dl.acm.org/doi/10.1145/3580305.3599836)
+
 - [[TKDE 2023] Neural Similarity Search on Supergraph Containment](https://ieeexplore.ieee.org/abstract/document/10135129)
 
 - [[WWWJ 2023] Bipartite graph capsule network](https://link.springer.com/article/10.1007/s11280-022-01009-2)  
@@ -57,7 +59,7 @@ My research focuses on developing machine learning algorithms for graph structur
 
 <!--BLOG_START-->
 # ✒️ Recent Blog Posts
- *Update Time: 2023-08-05 02:08 (UTC) | Updated by Github Actions*
+ *Update Time: 2023-08-05 10:34 (UTC) | Updated by Github Actions*
 
 - [NEURAL SUBGRAPH MATCHING - yujianke100](https://www.cnblogs.com/yujianke100/p/17594508.html)
 
