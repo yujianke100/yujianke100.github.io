@@ -19,6 +19,7 @@ jobs:
           git config --global user.email 734962820@qq.com
           git config --global user.name yujianke100
           git clone https://github.com/yujianke100/yujianke100.git
+          git add yujianke100/
           sed -i '1s/^/---\npermalink: \/\ntitle: ""\nexcerpt: ""\nauthor_profile: true\nredirect_from:\n  - \/about\/\n  - \/about.html\n---\n/' ./yujianke100/README.md
           mv ./yujianke100/README.md ./_pages/about.md
           git add ./_pages/about.md
