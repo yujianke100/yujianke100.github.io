@@ -21,7 +21,7 @@ jobs:
           cd ..
           git clone https://github.com/yujianke100/yujianke100.git
           cd ./yujianke100.github.io
-          sed -i '1s/^/---\npermalink: \/\ntitle: ""\nexcerpt: ""\nauthor_profile: true\nredirect_from:\n  - \/about\/\n  - \/about.html\n---\n/' ./yujianke100/README.md
+          sed -i '1s/^/---\npermalink: \/\ntitle: ""\nexcerpt: ""\nauthor_profile: true\nredirect_from:\n  - \/about\/\n  - \/about.html\n---\n/' ../yujianke100/README.md
           mv ../yujianke100/README.md ./_pages/about.md
           git add ./_pages/about.md
           git commit -m "Github Action Auto Updated"
