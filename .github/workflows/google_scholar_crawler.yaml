@@ -2,7 +2,7 @@ name: Update README
 
 on:
   schedule:
-      - cron: "45 1,10 * * *"
+    - cron: "45 1,10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -24,5 +24,12 @@ jobs:
           sed -i '1s/^/---\npermalink: \/\ntitle: ""\nexcerpt: ""\nauthor_profile: true\nredirect_from:\n  - \/about\/\n  - \/about.html\n---\n/' ../yujianke100/README.md
           mv ../yujianke100/README.md ./_pages/about.md
           git add ./_pages/about.md
+
+          # Check if working tree is clean
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "Working tree is clean. No changes to commit."
+            exit 0
+          fi
+
           git commit -m "Github Action Auto Updated"
           git push
