@@ -14,8 +14,6 @@ redirect_from:
   
 🎓 [My Google Scholar Homepage](https://scholar.google.com/citations?user=EwomMksAAAAJ)  
 
-📒 [My Blog](https://www.yuque.com/yujianke100/paper_notes)
-
 I am currently a Ph.D. student at the University of Technology Sydney, under the supervision of Prof. Ying Zhang and A/Prof. Lu Qin.
 I hold both my Bachelor's and Master's degrees from Zhejiang Gongshang University. My Master's degree was completed under the supervision of Prof. Xiaoyang Wang.
 My research focuses on developing machine learning algorithms for graph structured data and database systems, including developing graph neural network architectures and applying machine learning techniques to improve the algorithms in database domain.
@@ -32,6 +30,8 @@ My research focuses on developing machine learning algorithms for graph structur
 <br/>  
 
 # 📝 Publications 
+
+- [[ADC 2023] IFGNN: An Individual Fairness Awareness Model for Missing Sensitive Information Graphs](https://link.springer.com/chapter/10.1007/978-3-031-47843-7_20)
 
 - [[WWWJ 2023] FPGN: follower prediction framework for infectious disease prevention](https://link.springer.com/article/10.1007/s11280-023-01205-8)
 
