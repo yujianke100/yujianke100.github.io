@@ -11,4 +11,4 @@ regions:
         ipv4: ''
         stunport: 50002
         stunonly: false
-        derpport: 443
+        derpport: 4438
