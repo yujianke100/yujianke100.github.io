@@ -185,48 +185,53 @@ const SLIDES = [
   </div>
 </div>`,
 
-// 2 — Architecture 4 sentences
+// 2 — Architecture (lite diagram)
 ()=>`
 <div class="wrap sect-flex">
   <h2>四句话讲清架构</h2>
-  <div class="mw">
-    <pre class="mermaid">
+  <div class="arch-img">
+    <img src="framework_lite.png" alt="GLake Architecture Lite" style="max-width:95%;max-height:60vh;border-radius:12px;border:1px solid #2d3a50" onerror="this.style.display='none';document.getElementById('mw-fallback').style.display='block'">
+    <div id="mw-fallback" style="display:none">
+      <div class="mw">
+        <pre class="mermaid">
 flowchart TB
-    subgraph CP["管理控制面"]
+    subgraph CP["\\u7ba1\\u7406\\u63a7\\u5236\\u9762"]
         Web["Explorer WebUI"]
         Auth["Auth Server"]
         PG[("Postgres / OceanBase Catalog")]
     end
-    subgraph CL["隔离计算层"]
-        CA["Docker Sandbox"]
+    subgraph CL["\\u9694\\u79bb\\u8ba1\\u7b97\\u5c42"]
+        CA["Docker Sandbox (DuckDB + DuckLake)"]
     end
-    subgraph SL["统一存储层"]
-        OSS[("OSS (MinIO / 阿里云 OSS)")]
+    subgraph SL["\\u7edf\\u4e00\\u5b58\\u50a8\\u5c42"]
+        OSS[("OSS (MinIO / \\u963f\\u91cc\\u4e91 OSS)")]
     end
-    Web -->|管理操作| Auth
-    Auth -->|元数据| PG
-    CA -->|S3 直连| OSS
-    </pre>
-    <p style="margin-top:0.5rem;color:#94a3b8;font-size:clamp(0.8rem,1vw,0.9rem);text-align:center">
-      <b style="color:#06b6d4">控制流</b>：WebUI/Auth/PG 管元数据和权限 
-      <b style="color:#10b981">数据流</b>：脚本/Docker 通过 S3 API 直连 OSS（不经过 Auth）
-    </p>
+    Web -->|\\u7ba1\\u7406\\u64cd\\u4f5c| Auth
+    Auth -->|\\u5143\\u6570\\u636e| PG
+    CA -->|S3 \\u76f4\\u8fde| OSS
+        </pre>
+      </div>
+      <p style="margin-top:0.5rem;color:#94a3b8;font-size:clamp(0.8rem,1vw,0.9rem);text-align:center">
+        <b style="color:#06b6d4">\\u63a7\\u5236\\u6d41</b>\\uff1aWebUI/Auth/PG \\u7ba1\\u5143\\u6570\\u636e\\u548c\\u6743\\u9650\\u2003
+        <b style="color:#10b981">\\u6570\\u636e\\u6d41</b>\\uff1aDuckDB \\u901a\\u8fc7 S3 API \\u76f4\\u8fde OSS\\uff08\\u4e0d\\u7ecf\\u8fc7 Auth\\uff09
+      </p>
+    </div>
   </div>
   <div class="g4" style="margin-top:0.5rem">
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">①</div><h4 style="font-size:0.95rem">存储层放数据</h4><p>结构化 → Parquet 表<br>非结构化 → 原生文件</p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">②</div><h4 style="font-size:0.95rem">Catalog 管元数据</h4><p>PostgreSQL 记录路径、标签、权限、README。<b>不存数据本身</b></p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">③</div><h4 style="font-size:0.95rem">控制面操作</h4><p>WebUI 浏览<br>API 编程<br>AI 按规范导入</p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">④</div><h4 style="font-size:0.95rem">计算层做脏活</h4><p>Docker 沙箱做格式转换<br><b>不占管理节点资源</b></p></div>
+    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">\\u2460</div><h4 style="font-size:0.95rem">\\u5b58\\u50a8\\u5c42\\u653e\\u6570\\u636e</h4><p>\\u7ed3\\u6784\\u5316 \\u2192 Parquet \\u8868<br>\\u975e\\u7ed3\\u6784\\u5316 \\u2192 \\u539f\\u751f\\u6587\\u4ef6</p></div>
+    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">\\u2461</div><h4 style="font-size:0.95rem">Catalog \\u7ba1\\u5143\\u6570\\u636e</h4><p>PostgreSQL \\u8bb0\\u5f55\\u8def\\u5f84\\u3001\\u6807\\u7b7e\\u3001\\u6743\\u9650\\u3001README\\u3002<b>\\u4e0d\\u5b58\\u6570\\u636e\\u672c\\u8eab</b></p></div>
+    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">\\u2462</div><h4 style="font-size:0.95rem">\\u63a7\\u5236\\u9762\\u64cd\\u4f5c</h4><p>WebUI \\u6d4f\\u89c8<br>API \\u7f16\\u7a0b<br>AI \\u6309\\u89c4\\u8303\\u5bfc\\u5165</p></div>
+    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">\\u2463</div><h4 style="font-size:0.95rem">\\u8ba1\\u7b97\\u5c42\\u505a\\u810f\\u6d3b</h4><p>Docker \\u6c99\\u7bb1\\u505a\\u683c\\u5f0f\\u8f6c\\u6362<br><b>\\u4e0d\\u5360\\u7ba1\\u7406\\u8282\\u70b9\\u8d44\\u6e90</b></p></div>
   </div>
 </div>`,
 
-// 3 — Architecture diagram
+// 3 — Full architecture diagram
 ()=>`
 <div class="wrap sect-flex">
-  <h2>GLake 系统全景</h2>
+  <h2>GLake \\u7cfb\\u7edf\\u5168\\u666f</h2>
   <div class="arch-img">
-    <img src="https://raw.githubusercontent.com/yujianke100/policy-brain/main/docs/architecture.png" alt="GLake Architecture" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>图片加载失败。如需重新生成架构图，可给我以下提示词：<br><br><span style=color:#f59e0b;font-size:0.95rem>帮我生成一张 GLake 系统架构图，包含三层：管理控制面（Streamlit WebUI · FastAPI Auth Server · PostgreSQL Catalog）、隔离计算层（Docker Sandbox 内嵌 DuckDB+DuckLake）、统一存储层（阿里云 OSS / MinIO）。注意控制流和数据流的分离：Auth Server 只负责元数据和凭证发放，用户/脚本通过 S3 API 直连存储层。</span></p>'">
-    <p style="margin-top:0.5rem;color:#64748b;font-size:0.85rem">管理控制面 · 隔离计算层 · 统一存储层</p>
+    <img src="framework.png" alt="GLake Full Architecture" style="max-width:95%;max-height:65vh;border-radius:12px;border:1px solid #2d3a50" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>\\u56fe\\u7247\\u52a0\\u8f7d\\u5931\\u8d25\\u3002\\u8bf7\\u786e\\u4fdd framework.png \\u5df2\\u4e0a\\u4f20\\u5230\\u4ed3\\u5e93\\u4e2d\\u3002</p>'">
+    <p style="margin-top:0.5rem;color:#64748b;font-size:0.85rem">\\u7ba1\\u7406\\u63a7\\u5236\\u9762 \\u00b7 \\u9694\\u79bb\\u8ba1\\u7b97\\u5c42 \\u00b7 \\u7edf\\u4e00\\u5b58\\u50a8\\u5c42</p>
   </div>
 </div>`,
 
