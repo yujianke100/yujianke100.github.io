@@ -20,7 +20,9 @@ My research focuses on developing machine learning algorithms for graph-structur
 
 <br/>  
 
-# 🔥 News
+<span class='anchor' id='current-status'></span>
+
+# 🧑‍💻 Current Status
 - 🏫 I’m currently studying at University of Technology Sydney as a Ph.D. student.  
   
 
@@ -30,6 +32,8 @@ My research focuses on developing machine learning algorithms for graph-structur
 <br/>  
 
 # 📝 Publications 
+
+- [[TKDE 2026] MGDN: A Graph of Graphs Neural Network for Malware Detection](https://ieeexplore.ieee.org/abstract/document/11501758/)
 
 - [[TKDE 2024] Temporal Insights for Group-Based Fraud Detection on e-Commerce Platforms](https://ieeexplore.ieee.org/document/10740556/)
 
@@ -52,6 +56,37 @@ My research focuses on developing machine learning algorithms for graph-structur
 - *2016.09 - 2020.06*, B.Eng., Electronic Information Engineering, Zhejiang Gongshang University, Hangzhou, China. 
 
 <br/>  
+
+<span class='anchor' id='honors-awards'></span>
+
+# 🏆 Honors & Awards
+
+## Scholarships
+- **UTS FEIT HDR Excellence Award - Individual Category**, 2025
+- **UTS ARC Discovery Project Scholarship**, 2023 (Full Scholarship)
+- **UTS International Research Scholarship**, 2023
+
+## Competition Awards
+- **Excellent Practical Achievement Award for Professional Master Students**, Zhejiang Province, 2022 (2022年浙江省专业学位研究生优秀实践成果奖)
+- **Second Prize**, 4th Zhejiang Province University Student Robotics Competition (浙江省第四届大学生机器人竞赛 二等奖)
+- **Second Prize**, 4th "Internet+" Innovation and Entrepreneurship Competition, Zhejiang Gongshang University (浙江工商大学第四届“互联网+”创新创业大赛 二等奖)
+
+<br/>
+
+<span class='anchor' id='teaching-academic-services'></span>
+
+# 👨‍🏫 Teaching & Academic Services
+
+## Invited Lecturer/Teaching Assistant
+- **Guest Lecturer**, UTS 43023 Emerging Topic in AI, Spring 2025
+- **Teaching Assistant**, UNSW COMP9311 Database Systems, Term 3 2023
+- **Teaching Assistant**, UNSW DATA1001 Intro Data Science, Term 2 2024 & Term 2 2025
+
+## Academic Services
+- **Platform Administrator**, Research Computing Platform, Prof. Ying Zhang & Prof. Xiaoyang Wang’s Team, Zhejiang Gongshang University (科研算力平台运维/管理员)
+- **2025 IEEE Transactions on Knowledge and Data Engineering Peer Reviewer**
+
+<br/>
 
 # 🔗 Mini Programs for Research
 
