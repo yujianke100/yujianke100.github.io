@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLake — 轻量级 AI 原生数据湖平台</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2332;
+    --surface: #1e293b;
+    --border: #2d3a50;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #f59e0b;
+    --accent2: #06b6d4;
+    --accent3: #10b981;
+    --gradient: linear-gradient(135deg, #0a0e1a 0%, #1a2332 50%, #0f172a 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,14,26,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); padding: 0 2rem;
+    display: flex; align-items: center; height: 56px; gap: 0.5rem;
+    overflow-x: auto; white-space: nowrap;
+  }
+  nav a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.8rem;
+    padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  nav a:hover, nav a.active { color: var(--accent); background: rgba(245,158,11,0.1); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 0.95rem; margin-right: 1rem; }
+
+  /* Sections */
+  section { min-height: 100vh; padding: 80px 2rem 4rem; position: relative; }
+  section:nth-child(even) { background: var(--bg2); }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    background: var(--gradient); text-align: center; padding: 6rem 2rem 4rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 1.5rem;
+  }
+  .hero .subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.5rem); color: var(--text-muted);
+    max-width: 720px; margin: 0 auto 1rem; line-height: 1.8;
+  }
+  .hero .tagline {
+    font-size: 1.1rem; color: var(--accent2); margin-top: 1.5rem;
+    padding: 0.8rem 2rem; display: inline-block;
+    border: 1px solid var(--accent2); border-radius: 12px;
+    background: rgba(6,182,212,0.08); align-self: center;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    color: var(--text-muted); font-size: 0.85rem; animation: bounce 2s infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+
+  /* Section Title */
+  .section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700;
+    margin-bottom: 2.5rem; padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--accent); display: inline-block;
+  }
+  .section-subtitle { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2rem; }
+
+  /* Cards */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .card h3 { color: var(--accent); margin-bottom: 1rem; font-size: 1.15rem; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.2rem; }
+  @media (max-width:900px) { 
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+  @media (max-width:1200px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Example box */
+  .example-box {
+    background: rgba(6,182,212,0.08); border: 1px solid var(--accent2);
+    border-radius: 16px; padding: 2rem; margin: 2rem 0;
+  }
+  .example-box .label {
+    color: var(--accent2); font-size: 0.85rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+  }
+  .example-box h3 { color: var(--text); font-size: 1.3rem; margin-bottom: 1rem; }
+  .example-box .highlight { color: var(--accent); font-weight: 600; }
+
+  /* Pain point pairs */
+  .pain-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2rem; }
+  @media (max-width:900px) { .pain-pair { grid-template-columns: 1fr; } }
+  .pain-before { 
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px; padding: 1.5rem; position: relative;
+  }
+  .pain-before::before { content: "❌ 传统做法"; position: absolute; top: -10px; left: 12px; background: var(--bg2); padding: 0 8px; font-size: 0.75rem; color: #ef4444; font-weight: 600; }
+  .pain-after { 
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px; padding: 1.5rem; position: relative;
+  }
+  .pain-after::before { content: "✅ GLake 解法"; position: absolute; top: -10px; left: 12px; background: var(--bg2); padding: 0 8px; font-size: 0.75rem; color: var(--accent3); font-weight: 600; }
+
+  /* Pipeline steps */
+  .steps { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .step {
+    flex: 1; min-width: 160px; max-width: 220px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem; text-align: center; position: relative;
+  }
+  .step .num {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 0.8rem; font-weight: 700; font-size: 0.9rem;
+  }
+  .step .num.gold { background: var(--accent); color: #000; }
+  .step .num.teal { background: var(--accent2); color: #000; }
+  .step .num.green { background: var(--accent3); color: #000; }
+  .step h4 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .step p { font-size: 0.82rem; color: var(--text-muted); }
+  .step-arrow { color: var(--accent); font-size: 1.5rem; align-self: center; }
+  @media (max-width:900px) { .step-arrow { display: none; } }
+
+  /* Architecture */
+  #mermaid-container { background: var(--surface); border-radius: 16px; padding: 1.5rem; margin: 2rem 0; border: 1px solid var(--border); overflow-x: auto; }
+  #mermaid-container svg { max-width: 100%; height: auto; }
+
+  /* Architecture cards */
+  .arch-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1rem; margin: 2rem 0; }
+  .arch-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .arch-card .num { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+  .arch-card h4 { margin: 0.5rem 0; }
+  .arch-card p { font-size: 0.88rem; color: var(--text-muted); }
+  .code-block { background: #0d1117; border-radius: 10px; padding: 1rem; font-family: 'SF Mono','Fira Code','Cascadia Code',monospace; font-size: 0.85rem; overflow-x: auto; line-height: 1.6; margin: 1rem 0; border: 1px solid var(--border); }
+  .code-block .hl { color: var(--accent); }
+
+  /* Dialog */
+  .dialog { background: #0d1117; border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; border: 1px solid var(--border); font-size: 0.92rem; line-height: 1.8; }
+  .dialog .you { color: var(--accent2); }
+  .dialog .ai { color: var(--accent3); }
+  .dialog .sys { color: var(--text-muted); font-style: italic; }
+
+  /* Catalog tree */
+  .catalog-tree { background: #0d1117; border-radius: 12px; padding: 1.2rem; font-family: 'SF Mono',monospace; font-size: 0.85rem; line-height: 1.8; border: 1px solid var(--border); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 0.9rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: var(--surface); color: var(--accent); font-weight: 600; }
+  tr:hover td { background: rgba(255,255,255,0.03); }
+
+  /* Direction cards */
+  .dir-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; }
+  .dir-card h4 { color: var(--accent2); margin-bottom: 0.5rem; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; margin: 0.15rem; }
+  .tag-gold { background: rgba(245,158,11,0.15); color: var(--accent); }
+  .tag-teal { background: rgba(6,182,212,0.15); color: var(--accent2); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  /* Feature cards in the feature section */
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 1rem; }
+  .feature-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; }
+  .feature-item .icon { font-size: 1.1rem; }
+  .feature-item .name { font-weight: 600; font-size: 0.9rem; }
+  .feature-item .desc { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* Footer */
+  footer { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+  /* Misc */
+  .highlight-text { color: var(--accent); font-weight: 600; }
+  .accent-text { color: var(--accent2); }
+  .mb-1 { margin-bottom: 1rem; }
+  .mb-2 { margin-bottom: 2rem; }
+  .mt-2 { margin-top: 2rem; }
+  .text-center { text-align: center; }
+  .quote { 
+    border-left: 3px solid var(--accent); padding: 1rem 1.5rem; 
+    margin: 1.5rem 0; background: rgba(245,158,11,0.05); border-radius: 0 10px 10px 0;
+    font-size: 0.95rem; color: var(--text-muted);
+  }
+  .quote strong { color: var(--text); }
+  .pill { display: inline-block; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+  .pill-gold { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
+  .pill-teal { background: rgba(6,182,212,0.15); color: var(--accent2); border: 1px solid rgba(6,182,212,0.3); }
+  .pill-green { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">GLake</span>
+  <a href="#example" class="active">例子引入</a>
+  <a href="#architecture">架构</a>
+  <a href="#pain">痛点</a>
+  <a href="#pipeline">工作流</a>
+  <a href="#apps">应用</a>
+  <a href="#features">功能</a>
+  <a href="#compare">对比</a>
+  <a href="#future">展望</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div>
+    <h1>GLake</h1>
+    <p class="subtitle">一个<b>面向 AI</b> 的轻量级数据湖平台——让散落的 CSV、PDF、API 数据能够被统一管理，然后由 AI 帮你导数据、查数据、用数据。</p>
+    <div class="tagline">以前是人直接和数据库打交道 → 现在是人和 <b>WebUI + AI</b> 打交道</div>
+  </div>
+  <div class="scroll-hint">↓ 向下滚动浏览</div>
+</section>
+
+<!-- Running Example -->
+<section id="example">
+  <div class="container">
+    <h2 class="section-title">用一个例子贯穿全文</h2>
+    <p class="section-subtitle">整个介绍都围绕同一个真实研究问题展开</p>
+
+    <div class="example-box">
+      <div class="label">贯穿全文的研究问题</div>
+      <h3>"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
+      <p>要回答这个问题，我们需要四大类数据：</p>
+      <div style="margin-top:1rem">
+        <span class="tag tag-gold">🔵 政策文本</span> — 全国补贴政策、各省实施细则
+        <br>
+        <span class="tag tag-teal">🟢 企业数据</span> — 整车厂财报、电池供应商产能、充电桩布局
+        <br>
+        <span class="tag tag-green">🟡 供应链关系</span> — 谁是比亚迪的电池供应商？供应商的供应商是谁？
+        <br>
+        <span class="tag tag-gold">🔴 案例数据</span> — 历史上补贴退坡后的市场反应
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
+      <div class="card">
+        <h3>❌ 传统做法</h3>
+        <p>一个一个找 → CSV 存本地 → PDF 丢文件夹 → 写 Python 脚本转格式 → 手动查 S3 路径 → 跑 DuckDB……<b>一周过去了，还没开始分析。</b></p>
+      </div>
+      <div class="card" style="border-color:rgba(6,182,212,0.4)">
+        <h3 style="color:var(--accent2)">✅ GLake 做法</h3>
+        <p>所有数据统一导入 → Catalog 自动管理 → WebUI 浏览 → AI 辅助查询 → 在上面跑分析模型。<b>一下午搞定。</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section id="architecture">
+  <div class="container">
+    <h2 class="section-title">GLake 是什么？</h2>
+    <p class="section-subtitle">四句话讲清架构</p>
+
+    <div id="mermaid-container">
+      <pre class="mermaid">
+flowchart TB
+    subgraph Control["管理控制面"]
+        Web["Explorer WebUI (:8501)"]
+        Auth["Auth Server (:8000)"]
+        PG[("Postgres / OceanBase Catalog")]
+    end
+    subgraph Compute["隔离计算层"]
+        CA["Docker Sandbox"]
+        CB["Docker Sandbox"]
+    end
+    subgraph Storage["统一存储层"]
+        OSS[("OSS (MinIO / 阿里云OSS)")]
+    end
+    Web --> Auth
+    Auth --> PG
+    Auth --> OSS
+    CA --> OSS
+    CB --> OSS
+      </pre>
+    </div>
+
+    <div class="arch-cards">
+      <div class="arch-card">
+        <div class="num">①</div>
+        <h4>存储层放数据</h4>
+        <p>结构化数据（企业财报）→ Parquet 表<br>非结构化（政策 PDF）→ 原生文件</p>
+      </div>
+      <div class="arch-card">
+        <div class="num">②</div>
+        <h4>Catalog 管元数据</h4>
+        <p>PostgreSQL 记录路径、标签、权限、README。<b>不存数据本身</b>，只管"数据在哪、是什么"。</p>
+      </div>
+      <div class="arch-card">
+        <div class="num">③</div>
+        <h4>控制面让你和 AI 操作</h4>
+        <p>WebUI 浏览、API 编程、AI 按规范自动导入数据。</p>
+      </div>
+      <div class="arch-card">
+        <div class="num">④</div>
+        <h4>计算层做脏活累活</h4>
+        <p>Docker 沙箱做格式转换、数据预处理，<b>不占管理节点资源</b>。</p>
+      </div>
+    </div>
+
+    <div class="card mt-2">
+      <h3 style="color:var(--accent)">⚡ 关键设计：存储计算解耦</h3>
+      <p>同一个 Catalog，底层存哪里由环境变量决定——</p>
+      <div class="code-block">
+        <span class="hl"># 开发环境</span><br>
+        Catalog → "逻辑路径: /新能源/政策" → 物理存: s3://minio:9000/warehouse/...<br><br>
+        <span class="hl"># 生产环境</span><br>
+        Catalog → "逻辑路径: /新能源/政策" → 物理存: s3://aliyun-oss/warehouse/...
+      </div>
+      <p>切换只需改一个环境变量，<b style="color:var(--accent)">所有代码路径不用动</b>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pain Points -->
+<section id="pain">
+  <div class="container">
+    <h2 class="section-title">传统做法有多痛苦</h2>
+    <p class="section-subtitle">还是用"新能源汽车政策"的例子来说——</p>
+
+    <div class="pain-pair">
+      <div class="pain-before">
+        <p style="margin-top:0.5rem">学生：老师，新能源汽车补贴政策的数据在哪？<br>
+        你：好像在 /data/policy/NEV/ 下……等等我 S3 ls 一下<br>
+        学生：里面有什么字段？<br>
+        你：……我不记得了，你跑一下 DuckDB 看看</p>
+      </div>
+      <div class="pain-after">
+        <p style="margin-top:0.5rem">打开 WebUI，像浏览文件夹一样看到所有数据集。<br>
+        每个节点有 <span class="tag tag-gold">新能源 · 补贴 · 产业政策</span> 标签和 README。<br>
+        不用跑任何命令。</p>
+      </div>
+    </div>
+
+    <div class="pain-pair">
+      <div class="pain-before">
+        <p style="margin-top:0.5rem">拿到新的 CSV → 写 pandas 转 Parquet → boto3 上传 S3 → 调 API 注册 → 手动写 README → 两个月后更新，脚本找不到了 → 重写一遍</p>
+      </div>
+      <div class="pain-after">
+        <p style="margin-top:0.5rem">告诉 AI 数据在哪 → AI 按模板填表单 → 确认 → AI 自动生成脚本并执行。<br>
+        人只管 <b>YAML 表单</b>，不碰代码。</p>
+      </div>
+    </div>
+
+    <div class="pain-pair">
+      <div class="pain-before">
+        <p style="margin-top:0.5rem">政策 PDF、调研报告、会议纪要……散落在微信、邮箱、U 盘、NAS 里。<br>
+        想搜一份 2023 年浙江的新能源汽车补贴细则？找到算你赢。</p>
+      </div>
+      <div class="pain-after">
+        <p style="margin-top:0.5rem">PDF/图片和 Parquet 表在 <b>同一个 Catalog</b> 管理，tags + README 全覆盖，WebUI 全文可搜。</p>
+      </div>
+    </div>
+
+    <div class="pain-pair">
+      <div class="pain-before">
+        <p style="margin-top:0.5rem">要给合作院校老师开放数据？只能给 SSH 账号 → 整个服务器都能看。<br>或者导 CSV 发邮件 → 版本失控。</p>
+      </div>
+      <div class="pain-after">
+        <p style="margin-top:0.5rem"><b>5 级 API Key</b>（Admin/Global R/W/Project R/W/Project R），每个 Key 独立 S3 凭证，路径前缀强制隔离。</p>
+      </div>
+    </div>
+
+    <div class="pain-pair">
+      <div class="pain-before">
+        <p style="margin-top:0.5rem">本地 MinIO 开发好了→上线切阿里云 OSS？所有 s3://minio:9000 要改一遍。<br>
+        数据预处理吃 CPU → 笔记本卡半天。</p>
+      </div>
+      <div class="pain-after">
+        <p style="margin-top:0.5rem">逻辑路径+物理路径解耦，切 OSS 只改环境变量。<br>
+        预处理在独立 Docker 沙箱跑，与管理节点解耦。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pipeline -->
+<section id="pipeline">
+  <div class="container">
+    <h2 class="section-title">GLake 怎么用？</h2>
+    <p class="section-subtitle">一条 AI 驱动的数据管道，跟着"新能源汽车"的例子走一遍</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num gold">1</div>
+        <h4>开项目</h4>
+        <p>Admin 在 WebUI 创建项目 → 生成 API Key</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="num teal">2</div>
+        <h4>AI 填表单</h4>
+        <p>告诉 AI 数据源 → AI 按模板填写 → 人确认 YAML 表单</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="num gold">3</div>
+        <h4>AI 出脚本</h4>
+        <p>表单确认后，AI 按 AI_INGESTION_GUIDE.md 生成脚本</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="num green">4</div>
+        <h4>自动执行</h4>
+        <p>CSV→Parquet、S3 上传、Catalog 注册、tags/README 写入</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="num teal">5</div>
+        <h4>定时更新</h4>
+        <p>月更/日更数据 → AI 生成 cron 脚本自动增量更新</p>
+      </div>
+    </div>
+
+    <div class="dialog mt-2">
+      <div class="you">你：</div> 把 2023 年新能源汽车补贴政策数据导进来，在 /data/policy/NEV/<br>
+      <div class="ai">AI：</div> 好的，已填写配置模板：<br>
+      &nbsp;&nbsp;- 数据源: /data/policy/NEV/ 下的 CSV 和 PDF<br>
+      &nbsp;&nbsp;- 格式: CSV → Parquet 转换；PDF 原样存储<br>
+      &nbsp;&nbsp;- 目标路径: /新能源政策分析/补贴政策<br>
+      &nbsp;&nbsp;- 标签: <span class="tag tag-gold">新能源</span><span class="tag tag-gold">补贴</span><span class="tag tag-gold">产业政策</span><span class="tag tag-gold">2023</span><br>
+      &nbsp;&nbsp;- Schema 推断: 政策编号(text), 补贴金额(float), ...<br>
+      请补充或确认以上信息：<br>
+      <div class="you">你：</div> 标签再加一个"浙江省"，其他确认
+    </div>
+
+    <div class="quote">
+      <strong>⚡ 关键设计</strong>：人确认的是 <b>YAML 表单</b>，不是 Python 代码。表单一眼能看懂，改起来几秒钟。<br>
+      <b>确认表单 → AI 出脚本</b>，这才是高效的人机协作。
+    </div>
+
+    <p style="margin-top:1rem;color:var(--text-muted);text-align:center">
+      → 数据导入后，WebUI 自动生成可复制的使用脚本 Demo（Python + DuckDB 代码片段）
+      <br>→ 团队成员通过 API / WebUI / AI 助手就能消费数据
+    </p>
+  </div>
+</section>
+
+<!-- Applications -->
+<section id="apps">
+  <div class="container">
+    <h2 class="section-title">有了数据，能做什么？</h2>
+    <p class="section-subtitle">回到我们的例子——数据在 GLake 里是什么样的？</p>
+
+    <div class="catalog-tree">
+      /新能源政策分析/<br>
+      ├── <span style="color:var(--accent)">补贴政策/</span>                ← 政策文本 PDF + 结构化字段<br>
+      │&nbsp;&nbsp; ├── 2023年全国补贴通知.pdf<br>
+      │&nbsp;&nbsp; ├── 浙江省实施细则.pdf<br>
+      │&nbsp;&nbsp; └── 补贴标准表.parquet<br>
+      ├── <span style="color:var(--accent2)">企业数据/</span>                ← 企业财务 + 股权 + 供应链<br>
+      │&nbsp;&nbsp; ├── 整车厂财务.parquet<br>
+      │&nbsp;&nbsp; ├── 电池供应商.parquet<br>
+      │&nbsp;&nbsp; └── 充电桩运营商.parquet<br>
+      └── <span style="color:var(--accent3)">供应链关系/</span>              ← 图结构数据<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; └── 企业关系图谱.parquet
+    </div>
+
+    <div class="example-box mt-2">
+      <div class="label">优先方向：政策匹配 & 信息检索</div>
+      <h3>研究"2024 年补贴退坡后，哪些企业受影响最大？"</h3>
+      <p>GLake 的标签系统（<span class="tag tag-gold">新能源·补贴·产业政策</span> <span class="tag tag-teal">浙江</span> <span class="tag tag-gold">2023</span>）就是多维索引：</p>
+      <ul style="margin:1rem 0 0 1.5rem;color:var(--text-muted)">
+        <li><b style="color:var(--text)">Policy-Graph RAG</b>：问"浙江 2023 年补贴标准" → 精准定位到 PDF</li>
+        <li><b style="color:var(--text)">政策-案例匹配</b>："某电池厂产能利用率下降" → 自动匹配相关政策做交叉分析</li>
+      </ul>
+    </div>
+
+    <h3 class="mt-2" style="color:var(--accent2)">结合 graph 研究经验，一些可以做的方向</h3>
+    <p class="mb-2" style="color:var(--text-muted)">以下只是举例说明——GLake 是通用基座，每个方向都能提供数据支撑</p>
+
+    <div class="grid-2">
+      <div class="dir-card">
+        <h4>🛡️ Agent 市场异构图风险检测</h4>
+        <p>Agent profile 和调用记录存 Parquet 表，描述文本存文档节点。模型通过 API 读 Catalog 数据训练，推理结果写回 tags。</p>
+      </div>
+      <div class="dir-card">
+        <h4>🔗 政策红利的企业网络传导</h4>
+        <p>给定"新能源补贴"种子，沿供应链传播——整车厂受益 → 电池供应商间接受益 → 锂矿厂也受益。</p>
+      </div>
+      <div class="dir-card">
+        <h4>🧩 政策概念异构图对齐</h4>
+        <p>从 main_tag 抽取概念词建图，GNN 聚类消歧。"战略新兴产业 = 新质生产力"——聚类结果写回 Catalog。</p>
+      </div>
+      <div class="dir-card">
+        <h4>📈 时序政策图演化</h4>
+        <p>每月 cron 拉取新政策 → 增量构建时序图 → 做趋势预测和废止预测。</p>
+      </div>
+    </div>
+
+    <div class="card mt-2" style="border-color:rgba(6,182,212,0.3)">
+      <h3 style="color:var(--accent2)">🧠 数据构图本身就是学术方向</h3>
+      <p>从异构数据（表格+PDF+JSON）自动构建知识图谱——这个 <b>数据→图谱</b> 的 pipeline 本身就是研究方向：</p>
+      <ul style="margin:0.8rem 0 0 1.5rem;color:var(--text-muted)">
+        <li>异构数据源到统一图谱怎么自动化？</li>
+        <li>多模态数据如何在图中统一表达？</li>
+        <li>定时更新时，图谱怎么增量构建？</li>
+      </ul>
+    </div>
+
+    <div class="quote mt-2">
+      <strong>GLake 提供的不是 AI 模型，而是数据原料 + 规范接口。</strong> 上面跑什么模型、做什么分析，老师和团队自己决定。
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <h2 class="section-title">功能全景</h2>
+    <p class="section-subtitle">老师感兴趣可以翻到这里细看</p>
+
+    <h3 style="color:var(--accent3);margin-bottom:1rem">✅ 已上线</h3>
+    <div class="feature-grid">
+      <div class="feature-item"><span class="icon">📥</span><div><div class="name">数据导入</div><div class="desc">CSV/Excel → Parquet，API 注册</div></div></div>
+      <div class="feature-item"><span class="icon">📎</span><div><div class="name">断点续传</div><div class="desc">大文件分片、暂停恢复</div></div></div>
+      <div class="feature-item"><span class="icon">⏰</span><div><div class="name">定时任务</div><div class="desc">cron 驱动，占位符替换</div></div></div>
+      <div class="feature-item"><span class="icon">🤖</span><div><div class="name">AI 导入指南</div><div class="desc">AI_INGESTION_GUIDE + 模板</div></div></div>
+      <div class="feature-item"><span class="icon">🌐</span><div><div class="name">WebUI 浏览</div><div class="desc">文件管理器式，tags/README</div></div></div>
+      <div class="feature-item"><span class="icon">🔍</span><div><div class="name">DuckDB 查询</div><div class="desc">REST API 或直接客户端</div></div></div>
+      <div class="feature-item"><span class="icon">🔑</span><div><div class="name">5 级权限</div><div class="desc">独立 S3 凭证，路径隔离</div></div></div>
+      <div class="feature-item"><span class="icon">🏷️</span><div><div class="name">标签 + README</div><div class="desc">每个节点可打标签写文档</div></div></div>
+      <div class="feature-item"><span class="icon">🔄</span><div><div class="name">存储解耦</div><div class="desc">逻辑/物理路径，环境变量切换</div></div></div>
+      <div class="feature-item"><span class="icon">🔌</span><div><div class="name">REST API</div><div class="desc">节点/表/文档/查询全覆盖</div></div></div>
+      <div class="feature-item"><span class="icon">📊</span><div><div class="name">元数据 API</div><div class="desc">tags/README 专用端点</div></div></div>
+      <div class="feature-item"><span class="icon">🤝</span><div><div class="name">MCP Server</div><div class="desc">AI 原生数据交互协议</div></div></div>
+    </div>
+
+    <div class="card mt-2" style="text-align:center">
+      <p style="color:var(--text-muted)"><b style="color:var(--accent)">一台 Linux 机器 + Docker</b> 就能跑起来。<br>全部容器化，<code>docker compose up</code> 搞定。</p>
+    </div>
+
+    <h3 style="margin-top:2rem;color:var(--accent)">技术栈</h3>
+    <div class="feature-grid mt-1">
+      <div class="feature-item"><span class="icon">⚡</span><div><div class="name">后端</div><div class="desc">FastAPI + SQLAlchemy</div></div></div>
+      <div class="feature-item"><span class="icon">🦆</span><div><div class="name">引擎</div><div class="desc">DuckDB + DuckLake</div></div></div>
+      <div class="feature-item"><span class="icon">🗄️</span><div><div class="name">元数据</div><div class="desc">PostgreSQL / OceanBase</div></div></div>
+      <div class="feature-item"><span class="icon">☁️</span><div><div class="name">存储</div><div class="desc">MinIO / 阿里云 OSS</div></div></div>
+      <div class="feature-item"><span class="icon">🖥️</span><div><div class="name">前端</div><div class="desc">Streamlit</div></div></div>
+      <div class="feature-item"><span class="icon">🐳</span><div><div class="name">容器化</div><div class="desc">Docker + Compose</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section id="compare">
+  <div class="container">
+    <h2 class="section-title">和现有方案做对照</h2>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>能力维度</th><th>Palantir Foundry</th><th>EvenUP</th><th style="color:var(--accent)">GLake</th></tr>
+        <tr><td><b>定位</b></td><td>企业级数据中台</td><td>法律 AI 分析与赔偿量化</td><td style="color:var(--accent)"><b>AI 原生的轻量级数据湖基础设施</b></td></tr>
+        <tr><td><b>核心能力</b></td><td>多源融合 + 本体建模</td><td>非结构化文档价值挖掘</td><td style="color:var(--accent)">统一存储 + Catalog 管理 + AI 工作流</td></tr>
+        <tr><td><b>AI 集成</b></td><td>AIP（大模型+私有数据）</td><td>专用 Piai™ 模型</td><td style="color:var(--accent)">AI_INGESTION_GUIDE + YAML 模板规范</td></tr>
+        <tr><td><b>典型场景</b></td><td>政务/金融/国防</td><td>律所赔偿计算</td><td style="color:var(--accent)">学术数据基座、政策分析、Agent 生态</td></tr>
+        <tr><td><b>权限</b></td><td>多层 RBAC</td><td>组织级权限</td><td style="color:var(--accent)">5 级 API Key + S3 路径隔离</td></tr>
+        <tr><td><b>部署</b></td><td>云 / 私有化</td><td>SaaS</td><td style="color:var(--accent)">Docker Compose，单机可跑</td></tr>
+        <tr><td><b>学术扩展</b></td><td>封闭平台</td><td>法律垂直领域</td><td style="color:var(--accent)"><b>开放基座，GNN/RAG/Agent 任意上层应用</b></td></tr>
+      </table>
+    </div>
+
+    <div class="quote">
+      <strong>GLake 不是 Palantir 或 EvenUP 的平替。</strong>它是一个更通用的数据基座——不绑定任何应用场景，让团队自己决定在上面做什么。而且它足够轻量，<b>一个人 + 一台机器就能跑起来</b>。
+    </div>
+  </div>
+</section>
+
+<!-- Future -->
+<section id="future">
+  <div class="container">
+    <h2 class="section-title">更长远地看</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3 style="color:var(--accent)">🌐 政策数字孪生</h3>
+        <p>政策发布前在沙盒模拟效果，运行中实时监控传导，事后因果归因。GLake 提供统一的数据底座。</p>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--accent2)">🤖 Agent 数据生态</h3>
+        <p>多智能体模拟产生海量日志 → GLake 入库 → 安全检测和市场分析 → 结果写回 Catalog → 自循环。</p>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--accent3)">🔗 联邦数据湖</h3>
+        <p>每个实验室部署自己的 GLake，MCP 互联。不传数据传 API Key——"给你个 Key，权限范围内查"。</p>
+      </div>
+    </div>
+
+    <div class="quote mt-2" style="text-align:center;font-size:1.1rem;border:none;background:rgba(245,158,11,0.08);border-radius:16px">
+      <strong>GLake 是数据层的基础设施。</strong><br>
+      上面是跑 GNN 实验、建知识图谱、做多智能体模拟、还是搭 AI Agent 数据中台，你说了算。<br>
+      <span style="color:var(--text-muted)">存储、格式转换、权限、元数据、定时更新这些脏活，GLake 帮你干了。</span>
+    </div>
+
+    <div class="quote mt-2" style="border-left-color:var(--accent2)">
+      <strong>GLake 不是要和 Palantir、EvenUP 比功能多少。</strong><br>
+      它们各有各的定位——Palantir 服务大企业，EvenUP 深耕法律 AI。<br>
+      <b style="color:var(--accent)">GLake 想做的事很简单：让任何团队都能花最少的力气，拥有自己的数据基础设施。</b>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>GLake — AI 原生的轻量级数据湖基础设施</p>
+  <p style="margin-top:0.3rem;font-size:0.8rem">Made with ❤️ by the Policy Brain team</p>
+</footer>
+
+<script>
+  mermaid.initialize({
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#2d3a50',
+      lineColor: '#f59e0b',
+      secondaryColor: '#111827',
+      tertiaryColor: '#0a0e1a',
+      fontFamily: '-apple-system,sans-serif'
+    },
+    flowchart: { useMaxWidth: true, htmlLabels: true }
+  });
+
+  // Nav active state
+  const navLinks = document.querySelectorAll('nav a');
+  const sections = document.querySelectorAll('section, .hero');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id || 'hero';
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
