@@ -1,335 +1,336 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GLake — 轻量级 AI 原生数据湖平台</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #e2e8f0; }
-  .stage { width: 100%; height: 100vh; position: relative; overflow: hidden; }
-  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 5vh 6vw; opacity: 0; transform: scale(0.97); pointer-events: none; transition: opacity 0.45s ease, transform 0.45s ease; overflow-y: auto; }
-  .slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-  .slide:nth-child(even) { background: #111827; }
-  .slide:nth-child(odd) { background: #0a0e1a; }
-  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: #f59e0b; z-index: 100; transition: width 0.3s ease; }
-  .sn { position: fixed; bottom: 16px; right: 24px; color: #475569; font-size: 0.9rem; font-weight: 600; z-index: 100; font-variant-numeric: tabular-nums; user-select: none; }
-  .na { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(30,41,59,0.8); border: 1px solid #2d3a50; color: #94a3b8; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; transition: all 0.2s; backdrop-filter: blur(8px); }
-  .na:hover { background: rgba(245,158,11,0.2); color: #f59e0b; border-color: #f59e0b; }
-  .na.pl { left: 12px; } .na.nx { right: 12px; }
-  .na:disabled { opacity: 0; pointer-events: none; }
+     1|<!DOCTYPE html>
+     2|<html lang="zh-CN">
+     3|<head>
+     4|<meta charset="UTF-8">
+     5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6|<title>GLake — 轻量级 AI 原生数据湖平台</title>
+     7|<style>
+     8|  * { margin: 0; padding: 0; box-sizing: border-box; }
+     9|  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; }
+    10|  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #e2e8f0; }
+    11|  .stage { width: 100%; height: 100vh; position: relative; overflow: hidden; }
+    12|  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 5vh 6vw; opacity: 0; transform: scale(0.97); pointer-events: none; transition: opacity 0.45s ease, transform 0.45s ease; overflow-y: auto; }
+    13|  .slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+    14|  .slide:nth-child(even) { background: #111827; }
+    15|  .slide:nth-child(odd) { background: #0a0e1a; }
+    16|  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: #f59e0b; z-index: 100; transition: width 0.3s ease; }
+    17|  .sn { position: fixed; bottom: 16px; right: 24px; color: #475569; font-size: 0.9rem; font-weight: 600; z-index: 100; font-variant-numeric: tabular-nums; user-select: none; }
+    18|  .na { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(30,41,59,0.8); border: 1px solid #2d3a50; color: #94a3b8; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; transition: all 0.2s; backdrop-filter: blur(8px); }
+    19|  .na:hover { background: rgba(245,158,11,0.2); color: #f59e0b; border-color: #f59e0b; }
+    20|  .na.pl { left: 12px; } .na.nx { right: 12px; }
+    21|  .na:disabled { opacity: 0; pointer-events: none; }
+    22|
+    23|  .w { max-width: 1100px; margin: 0 auto; width: 100%; }
+    24|  .w h1 { font-size: clamp(2.4rem,5vw,3.8rem); font-weight: 800; margin-bottom: 1.2rem; line-height: 1.2; }
+    25|  .w h2 { font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f59e0b; display: inline-block; }
+    26|  .w h3 { font-size: clamp(1.1rem,1.6vw,1.3rem); font-weight: 600; margin-bottom: 0.6rem; color: #f59e0b; }
+    27|  .w p { line-height: 1.7; font-size: clamp(1rem,1.5vw,1.2rem); color: #cbd5e1; }
+    28|  .w .lead { font-size: clamp(1.1rem,1.8vw,1.35rem); color: #e2e8f0; line-height: 1.8; }
+    29|
+    30|  .ht { font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800; text-align: center; background: linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.2rem; line-height: 1.1; }
+    31|  .hs { text-align: center; font-size: clamp(1rem,1.8vw,1.4rem); max-width: 800px; margin: 0 auto; color: #94a3b8; line-height: 1.8; }
+    32|  .htg { display: inline-block; margin: 1.2rem auto 0; padding: 0.6rem 1.8rem; border: 1px solid #06b6d4; border-radius: 12px; background: rgba(6,182,212,0.08); color: #06b6d4; font-size: clamp(0.9rem,1.2vw,1.05rem); text-align: center; }
+    33|
+    34|  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; } .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; } .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+    35|  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+    36|  .card { background: #1e293b; border:1px solid #2d3a50; border-radius:14px; padding:1.4rem; }
+    37|  .card h4 { color:#f59e0b; margin-bottom:0.4rem; font-size:clamp(0.95rem,1.2vw,1.05rem); }
+    38|  .card p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#94a3b8; line-height:1.5; }
+    39|
+    40|  .pb { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:1rem 1.3rem; }
+    41|  .pb .l { color:#ef4444; font-weight:600; font-size:clamp(0.8rem,1vw,0.9rem); margin-bottom:0.3rem; }
+    42|  .pb p { font-size:clamp(0.85rem,1vw,0.95rem); color:#94a3b8; }
+    43|  .pg { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:1rem 1.3rem; }
+    44|  .pg .l { color:#10b981; font-weight:600; font-size:clamp(0.8rem,1vw,0.9rem); margin-bottom:0.3rem; }
+    45|  .pg p { font-size:clamp(0.85rem,1vw,0.95rem); color:#94a3b8; }
+    46|
+    47|  .steps { display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center; }
+    48|  .step { flex:1; min-width:120px; max-width:180px; background:#1e293b; border:1px solid #2d3a50; border-radius:12px; padding:0.8rem 0.6rem; text-align:center; }
+    49|  .step .n { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 0.4rem; font-weight:700; font-size:0.8rem; }
+    50|  .step .g { background:#f59e0b; color:#000; } .step .t { background:#06b6d4; color:#000; } .step .gn { background:#10b981; color:#000; }
+    51|  .step h4 { font-size:clamp(0.82rem,1vw,0.92rem); margin-bottom:0.2rem; }
+    52|  .step p { font-size:clamp(0.72rem,0.85vw,0.8rem); color:#64748b; }
+    53|  .sa { color:#f59e0b; font-size:1.3rem; align-self:center; } @media(max-width:900px){.sa{display:none}}
+    54|
+    55|  .tag { display:inline-block; padding:0.15rem 0.5rem; border-radius:6px; font-size:clamp(0.72rem,0.9vw,0.82rem); font-weight:600; }
+    56|  .tg { background:rgba(245,158,11,0.15); color:#f59e0b; } .tt { background:rgba(6,182,212,0.15); color:#06b6d4; } .tgg { background:rgba(16,185,129,0.15); color:#10b981; }
+    57|
+    58|  .dlog { background:#0d1117; border-radius:12px; padding:1rem 1.3rem; margin:0.8rem 0; border:1px solid #2d3a50; font-size:clamp(0.85rem,1.1vw,0.95rem); line-height:1.7; }
+    59|  .dlog .y { color:#06b6d4; } .dlog .a { color:#10b981; } .dlog .s { color:#64748b; font-style:italic; }
+    60|
+    61|  .tree { background:#0d1117; border-radius:12px; padding:1rem 1.2rem; font-family:'SF Mono','Fira Code',monospace; font-size:clamp(0.78rem,1vw,0.9rem); line-height:1.7; border:1px solid #2d3a50; }
+    62|
+    63|  .ftg { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.7rem; } @media(max-width:800px){.ftg{grid-template-columns:1fr 1fr}}
+    64|  .fi { background:#1e293b; border:1px solid #2d3a50; border-radius:8px; padding:0.6rem 0.8rem; display:flex; align-items:center; gap:0.5rem; font-size:clamp(0.78rem,1vw,0.88rem); }
+    65|  .fi .n { font-weight:600; } .fi .d { color:#64748b; font-size:clamp(0.7rem,0.85vw,0.8rem); }
+    66|
+    67|  .dc { background:#1e293b; border:1px solid #2d3a50; border-radius:12px; padding:1.2rem; }
+    68|  .dc h4 { color:#06b6d4; margin-bottom:0.3rem; font-size:clamp(0.9rem,1.1vw,1rem); }
+    69|  .dc p { font-size:clamp(0.82rem,1vw,0.92rem); color:#94a3b8; line-height:1.5; }
+    70|
+    71|  .eb { background:rgba(6,182,212,0.06); border:1px solid rgba(6,182,212,0.3); border-radius:14px; padding:1.3rem; margin:0.8rem 0; }
+    72|  .eb .el { color:#06b6d4; font-size:clamp(0.75rem,0.9vw,0.82rem); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.2rem; }
+    73|  .eb h3 { color:#e2e8f0; font-size:clamp(1rem,1.4vw,1.2rem); margin-bottom:0.5rem; }
+    74|  .eb p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#94a3b8; }
+    75|
+    76|  .ex-b { background:#1e293b; border:1px solid #f59e0b; border-radius:14px; padding:1.3rem; margin:0.8rem 0; text-align:center; }
+    77|  .ex-b p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#cbd5e1; }
+    78|
+    79|  .tw { overflow-x:auto; margin:0.8rem 0; }
+    80|  table { width:100%; border-collapse:collapse; font-size:clamp(0.72rem,1vw,0.88rem); }
+    81|  th,td { padding:0.6rem 0.7rem; text-align:left; border-bottom:1px solid #2d3a50; }
+    82|  th { background:#1e293b; color:#f59e0b; font-weight:600; } td { color:#94a3b8; } td b { color:#e2e8f0; }
+    83|
+    84|  .arch-img { text-align:center; margin:0.8rem 0; }
+    85|  .arch-img img { max-width:95%; max-height:65vh; border-radius:12px; border:1px solid #2d3a50; }
+    86|
+    87|  .q { border-left:3px solid #f59e0b; padding:0.8rem 1.2rem; margin:0.8rem 0; background:rgba(245,158,11,0.05); border-radius:0 8px 8px 0; font-size:clamp(0.88rem,1.1vw,0.95rem); color:#94a3b8; line-height:1.6; }
+    88|  .q strong { color:#e2e8f0; }
+    89|
+    90|  .mb1 { margin-bottom:0.8rem; } .mt1 { margin-top:0.8rem; } .tc { text-align:center; }
+    91|  ul { margin:0.4rem 0 0.4rem 1.5rem; } li { line-height:1.6; color:#94a3b8; font-size:clamp(0.85rem,1.1vw,0.95rem); }
+    92|  .bounce { animation:b2 2s infinite; } @keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    93|</style>
+    94|</head>
+    95|<body>
+    96|<div class="stage" id="app"></div>
+    97|<div class="progress" id="progress"></div>
+    98|<div class="sn" id="sn"></div>
+    99|<button class="na pl" id="prev">&lsaquo;</button>
+   100|<button class="na nx" id="next">&rsaquo;</button>
+   101|
+   102|<script>
+   103|const slides = [];
+   104|
+   105|slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+   106|  <div class="ht">GLake</div>
+   107|  <p class="hs">一个<span style="color:#e2e8f0;font-weight:600">面向 AI</span> 的轻量级数据湖基础设施<br>散落的 CSV、PDF、API 数据统一管理 → AI 帮你导、查、用</p>
+   108|  <div class="htg mt1">以前人直接和数据库打交道 <span style="opacity:0.5">→</span> 现在人 + <span style="color:#e2e8f0;font-weight:600">WebUI + AI</span></div>
+   109|  <p style="margin-top:4vh;color:#475569;font-size:0.9rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 键或点击右侧箭头开始</p>
+   110|</div>`);
+   112|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   113|  <h2>用一个例子贯穿全文</h2>
+   114|  <p class="lead mb1">整个介绍都围绕同一个研究问题</p>
+   115|  <div class="eb">
+   116|    <div class="el">贯穿全文的问题</div>
+   117|    <h3>"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
+   118|    <div class="mb1"><span class="tag tg">政策文本</span> <span class="tag tt">企业数据</span> <span class="tag tgg">供应链关系</span> <span class="tag tg">历史案例</span></div>
+   119|  </div>
+   120|  <div class="g2">
+   121|    <div class="pb">
+   122|      <div class="l">传统做法（即使有 AI）</div>
+   123|      <p>让 AI 写一个脚本导入 CSV、写查询统计——能跑。<br><b>但下一次呢？</b>脚本丢在哪？格式变了谁改？新同事来了去哪找？没有标准化流程，每次都从零开始。</p>
+   124|    </div>
+   125|    <div class="pg">
+   126|      <div class="l">GLake 做法</div>
+   127|      <p>AI 按<b>标准化模板</b>填 YAML 表单，按 <b>AI_INGESTION_GUIDE</b> 规范生成生产级脚本，自动注册到 Catalog（带 tags + README）。<b>可复现、可管理、可传承。</b></p>
+   128|    </div>
+   129|  </div>
+   130|</div>`);
+   131|
+   232|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   233|  <h2>传统做法有多痛苦</h2>
+   234|  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">还是用新能源汽车的例子</p>
+   235|  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+   236|    <div class="pb"><div class="l">找数据靠人肉记忆</div><p>学生：数据在哪？你：S3 ls&hellip;有什么字段？跑一下 DuckDB&hellip;</p></div>
+   237|    <div class="pg"><div class="l">WebUI + tags 一目了然</div><p>打开 WebUI 像文件夹一样看，每个节点有 <span class="tag tg">新能源&middot;补贴</span> 标签和 README。</p></div>
+   238|    <div class="pb"><div class="l">导数据写脚本到吐</div><p>CSV &rarr; pandas 转 Parquet &rarr; boto3 上传 &rarr; API 注册 &rarr; 写 README。两个月后更新，脚本找不到。</p></div>
+   239|    <div class="pg"><div class="l">AI 填表单按规范出脚本</div><p>YAML 模板 + AI_INGESTION_GUIDE 规范，生产级可复用的脚本。</p></div>
+   240|    <div class="pb"><div class="l">非结构化数据没人管</div><p>PDF、报告、照片散落在微信、U 盘、NAS。想搜一份特定文件？找到算你赢。</p></div>
+   241|    <div class="pg"><div class="l">统一 Catalog 管理</div><p>PDF 和 Parquet 表在同一个 Catalog，tags + README 全覆盖，WebUI 可搜。</p></div>
+   242|    <div class="pb"><div class="l">权限管不住</div><p>给合作方开放？要么给 SSH（全都能看），要么导出 CSV（版本失控）。</p></div>
+   243|    <div class="pg"><div class="l">5 级 API Key 路径隔离</div><p>每个 Key 独立 S3 凭证，路径前缀强制隔离。给一个只读 Key 只看到授权范围。</p></div>
+   244|    <div class="pb"><div class="l">迁移扩展是噩梦</div><p>本地 MinIO &rarr; 上线 OSS，所有路径要改。预处理吃 CPU，电脑卡半天。</p></div>
+   245|    <div class="pg"><div class="l">逻辑/物理路径解耦</div><p>切换只改环境变量。预处理在独立 Docker 沙箱，可分发到 GPU 集群。</p></div>
+   246|  </div>
+   247|</div>`);
+   248|
+   132|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   133|  <h2>四句话讲清架构</h2>
+   134|  <div class="arch-img">
+   135|    <img src="framework_lite.png" alt="GLake 架构简图" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>framework_lite.png 未找到，请先上传。</p>'">
+   136|  </div>
+   137|  <div class="g4" style="margin-top:0.5rem">
+   138|    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2460;</div><h4 style="font-size:0.95rem">存储层放数据</h4><p>结构化 &rarr; Parquet 表<br>非结构化 &rarr; 原生文件</p></div>
+   139|    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2461;</div><h4 style="font-size:0.95rem">Catalog 管元数据</h4><p>PostgreSQL 记录路径、标签、权限、README。<b>不存数据本身</b></p></div>
+   140|    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2462;</div><h4 style="font-size:0.95rem">控制面操作</h4><p>WebUI 浏览<br>API 编程<br>AI 按规范导入</p></div>
+   141|    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2463;</div><h4 style="font-size:0.95rem">计算层做脏活</h4><p>Docker 沙箱做格式转换<br><b>不占管理节点资源</b></p></div>
+   142|  </div>
+   143|</div>`);
+   144|
+   145|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   146|  <h2>GLake 系统全景</h2>
+   147|  <div class="arch-img">
+   148|    <img src="framework.png" alt="GLake 完整架构" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>framework.png 未找到，请先上传。</p>'">
+   149|    <p style="margin-top:0.5rem;color:#64748b;font-size:0.85rem">管理控制面 &middot; 隔离计算层 &middot; 统一存储层</p>
+   150|  </div>
+   151|</div>`);
+   152|
+   153|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   154|  <h2>怎么用？AI 驱动的数据管道</h2>
+   155|  <p class="lead mb1" style="font-size:clamp(0.95rem,1.2vw,1.1rem)">跟着新能源汽车的例子走一遍</p>
+   156|  <div class="steps mb1">
+   157|    <div class="step"><div class="n g">1</div><h4>开项目</h4><p>WebUI 创建<br>生成 API Key</p></div>
+   158|    <div class="sa">&rarr;</div>
+   159|    <div class="step"><div class="n t">2</div><h4>AI 填表单</h4><p>告诉数据源 &rarr; AI 按<b>YAML 模板</b>填写 &rarr; 人确认</p></div>
+   160|    <div class="sa">&rarr;</div>
+   161|    <div class="step"><div class="n g">3</div><h4>AI 出脚本</h4><p>按 <b>AI_INGESTION_<br>GUIDE.md</b> 生成</p></div>
+   162|    <div class="sa">&rarr;</div>
+   163|    <div class="step"><div class="n gn">4</div><h4>执行导入</h4><p>用户运行脚本：CSV&rarr;Parquet + 上传 + 注册</p></div>
+   164|    <div class="sa">&rarr;</div>
+   165|    <div class="step"><div class="n t">5</div><h4>调度增量</h4><p>月更/日更数据<br>cron 自动拉取</p></div>
+   166|  </div>
+   167|  <div class="dlog">
+   168|    <div class="y">你：</div> 把 2023 年新能源汽车补贴政策导进来，在 /data/policy/NEV/<br>
+   169|    <div class="a">AI（读取 data_ingestion_template.yaml）：</div> 好的，已填写配置模板：<br>
+   170|    &nbsp;&nbsp;- 数据源: /data/policy/NEV/ 下的 CSV 和 PDF（注意标记非结构化）<br>
+   171|    &nbsp;&nbsp;- 格式: CSV &rarr; Parquet；PDF 原样（参考 AI_INGESTION_GUIDE.md）<br>
+   172|    &nbsp;&nbsp;- 目标路径: /新能源政策分析/补贴政策<br>
+   173|    &nbsp;&nbsp;- 标签: <span class="tag tg">新能源</span><span class="tag tg">补贴</span><span class="tag tg">产业政策</span><span class="tag tg">2023</span><br>
+   174|    &nbsp;&nbsp;- Schema: 政策编号(text), 补贴金额(float), 适用地区(text)&hellip;<br>
+   175|    <div class="s">// AI 按 YAML 模板 + GUIDE.md 规范生成 import_script.py</div>
+   176|    请补充或确认：<br>
+   177|    <div class="y">你：</div> 再加"浙江省"，其他确认
+   178|  </div>
+   179|</div>`);
+   180|
+   181|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   182|  <h2>数据入库后，Catalog 长这样</h2>
+   183|  <div class="tree">
+   184|    /新能源政策分析/<br>
+   185|    |-- <span style="color:#f59e0b">补贴政策/</span>                &larr; 政策 PDF + 结构字段<br>
+   186|    |&nbsp;&nbsp; |-- 2023年全国补贴通知.pdf<br>
+   187|    |&nbsp;&nbsp; |-- 浙江省实施细则.pdf<br>
+   188|    |&nbsp;&nbsp; '-- 补贴标准表.parquet<br>
+   189|    |-- <span style="color:#06b6d4">企业数据/</span>                &larr; 财务 + 股权 + 供应链<br>
+   190|    |&nbsp;&nbsp; |-- 整车厂财务.parquet<br>
+   191|    |&nbsp;&nbsp; |-- 电池供应商.parquet<br>
+   192|    |&nbsp;&nbsp; '-- 充电桩运营商.parquet<br>
+   193|    '-- <span style="color:#10b981">供应链关系/</span>              &larr; 图结构数据<br>
+   194|    &nbsp;&nbsp;&nbsp;&nbsp; '-- 企业关系图谱.parquet
+   195|  </div>
+   196|  <p class="mt1" style="font-size:clamp(0.95rem,1.2vw,1.05rem)">数据有了，可以做很多事&mdash;&mdash;</p>
+   197|  <div class="g3 mt1">
+   198|    <div class="card"><h4>政策匹配</h4><p>标签系统就是多维索引。拿一个案例自动匹配相关政策做交叉分析。</p></div>
+   199|    <div class="card"><h4>信息检索</h4><p>Policy-Graph RAG。问"浙江 2023 补贴标准" &rarr; 精准定位到具体 PDF。</p></div>
+   200|    <div class="card"><h4>政策冲突检测</h4><p>上下位法冲突、跨部门"政策打架"自动检测。图模式匹配识别隐性矛盾。</p></div>
+   201|  </div>
+   202|</div>`);
+   203|
+   204|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   205|  <h2>用 GLake 可以做的学术方向</h2>
+   206|  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">GLake 是通用数据基座，任何方向都能基于它提供数据支撑</p>
+   207|  <div class="g3 mb1">
+   208|    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x26A1; 政策匹配</h4><p>政策文本 + 案例数据入库 &rarr; LLM 抽取条件 &rarr; 语义检索做召回 &rarr; 交叉校验排序。</p></div>
+   209|    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x1F50D; 信息检索</h4><p>Policy-Graph RAG 检索系统。结构化元数据 + 全文内容同库管理。</p></div>
+   210|    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x26A0;&#xFE0F; 政策冲突检测</h4><p>上下位法冲突、跨部门政策打架。图模式匹配 + 异常检测。</p></div>
+   211|  </div>
+   212|  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">结合团队 Graph 研究经验，还可以延伸&mdash;&mdash;</p>
+   213|  <div class="g2">
+   214|    <div class="dc"><h4>&#x1F6EE;&#xFE0F; Agent 市场异构图风险检测</h4><p>Agent profile 和调用记录存 Parquet，描述文本存文档节点。模型通过 API 读 Catalog 训练，结果写回 tags。</p></div>
+   215|    <div class="dc"><h4>&#x1F517; 政策红利的企业网络传导</h4><p>"新能源补贴"种子 &rarr; 沿供应链传播：整车厂 &rarr; 电池供应商 &rarr; 锂矿厂。</p></div>
+   216|    <div class="dc"><h4>&#x1F9E9; 政策概念异构图对齐</h4><p>从 main_tag 抽取概念词建图，GNN 聚类消歧。"战略性新兴产业 = 新质生产力"。</p></div>
+   217|    <div class="dc"><h4>&#x1F4C8; 时序政策图演化</h4><p>cron 拉取新政策 &rarr; 增量构建时序图 &rarr; 趋势预测和废止预测。</p></div>
+   218|  </div>
+   219|  <div class="q mt1" style="border-left-color:#06b6d4"><strong>数据&rarr;图谱本身就是学术方向：</strong>异构数据如何自动化构建知识图谱？多模态数据如何在图中统一表达？定时更新时图谱如何增量构建？</div>
+   220|</div>`);
+   221|
+   222|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   223|  <h2>更长远地看</h2>
+   224|  <div class="g3">
+   225|    <div class="card"><h4 style="color:#f59e0b">&#x1F310; 政策数字孪生</h4><p>政策发布前沙盒模拟效果，运行中实时监控传导，事后因果归因。</p></div>
+   226|    <div class="card"><h4 style="color:#06b6d4">&#x1F916; Agent 数据生态</h4><p>多智能体模拟日志 &rarr; GLake 入库 &rarr; 安全检测和分析 &rarr; 结果写回 Catalog &rarr; 自循环。</p></div>
+   227|    <div class="card"><h4 style="color:#10b981">&#x1F517; 联邦数据湖</h4><p>每个实验室部署自己的 GLake，MCP 互联。"给你个 Key，权限范围内查"。</p></div>
+   228|  </div>
+   229|  <div class="ex-b mt1"><p><b style="color:#f59e0b">让任何团队都能花最少的力气，拥有自己的数据基础设施。</b><br><span style="color:#64748b">存储、格式转换、权限、元数据、定时更新&mdash;&mdash;这些脏活，GLake 帮你干了。</span></p></div>
+   230|</div>`);
+   231|
+   249|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   250|  <h2>关键设计：存储计算解耦</h2>
+   251|  <p class="lead mb1">同一个 Catalog，底层存哪里由环境变量决定</p>
+   252|  <div style="background:#0d1117;border-radius:10px;padding:0.8rem 1rem;font-family:'SF Mono',monospace;font-size:clamp(0.78rem,1vw,0.9rem);line-height:1.5;border:1px solid #2d3a50;overflow-x:auto;margin:0.6rem 0">
+   253|    <span style="color:#f59e0b"># 开发环境</span><br>
+   254|    Catalog &rarr; "逻辑路径: /新能源/政策" &rarr; 物理存: s3://minio:9000/warehouse/...<br><br>
+   255|    <span style="color:#f59e0b"># 生产环境</span><br>
+   256|    Catalog &rarr; "逻辑路径: /新能源/政策" &rarr; 物理存: s3://aliyun-oss/warehouse/...
+   257|  </div>
+   258|  <p style="font-size:clamp(1rem,1.3vw,1.1rem)">切换只需改一个环境变量，<b style="color:#f59e0b">所有代码路径不用动</b>。</p>
+   259|  <div class="g3 mt1">
+   260|    <div class="card"><h4>存储解耦</h4><p>逻辑路径+物理路径分离，MinIO &harr; 阿里云 OSS 零代码迁移</p></div>
+   261|    <div class="card"><h4>计算隔离</h4><p>Docker 沙箱，每个任务独立运行，用完即销毁</p></div>
+   262|    <div class="card"><h4>权限分层</h4><p>5 级 API Key + 独立 S3 凭证，路径前缀强制隔离</p></div>
+   263|  </div>
+   264|</div>`);
+   265|
+   266|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   267|  <h2>功能全景</h2>
+   268|  <div class="ftg">
+   269|    <div class="fi"><div><div class="n">数据导入</div><div class="d">CSV&rarr;Parquet，API 注册</div></div></div>
+   270|    <div class="fi"><div><div class="n">断点续传</div><div class="d">大文件分片、暂停恢复</div></div></div>
+   271|    <div class="fi"><div><div class="n">定时任务</div><div class="d">cron + 占位符替换</div></div></div>
+   272|    <div class="fi"><div><div class="n">AI 导入指南</div><div class="d">AI_INGESTION_GUIDE + 模板</div></div></div>
+   273|    <div class="fi"><div><div class="n">WebUI 浏览</div><div class="d">tags/README/数据预览</div></div></div>
+   274|    <div class="fi"><div><div class="n">DuckDB 查询</div><div class="d">REST API / 直连客户端</div></div></div>
+   275|    <div class="fi"><div><div class="n">5 级权限</div><div class="d">独立 S3 凭证路径隔离</div></div></div>
+   276|    <div class="fi"><div><div class="n">标签+README</div><div class="d">每个节点可写文档</div></div></div>
+   277|    <div class="fi"><div><div class="n">存储解耦</div><div class="d">环境变量切换存储后端</div></div></div>
+   278|    <div class="fi"><div><div class="n">REST API</div><div class="d">节点/表/文档全覆盖</div></div></div>
+   279|    <div class="fi"><div><div class="n">元数据 API</div><div class="d">tags/README 专用端点</div></div></div>
+   280|    <div class="fi"><div><div class="n">MCP Server</div><div class="d">AI 原生数据交互协议</div></div></div>
+   281|  </div>
+   282|  <div class="ex-b mt1"><p>提供 <b style="color:#f59e0b">manage.sh</b> CLI 管理脚本，所有部署、启动、维护一条命令完成。<br><span style="color:#64748b">一台 Linux + Docker，</span><code style="color:#06b6d4">bash manage.sh setup</code><span style="color:#64748b"> 搞定全部环境搭建。</span></p></div>
+   283|</div>`);
+   284|
+   285|slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+   286|  <h2>和现有方案对照</h2>
+   287|  <div class="tw">
+   288|    <table>
+   289|      <tr><th>维度</th><th>Palantir Foundry</th><th>EvenUP</th><th style="color:#f59e0b">GLake</th></tr>
+   290|      <tr><td><b>定位</b></td><td>企业级数据中台</td><td>法律 AI 赔偿分析</td><td style="color:#f59e0b;font-weight:600">轻量级 AI 数据湖基础设施</td></tr>
+   291|      <tr><td><b>核心能力</b></td><td>多源融合+本体建模</td><td>非结构化文档挖掘</td><td style="color:#f59e0b;font-weight:600">统一存储+Catalog+AI 工作流</td></tr>
+   292|      <tr><td><b>AI 集成</b></td><td>AIP（大模型）</td><td>Piai&trade; 模型</td><td style="color:#f59e0b;font-weight:600">INGESTION_GUIDE + 模板规范</td></tr>
+   293|      <tr><td><b>适用场景</b></td><td>政务/金融/国防</td><td>律所赔偿</td><td style="color:#f59e0b;font-weight:600">学术基座/政策分析/Agent 生态</td></tr>
+   294|      <tr><td><b>部署方式</b></td><td>云/私有化</td><td>SaaS</td><td style="color:#f59e0b;font-weight:600">Docker Compose，单机可跑</td></tr>
+   295|      <tr><td><b>扩展性</b></td><td>封闭平台</td><td>法律垂直领域</td><td style="color:#f59e0b;font-weight:600"><b>开放基座，任意上层应用</b></td></tr>
+   296|    </table>
+   297|  </div>
+   298|  <div class="q"><strong>GLake 不是 Palantir 或 EvenUP 的平替。</strong>它是更通用的数据基座&mdash;&mdash;不限场景，<b>一个人+一台机器就能跑起来</b>。</div>
+   299|</div>`);
 
-  .w { max-width: 1100px; margin: 0 auto; width: 100%; }
-  .w h1 { font-size: clamp(2.4rem,5vw,3.8rem); font-weight: 800; margin-bottom: 1.2rem; line-height: 1.2; }
-  .w h2 { font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f59e0b; display: inline-block; }
-  .w h3 { font-size: clamp(1.1rem,1.6vw,1.3rem); font-weight: 600; margin-bottom: 0.6rem; color: #f59e0b; }
-  .w p { line-height: 1.7; font-size: clamp(1rem,1.5vw,1.2rem); color: #cbd5e1; }
-  .w .lead { font-size: clamp(1.1rem,1.8vw,1.35rem); color: #e2e8f0; line-height: 1.8; }
-
-  .ht { font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800; text-align: center; background: linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.2rem; line-height: 1.1; }
-  .hs { text-align: center; font-size: clamp(1rem,1.8vw,1.4rem); max-width: 800px; margin: 0 auto; color: #94a3b8; line-height: 1.8; }
-  .htg { display: inline-block; margin: 1.2rem auto 0; padding: 0.6rem 1.8rem; border: 1px solid #06b6d4; border-radius: 12px; background: rgba(6,182,212,0.08); color: #06b6d4; font-size: clamp(0.9rem,1.2vw,1.05rem); text-align: center; }
-
-  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; } .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; } .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
-  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
-  .card { background: #1e293b; border:1px solid #2d3a50; border-radius:14px; padding:1.4rem; }
-  .card h4 { color:#f59e0b; margin-bottom:0.4rem; font-size:clamp(0.95rem,1.2vw,1.05rem); }
-  .card p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#94a3b8; line-height:1.5; }
-
-  .pb { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:1rem 1.3rem; }
-  .pb .l { color:#ef4444; font-weight:600; font-size:clamp(0.8rem,1vw,0.9rem); margin-bottom:0.3rem; }
-  .pb p { font-size:clamp(0.85rem,1vw,0.95rem); color:#94a3b8; }
-  .pg { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:1rem 1.3rem; }
-  .pg .l { color:#10b981; font-weight:600; font-size:clamp(0.8rem,1vw,0.9rem); margin-bottom:0.3rem; }
-  .pg p { font-size:clamp(0.85rem,1vw,0.95rem); color:#94a3b8; }
-
-  .steps { display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center; }
-  .step { flex:1; min-width:120px; max-width:180px; background:#1e293b; border:1px solid #2d3a50; border-radius:12px; padding:0.8rem 0.6rem; text-align:center; }
-  .step .n { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 0.4rem; font-weight:700; font-size:0.8rem; }
-  .step .g { background:#f59e0b; color:#000; } .step .t { background:#06b6d4; color:#000; } .step .gn { background:#10b981; color:#000; }
-  .step h4 { font-size:clamp(0.82rem,1vw,0.92rem); margin-bottom:0.2rem; }
-  .step p { font-size:clamp(0.72rem,0.85vw,0.8rem); color:#64748b; }
-  .sa { color:#f59e0b; font-size:1.3rem; align-self:center; } @media(max-width:900px){.sa{display:none}}
-
-  .tag { display:inline-block; padding:0.15rem 0.5rem; border-radius:6px; font-size:clamp(0.72rem,0.9vw,0.82rem); font-weight:600; }
-  .tg { background:rgba(245,158,11,0.15); color:#f59e0b; } .tt { background:rgba(6,182,212,0.15); color:#06b6d4; } .tgg { background:rgba(16,185,129,0.15); color:#10b981; }
-
-  .dlog { background:#0d1117; border-radius:12px; padding:1rem 1.3rem; margin:0.8rem 0; border:1px solid #2d3a50; font-size:clamp(0.85rem,1.1vw,0.95rem); line-height:1.7; }
-  .dlog .y { color:#06b6d4; } .dlog .a { color:#10b981; } .dlog .s { color:#64748b; font-style:italic; }
-
-  .tree { background:#0d1117; border-radius:12px; padding:1rem 1.2rem; font-family:'SF Mono','Fira Code',monospace; font-size:clamp(0.78rem,1vw,0.9rem); line-height:1.7; border:1px solid #2d3a50; }
-
-  .ftg { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.7rem; } @media(max-width:800px){.ftg{grid-template-columns:1fr 1fr}}
-  .fi { background:#1e293b; border:1px solid #2d3a50; border-radius:8px; padding:0.6rem 0.8rem; display:flex; align-items:center; gap:0.5rem; font-size:clamp(0.78rem,1vw,0.88rem); }
-  .fi .n { font-weight:600; } .fi .d { color:#64748b; font-size:clamp(0.7rem,0.85vw,0.8rem); }
-
-  .dc { background:#1e293b; border:1px solid #2d3a50; border-radius:12px; padding:1.2rem; }
-  .dc h4 { color:#06b6d4; margin-bottom:0.3rem; font-size:clamp(0.9rem,1.1vw,1rem); }
-  .dc p { font-size:clamp(0.82rem,1vw,0.92rem); color:#94a3b8; line-height:1.5; }
-
-  .eb { background:rgba(6,182,212,0.06); border:1px solid rgba(6,182,212,0.3); border-radius:14px; padding:1.3rem; margin:0.8rem 0; }
-  .eb .el { color:#06b6d4; font-size:clamp(0.75rem,0.9vw,0.82rem); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.2rem; }
-  .eb h3 { color:#e2e8f0; font-size:clamp(1rem,1.4vw,1.2rem); margin-bottom:0.5rem; }
-  .eb p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#94a3b8; }
-
-  .ex-b { background:#1e293b; border:1px solid #f59e0b; border-radius:14px; padding:1.3rem; margin:0.8rem 0; text-align:center; }
-  .ex-b p { font-size:clamp(0.85rem,1.1vw,0.95rem); color:#cbd5e1; }
-
-  .tw { overflow-x:auto; margin:0.8rem 0; }
-  table { width:100%; border-collapse:collapse; font-size:clamp(0.72rem,1vw,0.88rem); }
-  th,td { padding:0.6rem 0.7rem; text-align:left; border-bottom:1px solid #2d3a50; }
-  th { background:#1e293b; color:#f59e0b; font-weight:600; } td { color:#94a3b8; } td b { color:#e2e8f0; }
-
-  .arch-img { text-align:center; margin:0.8rem 0; }
-  .arch-img img { max-width:95%; max-height:65vh; border-radius:12px; border:1px solid #2d3a50; }
-
-  .q { border-left:3px solid #f59e0b; padding:0.8rem 1.2rem; margin:0.8rem 0; background:rgba(245,158,11,0.05); border-radius:0 8px 8px 0; font-size:clamp(0.88rem,1.1vw,0.95rem); color:#94a3b8; line-height:1.6; }
-  .q strong { color:#e2e8f0; }
-
-  .mb1 { margin-bottom:0.8rem; } .mt1 { margin-top:0.8rem; } .tc { text-align:center; }
-  ul { margin:0.4rem 0 0.4rem 1.5rem; } li { line-height:1.6; color:#94a3b8; font-size:clamp(0.85rem,1.1vw,0.95rem); }
-  .bounce { animation:b2 2s infinite; } @keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-</style>
-</head>
-<body>
-<div class="stage" id="app"></div>
-<div class="progress" id="progress"></div>
-<div class="sn" id="sn"></div>
-<button class="na pl" id="prev">&lsaquo;</button>
-<button class="na nx" id="next">&rsaquo;</button>
-
-<script>
-const slides = [];
-
-slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
-  <div class="ht">GLake</div>
-  <p class="hs">一个<span style="color:#e2e8f0;font-weight:600">面向 AI</span> 的轻量级数据湖基础设施<br>散落的 CSV、PDF、API 数据统一管理 → AI 帮你导、查、用</p>
-  <div class="htg mt1">以前人直接和数据库打交道 <span style="opacity:0.5">→</span> 现在人 + <span style="color:#e2e8f0;font-weight:600">WebUI + AI</span></div>
-  <p style="margin-top:4vh;color:#475569;font-size:0.9rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 键或点击右侧箭头开始</p>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>用一个例子贯穿全文</h2>
-  <p class="lead mb1">整个介绍都围绕同一个研究问题</p>
-  <div class="eb">
-    <div class="el">贯穿全文的问题</div>
-    <h3>"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
-    <div class="mb1"><span class="tag tg">政策文本</span> <span class="tag tt">企业数据</span> <span class="tag tgg">供应链关系</span> <span class="tag tg">历史案例</span></div>
-  </div>
-  <div class="g2">
-    <div class="pb">
-      <div class="l">传统做法（即使有 AI）</div>
-      <p>让 AI 写一个脚本导入 CSV、写查询统计——能跑。<br><b>但下一次呢？</b>脚本丢在哪？格式变了谁改？新同事来了去哪找？没有标准化流程，每次都从零开始。</p>
-    </div>
-    <div class="pg">
-      <div class="l">GLake 做法</div>
-      <p>AI 按<b>标准化模板</b>填 YAML 表单，按 <b>AI_INGESTION_GUIDE</b> 规范生成生产级脚本，自动注册到 Catalog（带 tags + README）。<b>可复现、可管理、可传承。</b></p>
-    </div>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>四句话讲清架构</h2>
-  <div class="arch-img">
-    <img src="framework_lite.png" alt="GLake 架构简图" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>framework_lite.png 未找到，请先上传。</p>'">
-  </div>
-  <div class="g4" style="margin-top:0.5rem">
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2460;</div><h4 style="font-size:0.95rem">存储层放数据</h4><p>结构化 &rarr; Parquet 表<br>非结构化 &rarr; 原生文件</p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2461;</div><h4 style="font-size:0.95rem">Catalog 管元数据</h4><p>PostgreSQL 记录路径、标签、权限、README。<b>不存数据本身</b></p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2462;</div><h4 style="font-size:0.95rem">控制面操作</h4><p>WebUI 浏览<br>API 编程<br>AI 按规范导入</p></div>
-    <div class="card tc"><div style="font-size:1.6rem;font-weight:800;color:#f59e0b">&#x2463;</div><h4 style="font-size:0.95rem">计算层做脏活</h4><p>Docker 沙箱做格式转换<br><b>不占管理节点资源</b></p></div>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>GLake 系统全景</h2>
-  <div class="arch-img">
-    <img src="framework.png" alt="GLake 完整架构" onerror="this.parentElement.innerHTML='<p style=color:#ef4444>framework.png 未找到，请先上传。</p>'">
-    <p style="margin-top:0.5rem;color:#64748b;font-size:0.85rem">管理控制面 &middot; 隔离计算层 &middot; 统一存储层</p>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>怎么用？AI 驱动的数据管道</h2>
-  <p class="lead mb1" style="font-size:clamp(0.95rem,1.2vw,1.1rem)">跟着新能源汽车的例子走一遍</p>
-  <div class="steps mb1">
-    <div class="step"><div class="n g">1</div><h4>开项目</h4><p>WebUI 创建<br>生成 API Key</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n t">2</div><h4>AI 填表单</h4><p>告诉数据源 &rarr; AI 按<b>YAML 模板</b>填写 &rarr; 人确认</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n g">3</div><h4>AI 出脚本</h4><p>按 <b>AI_INGESTION_<br>GUIDE.md</b> 生成</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n gn">4</div><h4>执行导入</h4><p>用户运行脚本：CSV&rarr;Parquet + 上传 + 注册</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n t">5</div><h4>调度增量</h4><p>月更/日更数据<br>cron 自动拉取</p></div>
-  </div>
-  <div class="dlog">
-    <div class="y">你：</div> 把 2023 年新能源汽车补贴政策导进来，在 /data/policy/NEV/<br>
-    <div class="a">AI（读取 data_ingestion_template.yaml）：</div> 好的，已填写配置模板：<br>
-    &nbsp;&nbsp;- 数据源: /data/policy/NEV/ 下的 CSV 和 PDF（注意标记非结构化）<br>
-    &nbsp;&nbsp;- 格式: CSV &rarr; Parquet；PDF 原样（参考 AI_INGESTION_GUIDE.md）<br>
-    &nbsp;&nbsp;- 目标路径: /新能源政策分析/补贴政策<br>
-    &nbsp;&nbsp;- 标签: <span class="tag tg">新能源</span><span class="tag tg">补贴</span><span class="tag tg">产业政策</span><span class="tag tg">2023</span><br>
-    &nbsp;&nbsp;- Schema: 政策编号(text), 补贴金额(float), 适用地区(text)&hellip;<br>
-    <div class="s">// AI 按 YAML 模板 + GUIDE.md 规范生成 import_script.py</div>
-    请补充或确认：<br>
-    <div class="y">你：</div> 再加"浙江省"，其他确认
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>数据入库后，Catalog 长这样</h2>
-  <div class="tree">
-    /新能源政策分析/<br>
-    |-- <span style="color:#f59e0b">补贴政策/</span>                &larr; 政策 PDF + 结构字段<br>
-    |&nbsp;&nbsp; |-- 2023年全国补贴通知.pdf<br>
-    |&nbsp;&nbsp; |-- 浙江省实施细则.pdf<br>
-    |&nbsp;&nbsp; '-- 补贴标准表.parquet<br>
-    |-- <span style="color:#06b6d4">企业数据/</span>                &larr; 财务 + 股权 + 供应链<br>
-    |&nbsp;&nbsp; |-- 整车厂财务.parquet<br>
-    |&nbsp;&nbsp; |-- 电池供应商.parquet<br>
-    |&nbsp;&nbsp; '-- 充电桩运营商.parquet<br>
-    '-- <span style="color:#10b981">供应链关系/</span>              &larr; 图结构数据<br>
-    &nbsp;&nbsp;&nbsp;&nbsp; '-- 企业关系图谱.parquet
-  </div>
-  <p class="mt1" style="font-size:clamp(0.95rem,1.2vw,1.05rem)">数据有了，可以做很多事&mdash;&mdash;</p>
-  <div class="g3 mt1">
-    <div class="card"><h4>政策匹配</h4><p>标签系统就是多维索引。拿一个案例自动匹配相关政策做交叉分析。</p></div>
-    <div class="card"><h4>信息检索</h4><p>Policy-Graph RAG。问"浙江 2023 补贴标准" &rarr; 精准定位到具体 PDF。</p></div>
-    <div class="card"><h4>政策冲突检测</h4><p>上下位法冲突、跨部门"政策打架"自动检测。图模式匹配识别隐性矛盾。</p></div>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>用 GLake 可以做的学术方向</h2>
-  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">GLake 是通用数据基座，任何方向都能基于它提供数据支撑</p>
-  <div class="g3 mb1">
-    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x26A1; 政策匹配</h4><p>政策文本 + 案例数据入库 &rarr; LLM 抽取条件 &rarr; 语义检索做召回 &rarr; 交叉校验排序。</p></div>
-    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x1F50D; 信息检索</h4><p>Policy-Graph RAG 检索系统。结构化元数据 + 全文内容同库管理。</p></div>
-    <div class="card" style="border-color:rgba(6,182,212,0.3)"><h4 style="color:#06b6d4">&#x26A0;&#xFE0F; 政策冲突检测</h4><p>上下位法冲突、跨部门政策打架。图模式匹配 + 异常检测。</p></div>
-  </div>
-  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">结合团队 Graph 研究经验，还可以延伸&mdash;&mdash;</p>
-  <div class="g2">
-    <div class="dc"><h4>&#x1F6EE;&#xFE0F; Agent 市场异构图风险检测</h4><p>Agent profile 和调用记录存 Parquet，描述文本存文档节点。模型通过 API 读 Catalog 训练，结果写回 tags。</p></div>
-    <div class="dc"><h4>&#x1F517; 政策红利的企业网络传导</h4><p>"新能源补贴"种子 &rarr; 沿供应链传播：整车厂 &rarr; 电池供应商 &rarr; 锂矿厂。</p></div>
-    <div class="dc"><h4>&#x1F9E9; 政策概念异构图对齐</h4><p>从 main_tag 抽取概念词建图，GNN 聚类消歧。"战略性新兴产业 = 新质生产力"。</p></div>
-    <div class="dc"><h4>&#x1F4C8; 时序政策图演化</h4><p>cron 拉取新政策 &rarr; 增量构建时序图 &rarr; 趋势预测和废止预测。</p></div>
-  </div>
-  <div class="q mt1" style="border-left-color:#06b6d4"><strong>数据&rarr;图谱本身就是学术方向：</strong>异构数据如何自动化构建知识图谱？多模态数据如何在图中统一表达？定时更新时图谱如何增量构建？</div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>更长远地看</h2>
-  <div class="g3">
-    <div class="card"><h4 style="color:#f59e0b">&#x1F310; 政策数字孪生</h4><p>政策发布前沙盒模拟效果，运行中实时监控传导，事后因果归因。</p></div>
-    <div class="card"><h4 style="color:#06b6d4">&#x1F916; Agent 数据生态</h4><p>多智能体模拟日志 &rarr; GLake 入库 &rarr; 安全检测和分析 &rarr; 结果写回 Catalog &rarr; 自循环。</p></div>
-    <div class="card"><h4 style="color:#10b981">&#x1F517; 联邦数据湖</h4><p>每个实验室部署自己的 GLake，MCP 互联。"给你个 Key，权限范围内查"。</p></div>
-  </div>
-  <div class="ex-b mt1"><p><b style="color:#f59e0b">让任何团队都能花最少的力气，拥有自己的数据基础设施。</b><br><span style="color:#64748b">存储、格式转换、权限、元数据、定时更新&mdash;&mdash;这些脏活，GLake 帮你干了。</span></p></div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>传统做法有多痛苦</h2>
-  <p class="mb1" style="font-size:clamp(0.9rem,1.1vw,1rem);color:#64748b">还是用新能源汽车的例子</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-    <div class="pb"><div class="l">找数据靠人肉记忆</div><p>学生：数据在哪？你：S3 ls&hellip;有什么字段？跑一下 DuckDB&hellip;</p></div>
-    <div class="pg"><div class="l">WebUI + tags 一目了然</div><p>打开 WebUI 像文件夹一样看，每个节点有 <span class="tag tg">新能源&middot;补贴</span> 标签和 README。</p></div>
-    <div class="pb"><div class="l">导数据写脚本到吐</div><p>CSV &rarr; pandas 转 Parquet &rarr; boto3 上传 &rarr; API 注册 &rarr; 写 README。两个月后更新，脚本找不到。</p></div>
-    <div class="pg"><div class="l">AI 填表单按规范出脚本</div><p>YAML 模板 + AI_INGESTION_GUIDE 规范，生产级可复用的脚本。</p></div>
-    <div class="pb"><div class="l">非结构化数据没人管</div><p>PDF、报告、照片散落在微信、U 盘、NAS。想搜一份特定文件？找到算你赢。</p></div>
-    <div class="pg"><div class="l">统一 Catalog 管理</div><p>PDF 和 Parquet 表在同一个 Catalog，tags + README 全覆盖，WebUI 可搜。</p></div>
-    <div class="pb"><div class="l">权限管不住</div><p>给合作方开放？要么给 SSH（全都能看），要么导出 CSV（版本失控）。</p></div>
-    <div class="pg"><div class="l">5 级 API Key 路径隔离</div><p>每个 Key 独立 S3 凭证，路径前缀强制隔离。给一个只读 Key 只看到授权范围。</p></div>
-    <div class="pb"><div class="l">迁移扩展是噩梦</div><p>本地 MinIO &rarr; 上线 OSS，所有路径要改。预处理吃 CPU，电脑卡半天。</p></div>
-    <div class="pg"><div class="l">逻辑/物理路径解耦</div><p>切换只改环境变量。预处理在独立 Docker 沙箱，可分发到 GPU 集群。</p></div>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>关键设计：存储计算解耦</h2>
-  <p class="lead mb1">同一个 Catalog，底层存哪里由环境变量决定</p>
-  <div style="background:#0d1117;border-radius:10px;padding:0.8rem 1rem;font-family:'SF Mono',monospace;font-size:clamp(0.78rem,1vw,0.9rem);line-height:1.5;border:1px solid #2d3a50;overflow-x:auto;margin:0.6rem 0">
-    <span style="color:#f59e0b"># 开发环境</span><br>
-    Catalog &rarr; "逻辑路径: /新能源/政策" &rarr; 物理存: s3://minio:9000/warehouse/...<br><br>
-    <span style="color:#f59e0b"># 生产环境</span><br>
-    Catalog &rarr; "逻辑路径: /新能源/政策" &rarr; 物理存: s3://aliyun-oss/warehouse/...
-  </div>
-  <p style="font-size:clamp(1rem,1.3vw,1.1rem)">切换只需改一个环境变量，<b style="color:#f59e0b">所有代码路径不用动</b>。</p>
-  <div class="g3 mt1">
-    <div class="card"><h4>存储解耦</h4><p>逻辑路径+物理路径分离，MinIO &harr; 阿里云 OSS 零代码迁移</p></div>
-    <div class="card"><h4>计算隔离</h4><p>Docker 沙箱，每个任务独立运行，用完即销毁</p></div>
-    <div class="card"><h4>权限分层</h4><p>5 级 API Key + 独立 S3 凭证，路径前缀强制隔离</p></div>
-  </div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>功能全景</h2>
-  <div class="ftg">
-    <div class="fi"><div><div class="n">数据导入</div><div class="d">CSV&rarr;Parquet，API 注册</div></div></div>
-    <div class="fi"><div><div class="n">断点续传</div><div class="d">大文件分片、暂停恢复</div></div></div>
-    <div class="fi"><div><div class="n">定时任务</div><div class="d">cron + 占位符替换</div></div></div>
-    <div class="fi"><div><div class="n">AI 导入指南</div><div class="d">AI_INGESTION_GUIDE + 模板</div></div></div>
-    <div class="fi"><div><div class="n">WebUI 浏览</div><div class="d">tags/README/数据预览</div></div></div>
-    <div class="fi"><div><div class="n">DuckDB 查询</div><div class="d">REST API / 直连客户端</div></div></div>
-    <div class="fi"><div><div class="n">5 级权限</div><div class="d">独立 S3 凭证路径隔离</div></div></div>
-    <div class="fi"><div><div class="n">标签+README</div><div class="d">每个节点可写文档</div></div></div>
-    <div class="fi"><div><div class="n">存储解耦</div><div class="d">环境变量切换存储后端</div></div></div>
-    <div class="fi"><div><div class="n">REST API</div><div class="d">节点/表/文档全覆盖</div></div></div>
-    <div class="fi"><div><div class="n">元数据 API</div><div class="d">tags/README 专用端点</div></div></div>
-    <div class="fi"><div><div class="n">MCP Server</div><div class="d">AI 原生数据交互协议</div></div></div>
-  </div>
-  <div class="ex-b mt1"><p>提供 <b style="color:#f59e0b">manage.sh</b> CLI 管理脚本，所有部署、启动、维护一条命令完成。<br><span style="color:#64748b">一台 Linux + Docker，</span><code style="color:#06b6d4">bash manage.sh setup</code><span style="color:#64748b"> 搞定全部环境搭建。</span></p></div>
-</div>`);
-
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>和现有方案对照</h2>
-  <div class="tw">
-    <table>
-      <tr><th>维度</th><th>Palantir Foundry</th><th>EvenUP</th><th style="color:#f59e0b">GLake</th></tr>
-      <tr><td><b>定位</b></td><td>企业级数据中台</td><td>法律 AI 赔偿分析</td><td style="color:#f59e0b;font-weight:600">轻量级 AI 数据湖基础设施</td></tr>
-      <tr><td><b>核心能力</b></td><td>多源融合+本体建模</td><td>非结构化文档挖掘</td><td style="color:#f59e0b;font-weight:600">统一存储+Catalog+AI 工作流</td></tr>
-      <tr><td><b>AI 集成</b></td><td>AIP（大模型）</td><td>Piai&trade; 模型</td><td style="color:#f59e0b;font-weight:600">INGESTION_GUIDE + 模板规范</td></tr>
-      <tr><td><b>适用场景</b></td><td>政务/金融/国防</td><td>律所赔偿</td><td style="color:#f59e0b;font-weight:600">学术基座/政策分析/Agent 生态</td></tr>
-      <tr><td><b>部署方式</b></td><td>云/私有化</td><td>SaaS</td><td style="color:#f59e0b;font-weight:600">Docker Compose，单机可跑</td></tr>
-      <tr><td><b>扩展性</b></td><td>封闭平台</td><td>法律垂直领域</td><td style="color:#f59e0b;font-weight:600"><b>开放基座，任意上层应用</b></td></tr>
-    </table>
-  </div>
-  <div class="q"><strong>GLake 不是 Palantir 或 EvenUP 的平替。</strong>它是更通用的数据基座&mdash;&mdash;不限场景，<b>一个人+一台机器就能跑起来</b>。</div>
-</div>`);
-
-// Engine
-let cur = 0;
-const app = document.getElementById('app');
-const pg = document.getElementById('progress');
-const sn = document.getElementById('sn');
-const prev = document.getElementById('prev');
-const next = document.getElementById('next');
-
-function render() {
-  app.innerHTML = slides.map((fn, i) => `<div class="slide ${i === cur ? 'active' : ''}">${fn()}</div>`).join('');
-  pg.style.width = `${((cur + 1) / slides.length) * 100}%`;
-  sn.textContent = `${cur + 1} / ${slides.length}`;
-  prev.disabled = cur === 0;
-  next.disabled = cur === slides.length - 1;
-}
-
-function go(n) { if (n < 0 || n >= slides.length) return; cur = n; render(); }
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(cur - 1); }
-  if (e.key === 'Home') { e.preventDefault(); go(0); }
-  if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
-});
-prev.addEventListener('click', () => go(cur - 1));
-next.addEventListener('click', () => go(cur + 1));
-let wt;
-app.addEventListener('wheel', e => { clearTimeout(wt); wt = setTimeout(() => { if (e.deltaY > 0) go(cur + 1); else go(cur - 1); }, 200); }, { passive: true });
-let ty = 0;
-app.addEventListener('touchstart', e => { ty = e.touches[0].clientY; });
-app.addEventListener('touchend', e => { const d = ty - e.changedTouches[0].clientY; if (Math.abs(d) > 50) { if (d > 0) go(cur + 1); else go(cur - 1); } });
-render();
-</script>
-</body>
-</html>
+   300|
+   301|// Engine
+   302|let cur = 0;
+   303|const app = document.getElementById('app');
+   304|const pg = document.getElementById('progress');
+   305|const sn = document.getElementById('sn');
+   306|const prev = document.getElementById('prev');
+   307|const next = document.getElementById('next');
+   308|
+   309|function render() {
+   310|  app.innerHTML = slides.map((fn, i) => `<div class="slide ${i === cur ? 'active' : ''}">${fn()}</div>`).join('');
+   311|  pg.style.width = `${((cur + 1) / slides.length) * 100}%`;
+   312|  sn.textContent = `${cur + 1} / ${slides.length}`;
+   313|  prev.disabled = cur === 0;
+   314|  next.disabled = cur === slides.length - 1;
+   315|}
+   316|
+   317|function go(n) { if (n < 0 || n >= slides.length) return; cur = n; render(); }
+   318|
+   319|document.addEventListener('keydown', e => {
+   320|  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+   321|  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(cur - 1); }
+   322|  if (e.key === 'Home') { e.preventDefault(); go(0); }
+   323|  if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+   324|});
+   325|prev.addEventListener('click', () => go(cur - 1));
+   326|next.addEventListener('click', () => go(cur + 1));
+   327|let wt;
+   328|app.addEventListener('wheel', e => { clearTimeout(wt); wt = setTimeout(() => { if (e.deltaY > 0) go(cur + 1); else go(cur - 1); }, 200); }, { passive: true });
+   329|let ty = 0;
+   330|app.addEventListener('touchstart', e => { ty = e.touches[0].clientY; });
+   331|app.addEventListener('touchend', e => { const d = ty - e.changedTouches[0].clientY; if (Math.abs(d) > 50) { if (d > 0) go(cur + 1); else go(cur - 1); } });
+   332|render();
+   333|</script>
+   334|</body>
+   335|</html>
+   336|
