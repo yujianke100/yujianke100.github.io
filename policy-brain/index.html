@@ -67,7 +67,7 @@ slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;a
   <div class="ht">政策大脑</div>
   <p class="hs" style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Policy Brain</p>
   <p class="hs" style="margin-top:0.8rem">从数据到决策 —— 社会运作系统的数字孪生</p>
-  <div class="htg mt1">GLake 数据底座 + AI 决策操作系统</div>
+  <div class="htg mt1">AI 驱动的政策决策操作系统</div>
   <p style="margin-top:4vh;color:#475569;font-size:0.9rem">浙江省国家级实验室 · 2026</p>
   <p style="margin-top:2vh;color:#475569;font-size:0.85rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 键开始</p>
 </div>`);
@@ -94,42 +94,19 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     <span style="color:#06b6d4">　G端(政府)　│　B端(企业)　│　C端(公众)　│　R端(科研)　│　A端(智能体)</span><br>
     <span style="color:#475569">├─ 平台层（能力复用中枢）──────────────────────────────────────────┤</span><br>
     <span style="color:#10b981">　因果推演 │ 知识中枢 │ 案例推理 │ 实时计算 │ 隐私计算</span><br>
-    <span style="color:#475569">├─ 基础层 ── GLake 数据底座 ─────────────────────────────────────┤</span><br>
-    <span style="color:#94a3b8">　存算分离湖 │ Catalog管理 │ 多源接入(CSV/PDF/DB/API)</span><br>
-    <span style="color:#94a3b8">　DuckDB计算 │ 定时调度 │ 分块上传</span><br>
+    <span style="color:#475569">├─ 基础层 ── 统一数据底座 ───────────────────────────────────────┤</span><br>
+    <span style="color:#94a3b8">　存算分离湖 │ 多源接入(CSV/PDF/DB/API) │ 定时调度</span><br>
+    <span style="color:#94a3b8">　DuckDB计算 │ Catalog管理 │ 分块上传</span><br>
     <span style="color:#f59e0b">└───────────────────────────────────────────────────────────────┘</span>
   </div>
   <div class="g3">
-    <div class="card"><h4 style="color:#06b6d4">基础层 · GLake</h4><p>统一存储、统一管、统一查。<br><b style="color:#e2e8f0">解决"数据能不能用"</b></p></div>
+    <div class="card"><h4 style="color:#06b6d4">基础层 · 数据底座</h4><p>统一存储、统一管、统一查。<br><b style="color:#e2e8f0">解决"数据能不能用"</b></p></div>
     <div class="card"><h4 style="color:#10b981">平台层 · 引擎</h4><p>能力抽象为可复用服务。<br><b style="color:#e2e8f0">解决"能力能否复用"</b></p></div>
     <div class="card"><h4 style="color:#f59e0b">应用层 · 五端</h4><p>面向不同角色的场景落地。<br><b style="color:#e2e8f0">解决"给谁用"</b></p></div>
   </div>
 </div>`);
 
-// === Slide 4: GLake Data Foundation ===
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>GLake 数据底座</h2>
-  <p class="lead mb1">不是"又一个数据湖"，而是政策大脑的数据操作系统</p>
-  <div class="g4 mb1">
-    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F4E5; 多源接入</h4><p>CSV/Excel/PDF/DB/API → Parquet</p></div>
-    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F9F0; Catalog</h4><p>路径映射·权限·Schema</p></div>
-    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F504; 存算分离</h4><p>MinIO / OSS 零代码切换</p></div>
-    <div class="card tc"><h4 style="font-size:0.95rem">&#x23F0; 定时调度</h4><p>cron 表达式自动更新</p></div>
-  </div>
-  <p style="font-size:clamp(0.95rem,1.2vw,1.05rem);margin-bottom:0.8rem"><b style="color:#e2e8f0">已入库核心数据</b></p>
-  <div class="tw">
-    <table>
-      <tr><th>数据集</th><th>规模</th><th>覆盖</th><th>用途</th></tr>
-      <tr><td>zcdn_policy</td><td><b>129 万条</b></td><td>全国政策全文 2007-2026</td><td>政策知识库、出题</td></tr>
-      <tr><td>CPWS 裁判文书</td><td><b>1.2 亿条</b></td><td>全国案由/法条</td><td>案例推理、法官模拟</td></tr>
-      <tr><td>PolicyZhejiang</td><td><b>496 万条</b></td><td>1927-2026 全覆盖</td><td>法律法规检索</td></tr>
-      <tr><td>LinkedIn 全球数据</td><td><b>13亿+ 条</b></td><td>企业/人才/岗位/裁员</td><td>企业生态、B端应用</td></tr>
-      <tr><td>CHFS 家庭金融</td><td><b>5轮面板(2011-2019)</b></td><td>家庭问卷(x2,500+列)<br>个人问卷(x700+列)<br>主表(x54列,含收入/消费/资产/负债汇总)</td><td>&#x1F6A7; MinIO中，待注册GLake</td></tr>
-    </table>
-  </div>
-</div>`);
-
-// === Slide 5: De Jure / De Facto ===
+// === Slide 4: De Jure / De Facto ===
 slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
   <h2>核心创新：De Jure / De Facto 双本体</h2>
   <p class="lead mb1">不是把政策文本丢给 LLM，而是构建双层知识结构</p>
@@ -265,7 +242,7 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
       </div>
     </div>
   </div>
-  <div class="q" style="font-size:clamp(0.78rem,0.9vw,0.88rem);padding:0.5rem 1rem;margin:0"><strong>&#x1F4CC; 近期验证</strong>：基于 GLake 数据完成"考公模拟"和"法官模拟"两个方向的数据链路验证（已产出8道真实试题样本）</div>
+  <div class="q" style="font-size:clamp(0.78rem,0.9vw,0.88rem);padding:0.5rem 1rem;margin:0"><strong>&#x1F4CC; 近期验证</strong>：已完成"考公模拟"和"法官模拟"两个方向的数据链路验证（已产出8道真实试题样本）</div>
 </div>`);
 
 // === Slide 9: Tech Stack ===
@@ -299,7 +276,7 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     <div class="step" style="flex:1;min-width:140px;max-width:180px;border-color:rgba(16,185,129,0.4)">
       <div class="n gn" style="background:#10b981;color:#000">1</div>
       <h4 style="font-size:0.85rem">基石行动</h4>
-      <p style="font-size:0.75rem">政策全量数字化<br>GLake 数据湖建立</p>
+      <p style="font-size:0.75rem">政策全量数字化<br>数据湖建立</p>
       <p style="font-size:0.7rem;color:#10b981;margin-top:0.3rem">&#x2705; 已完成</p>
     </div>
     <div class="sa" style="color:#10b981;font-size:1.2rem;align-self:center">&rarr;</div>
@@ -339,47 +316,13 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     </div>
   </div>
   <div class="g3 mt1">
-    <div class="card tc"><h4 style="font-size:0.95rem;color:#10b981">&#x2705; 已完成</h4><p>GLake 部署 + 数据入库</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem;color:#10b981">&#x2705; 已完成</h4><p>数据底座部署 + 数据入库</p></div>
     <div class="card tc"><h4 style="font-size:0.95rem;color:#f59e0b">&#x1F504; 进行中</h4><p>应用场景验证</p></div>
     <div class="card tc"><h4 style="font-size:0.95rem;color:#475569">&#x1F6A7; 规划中</h4><p>图谱 + Agent + 实战</p></div>
   </div>
 </div>`);
 
-// === Slide 11: GLake vs Policy Brain ===
-slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>GLake 与政策大脑的关系</h2>
-  <p class="lead mb1">一条明确的界线——各司其职</p>
-  <div class="arch-box mb1 tc" style="font-size:clamp(1rem,1.4vw,1.2rem);padding:1.5rem">
-    <span style="color:#06b6d4;font-weight:700">GLake</span> <span style="color:#475569">= 数据基础设施</span><br>
-    <span style="color:#64748b">（回答"数据能不能用"）</span><br><br>
-    <span style="color:#475569;font-size:1.5rem">&downarrow;</span><br><br>
-    <span style="color:#f59e0b;font-weight:700">政策大脑</span> <span style="color:#475569">= AI 决策系统</span><br>
-    <span style="color:#64748b">（回答"数据怎么用"）</span>
-  </div>
-  <div class="g2">
-    <div class="card" style="border-color:rgba(6,182,212,0.3)">
-      <h4 style="color:#06b6d4">GLake 回答</h4>
-      <ul>
-        <li>数据在哪里？</li>
-        <li>怎么存？怎么查？</li>
-        <li>谁有权限？</li>
-        <li>怎么更新？</li>
-      </ul>
-    </div>
-    <div class="card" style="border-color:rgba(245,158,11,0.3)">
-      <h4 style="color:#f59e0b">政策大脑回答</h4>
-      <ul>
-        <li>政策之间有什么关联？</li>
-        <li>执行效果如何？</li>
-        <li>如果调整会怎样？</li>
-        <li>谁应该受益？</li>
-      </ul>
-    </div>
-  </div>
-  <div class="q mt1"><strong>一句话</strong>：GLake 是政策大脑的<b>数据底座</b>，政策大脑是 GLake 的<b>智能引擎</b>。</div>
-</div>`);
-
-// === Slide 12: Closing ===
+// === Slide 10: Closing ===
 slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
   <div style="max-width:900px">
     <p style="font-size:clamp(1.1rem,1.8vw,1.4rem);color:#64748b;margin-bottom:1.5rem">政策大脑不是"一个AI模型"，</p>
@@ -387,7 +330,7 @@ slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;a
       而是一个人机协同的<br>决策操作系统
     </p>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2rem">
-      <div class="card"><h4 style="color:#06b6d4;font-size:1rem">&#x1F4E6; GLake</h4><p>管好数据</p></div>
+      <div class="card"><h4 style="color:#06b6d4;font-size:1rem">&#x1F4E6; 数据底座</h4><p>管好数据</p></div>
       <div class="card"><h4 style="color:#a78bfa;font-size:1rem">&#x1F9E0; 双本体</h4><p>理解政策</p></div>
       <div class="card"><h4 style="color:#10b981;font-size:1rem">&#x1F30D; 五端应用</h4><p>服务社会</p></div>
     </div>
