@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>政策大脑 Policy Brain — 从数据到决策</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0a0e1a}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#e2e8f0}
+  .stage{width:100%;height:100vh;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:5vh 6vw;opacity:0;transform:scale(0.97);pointer-events:none;transition:opacity 0.45s ease,transform 0.45s ease;overflow-y:auto}
+  .slide.active{opacity:1;transform:scale(1);pointer-events:auto}
+  .slide:nth-child(even){background:#111827}
+  .slide:nth-child(odd){background:#0a0e1a}
+  .progress{position:fixed;bottom:0;left:0;height:3px;background:#f59e0b;z-index:100;transition:width 0.3s ease}
+  .sn{position:fixed;bottom:16px;right:24px;color:#475569;font-size:0.9rem;font-weight:600;z-index:100;font-variant-numeric:tabular-nums;user-select:none}
+  .na{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(30,41,59,0.8);border:1px solid #2d3a50;color:#94a3b8;font-size:1.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:100;transition:all 0.2s;backdrop-filter:blur(8px)}
+  .na:hover{background:rgba(245,158,11,0.2);color:#f59e0b;border-color:#f59e0b}
+  .na.pl{left:12px}.na.nx{right:12px}
+  .na:disabled{opacity:0;pointer-events:none}
+  .w{max-width:1100px;margin:0 auto;width:100%}
+  .w h1{font-size:clamp(2.4rem,5vw,3.8rem);font-weight:800;margin-bottom:1.2rem;line-height:1.2}
+  .w h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:1.2rem;padding-bottom:0.5rem;border-bottom:2px solid #f59e0b;display:inline-block}
+  .w h3{font-size:clamp(1.1rem,1.6vw,1.3rem);font-weight:600;margin-bottom:0.6rem;color:#f59e0b}
+  .w p{line-height:1.7;font-size:clamp(1rem,1.5vw,1.2rem);color:#cbd5e1}
+  .w .lead{font-size:clamp(1.1rem,1.8vw,1.35rem);color:#e2e8f0;line-height:1.8}
+  .ht{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;text-align:center;background:linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.2rem;line-height:1.1}
+  .hs{text-align:center;font-size:clamp(1rem,1.8vw,1.4rem);max-width:800px;margin:0 auto;color:#94a3b8;line-height:1.8}
+  .htg{display:inline-block;margin:1.2rem auto 0;padding:0.6rem 1.8rem;border:1px solid #06b6d4;border-radius:12px;background:rgba(6,182,212,0.08);color:#06b6d4;font-size:clamp(0.9rem,1.2vw,1.05rem);text-align:center}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem}.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem}
+  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:#1e293b;border:1px solid #2d3a50;border-radius:14px;padding:1.4rem}.card h4{color:#f59e0b;margin-bottom:0.4rem;font-size:clamp(0.95rem,1.2vw,1.05rem)}.card p{font-size:clamp(0.85rem,1.1vw,0.95rem);color:#94a3b8;line-height:1.5}
+  .pb{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:1rem 1.3rem}
+  .pb .l{color:#ef4444;font-weight:600;font-size:clamp(0.8rem,1vw,0.9rem);margin-bottom:0.3rem}
+  .pb p{font-size:clamp(0.85rem,1vw,0.95rem);color:#94a3b8}
+  .pg{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:1rem 1.3rem}
+  .pg .l{color:#10b981;font-weight:600;font-size:clamp(0.8rem,1vw,0.9rem);margin-bottom:0.3rem}
+  .pg p{font-size:clamp(0.85rem,1vw,0.95rem);color:#94a3b8}
+  .tag{display:inline-block;padding:0.15rem 0.5rem;border-radius:6px;font-size:clamp(0.72rem,0.9vw,0.82rem);font-weight:600}
+  .tg{background:rgba(245,158,11,0.15);color:#f59e0b}.tt{background:rgba(6,182,212,0.15);color:#06b6d4}.tgg{background:rgba(16,185,129,0.15);color:#10b981}
+  .tw{overflow-x:auto;margin:0.8rem 0}
+  table{width:100%;border-collapse:collapse;font-size:clamp(0.72rem,1vw,0.88rem)}
+  th,td{padding:0.5rem 0.6rem;text-align:left;border-bottom:1px solid #2d3a50}
+  th{background:#1e293b;color:#f59e0b;font-weight:600}
+  td{color:#94a3b8}td b{color:#e2e8f0}
+  .q{border-left:3px solid #f59e0b;padding:0.8rem 1.2rem;margin:0.8rem 0;background:rgba(245,158,11,0.05);border-radius:0 8px 8px 0;font-size:clamp(0.88rem,1.1vw,0.95rem);color:#94a3b8;line-height:1.6}
+  .q strong{color:#e2e8f0}
+  .mb1{margin-bottom:0.8rem}.mt1{margin-top:0.8rem}.tc{text-align:center}
+  ul{margin:0.4rem 0 0.4rem 1.5rem}li{line-height:1.6;color:#94a3b8;font-size:clamp(0.85rem,1.1vw,0.95rem)}
+  .bounce{animation:b2 2s infinite}@keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .arch-box{background:#0d1117;border-radius:12px;padding:1.2rem;border:1px solid #2d3a50;font-family:'SF Mono','Fira Code',monospace;font-size:clamp(0.78rem,1vw,0.9rem);line-height:1.6;overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="stage" id="app"></div>
+<div class="progress" id="progress"></div>
+<div class="sn" id="sn"></div>
+<button class="na pl" id="prev">&lsaquo;</button>
+<button class="na nx" id="next">&rsaquo;</button>
+
+<script>
+const slides = [];
+
+// === Slide 1: Cover ===
+slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+  <div class="ht">政策大脑</div>
+  <p class="hs" style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Policy Brain</p>
+  <p class="hs" style="margin-top:0.8rem">从数据到决策 —— 社会运作系统的数字孪生</p>
+  <div class="htg mt1">GLake 数据底座 + AI 决策操作系统</div>
+  <p style="margin-top:4vh;color:#475569;font-size:0.9rem">浙江省国家级实验室 · 2026</p>
+  <p style="margin-top:2vh;color:#475569;font-size:0.85rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 键开始</p>
+</div>`);
+
+// === Slide 2: Why ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>为什么需要政策大脑？</h2>
+  <p class="lead mb1">政策系统高度复杂，传统方法力不从心</p>
+  <div class="g2 mb1">
+    <div class="pb"><div class="l">复杂耦合</div><p>多部门、多层级、多主体交叉作用。一项产业政策涉及发改、工信、税务、环保、市监等 5+ 部门协调。</p></div>
+    <div class="pb"><div class="l">事后分析</div><p>传统政策评估以复盘为主——"政策出了三年才知道效果"。缺乏事前推演能力，无法回答"如果调整会怎样"。</p></div>
+    <div class="pb"><div class="l">数据孤岛</div><p>政策数据散落在数据库、PDF、Excel 里。打通成本极高，跨部门协作基本靠"要数据"。</p></div>
+    <div class="pb"><div class="l">政策打架</div><p>新政策与上位法/兄弟部门政策的条款冲突（"政策打架"）全靠人工审查，漏查风险高。</p></div>
+  </div>
+  <div class="q"><strong>核心命题</strong>：从"搜索引擎"进化为<b>可计算、可推演、可预测</b>的决策操作系统。</div>
+</div>`);
+
+// === Slide 3: Architecture ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>整体架构</h2>
+  <p class="lead mb1">三层架构 + 五位一体</p>
+  <div class="arch-box mb1">
+    <span style="color:#f59e0b">┌─ 应用层（五位一体）─────────────────────────────────────────────┐</span><br>
+    <span style="color:#06b6d4">　G端(政府)　│　B端(企业)　│　C端(公众)　│　R端(科研)　│　A端(智能体)</span><br>
+    <span style="color:#475569">├─ 平台层（能力复用中枢）──────────────────────────────────────────┤</span><br>
+    <span style="color:#10b981">　因果推演 │ 知识中枢 │ 案例推理 │ 实时计算 │ 隐私计算</span><br>
+    <span style="color:#475569">├─ 基础层 ── GLake 数据底座 ─────────────────────────────────────┤</span><br>
+    <span style="color:#94a3b8">　存算分离湖 │ Catalog管理 │ 多源接入(CSV/PDF/DB/API)</span><br>
+    <span style="color:#94a3b8">　DuckDB计算 │ 定时调度 │ 分块上传</span><br>
+    <span style="color:#f59e0b">└───────────────────────────────────────────────────────────────┘</span>
+  </div>
+  <div class="g3">
+    <div class="card"><h4 style="color:#06b6d4">基础层 · GLake</h4><p>统一存储、统一管、统一查。<br><b style="color:#e2e8f0">解决"数据能不能用"</b></p></div>
+    <div class="card"><h4 style="color:#10b981">平台层 · 引擎</h4><p>能力抽象为可复用服务。<br><b style="color:#e2e8f0">解决"能力能否复用"</b></p></div>
+    <div class="card"><h4 style="color:#f59e0b">应用层 · 五端</h4><p>面向不同角色的场景落地。<br><b style="color:#e2e8f0">解决"给谁用"</b></p></div>
+  </div>
+</div>`);
+
+// === Slide 4: GLake Data Foundation ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>GLake 数据底座</h2>
+  <p class="lead mb1">不是"又一个数据湖"，而是政策大脑的数据操作系统</p>
+  <div class="g4 mb1">
+    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F4E5; 多源接入</h4><p>CSV/Excel/PDF/DB/API → Parquet</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F9F0; Catalog</h4><p>路径映射·权限·Schema</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem">&#x1F504; 存算分离</h4><p>MinIO / OSS 零代码切换</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem">&#x23F0; 定时调度</h4><p>cron 表达式自动更新</p></div>
+  </div>
+  <p style="font-size:clamp(0.95rem,1.2vw,1.05rem);margin-bottom:0.8rem"><b style="color:#e2e8f0">已入库核心数据</b></p>
+  <div class="tw">
+    <table>
+      <tr><th>数据集</th><th>规模</th><th>覆盖</th><th>用途</th></tr>
+      <tr><td>zcdn_policy</td><td><b>129 万条</b></td><td>全国政策全文 2007-2026</td><td>政策知识库、出题</td></tr>
+      <tr><td>CPWS 裁判文书</td><td><b>1.2 亿条</b></td><td>全国案由/法条</td><td>案例推理、法官模拟</td></tr>
+      <tr><td>PolicyZhejiang</td><td><b>496 万条</b></td><td>1927-2026 全覆盖</td><td>法律法规检索</td></tr>
+      <tr><td>企业基础信息</td><td><b>2,469 万条</b></td><td>企业画像</td><td>B端应用、De Facto</td></tr>
+    </table>
+  </div>
+</div>`);
+
+// === Slide 5: De Jure / De Facto ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>核心创新：De Jure / De Facto 双本体</h2>
+  <p class="lead mb1">不是把政策文本丢给 LLM，而是构建双层知识结构</p>
+  <div class="g2 mb1">
+    <div class="card" style="border-color:rgba(6,182,212,0.4);border-width:2px">
+      <h4 style="color:#06b6d4">De Jure · 纸面规则（TBox）</h4>
+      <p style="margin-bottom:0.6rem">将政策文本拆解为 <b>条件-主体-客体-责任</b> 的逻辑网络</p>
+      <div style="background:#0d1117;padding:0.8rem;border-radius:8px;font-size:clamp(0.75rem,0.9vw,0.85rem);line-height:1.5">
+        <span style="color:#06b6d4">高新企业认定</span> → <span style="color:#f59e0b">条件</span>(研发占比&gt;3%)<br>
+        → <span style="color:#10b981">主体</span>(企业) → <span style="color:#f59e0b">客体</span>(税收优惠)<br>
+        → <span style="color:#ef4444">责任</span>(每年申报复核)
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(16,185,129,0.4);border-width:2px">
+      <h4 style="color:#10b981">De Facto · 事实执行（ABox）</h4>
+      <p style="margin-bottom:0.6rem">工商、税务、司法等实时事实数据的<b>微观实体网络</b></p>
+      <div style="background:#0d1117;padding:0.8rem;border-radius:8px;font-size:clamp(0.75rem,0.9vw,0.85rem);line-height:1.5">
+        <span style="color:#10b981">A企业</span>（注册信息）<br>
+        &nbsp;&nbsp;→ 纳税记录 <span style="color:#64748b">(年缴500万)</span><br>
+        &nbsp;&nbsp;→ 涉诉情况 <span style="color:#64748b">(0起)</span><br>
+        &nbsp;&nbsp;→ 员工人数 <span style="color:#64748b">(1,200人)</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:clamp(0.95rem,1.2vw,1.05rem);margin-bottom:0.5rem"><b style="color:#e2e8f0">两层融合</b> — 通过三类边物理映射</p>
+  <div class="g3">
+    <div class="card tc" style="border-color:rgba(16,185,129,0.3);padding:0.8rem"><span class="tgg">受益边</span><p style="font-size:clamp(0.78rem,0.9vw,0.88rem)">企业符合条件 → 实际获得补贴</p></div>
+    <div class="card tc" style="border-color:rgba(6,182,212,0.3);padding:0.8rem"><span class="tt">合规边</span><p style="font-size:clamp(0.78rem,0.9vw,0.88rem)">守法记录 → 政策要求满足</p></div>
+    <div class="card tc" style="border-color:rgba(239,68,68,0.3);padding:0.8rem"><span class="tag" style="background:rgba(239,68,68,0.15);color:#ef4444">违规边</span><p style="font-size:clamp(0.78rem,0.9vw,0.88rem)">环保处罚 → 政策红线被触发</p></div>
+  </div>
+</div>`);
+
+// === Slide 6: Palantir × EvenUp Benchmarking ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>国际对标：Palantir × EvenUp</h2>
+  <p class="lead mb1">全球范围内，政策/法律数据驱动的决策系统有两条成功路径</p>
+  <div class="g3 mb1">
+    <div class="card" style="border-color:rgba(251,191,36,0.4)">
+      <h4 style="color:#fbbf24">&#x1F3F4; Palantir</h4>
+      <p><b>启示</b>：Ontology + Workflow + Human-in-the-loop 工程化整合<br><br>
+      <b>局限</b>：以静态分析为主，<b style="color:#ef4444">缺乏社会行为演化模拟能力</b></p>
+    </div>
+    <div class="card" style="border-color:rgba(147,51,234,0.4)">
+      <h4 style="color:#a78bfa">&#x2696;&#xFE0F; EvenUp</h4>
+      <p><b>启示</b>：从"信息检索"转向<b>"价值挖掘"</b>——不做查询做测算<br><br>
+      <b>护城河</b>：最珍贵的数据不是法律条文，而是执行结果（反馈闭环）</p>
+    </div>
+    <div class="card" style="border-color:rgba(6,182,212,0.4)">
+      <h4 style="color:#06b6d4">&#x1F9E0; 政策大脑</h4>
+      <p><b>差异化</b>：De Jure/De Facto 双本体 + <b>LLM+Agent 社会模拟</b><br><br>
+      <b>兼具</b>：Palantir 的工程化 + EvenUp 的价值挖掘</p>
+    </div>
+  </div>
+  <div class="tw">
+    <table>
+      <tr><th>维度</th><th>Palantir</th><th>EvenUp</th><th>政策大脑</th></tr>
+      <tr><td>领域</td><td>政府情报</td><td>法律赔偿</td><td><b>公共政策治理</b></td></tr>
+      <tr><td>核心能力</td><td>本体+图谱</td><td>判例推理</td><td><b>双本体+社会模拟</b></td></tr>
+      <tr><td>AI 深度</td><td>规则为主</td><td>LLM 推理</td><td><b>LLM+Agent 多智能体</b></td></tr>
+      <tr><td>社会模拟</td><td>&#x274C;</td><td>&#x274C;</td><td><b>&#x2705; ABM 仿真</b></td></tr>
+    </table>
+  </div>
+</div>`);
+
+// === Slide 7: Platform Engines ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>平台级能力引擎</h2>
+  <p class="lead mb1">"一次构建，五端调用"</p>
+  <div class="g3 mb1">
+    <div class="card"><h4>&#x1F52E; 因果推演引擎</h4><p>混合因果发现(PC+NOTEARS) + 反事实推理 + 帕累托多目标权衡<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ G端预评估、R端偏离度归因</span></p></div>
+    <div class="card"><h4>&#x1F4DA; 政策知识中枢</h4><p>De Jure/De Facto 双本体对齐、Legal-BERT 语义对齐、版本溯源<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ G端冲突检测、B端合规匹配</span></p></div>
+    <div class="card"><h4>&#x1F9E9; 案例推理引擎</h4><p>基于历史判例与行为数据的 AI 决策预测<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ 司法风险判断、维权参谋</span></p></div>
+    <div class="card"><h4>&#x26A1; 实时流计算</h4><p>Flink+Kafka 架构，PolicyEvent 标准事件模型，三级预警路由<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ 执行监控、风险预警</span></p></div>
+    <div class="card"><h4>&#x1F510; 隐私计算</h4><p>联邦学习 + 差分隐私 + MPC 分布式子图匹配<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ 跨部门协作、满足数据安全法</span></p></div>
+    <div class="card"><h4>&#x1F501; 效果反馈闭环</h4><p>DID + 合成控制法净效应归因，策略灰度发布<br><span style="color:#64748b;font-size:clamp(0.75rem,0.9vw,0.82rem)">→ 政策迭代、红利获取优化</span></p></div>
+  </div>
+</div>`);
+
+// === Slide 8: Five-Side Applications ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>五端应用全景</h2>
+  <p class="lead mb1">"给谁用、解决什么问题"</p>
+  <div class="tw mb1">
+    <table>
+      <tr><th style="width:14%">端</th><th style="width:30%">核心问题</th><th>典型场景</th></tr>
+      <tr>
+        <td><span class="tg">G端</span></td>
+        <td>从"经验决策"到<b>"计算决策"</b></td>
+        <td>政策仿真沙箱、冲突检测雷达、穿透式执行督查、自由裁量权热力图</td>
+      </tr>
+      <tr>
+        <td><span class="tt">B端</span></td>
+        <td>从"被动合规"到<b>"红利挖掘"</b></td>
+        <td>智能合规官、政策红利匹配、司法胜率预测、供应链合规阻断</td>
+      </tr>
+      <tr>
+        <td><span class="tgg">C端</span></td>
+        <td>从"人找政策"到<b>"政策找人"</b></td>
+        <td>民生计算器、办事资格预审、智能维权参谋、反向行动路径规划</td>
+      </tr>
+      <tr>
+        <td><span class="tag" style="background:rgba(147,51,234,0.15);color:#a78bfa">R端</span></td>
+        <td>社会科学的<b>"数字基座"</b></td>
+        <td>法治指数实验室、算法公平性评估沙盒、政策溯源图谱</td>
+      </tr>
+      <tr>
+        <td><span class="tag" style="background:rgba(251,146,60,0.15);color:#fb923c">A端</span></td>
+        <td>从"调用接口"到<b>"合规大脑"</b></td>
+        <td>Agent 法律卫士、知识即代码、自动申报 Agent 托管、智能体博弈仿真</td>
+      </tr>
+    </table>
+  </div>
+  <div class="q"><strong>近期进展</strong>：基于 GLake 数据完成"考公模拟"和"法官模拟"两个方向的验证，已产出 <b>8 道真实试题样本</b>，验证了从数据到题目的全链路可行性。</div>
+</div>`);
+
+// === Slide 9: Tech Stack ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>核心技术栈</h2>
+  <div class="tw">
+    <table>
+      <tr><th>层级</th><th>组件</th><th>选型</th></tr>
+      <tr><td rowspan="3" style="border-bottom:1px solid #2d3a50"><b style="color:#06b6d4">数据湖</b></td><td>存储</td><td>MinIO / 阿里云 OSS</td></tr>
+      <tr><td>计算</td><td>DuckDB + DuckLake ACID</td></tr>
+      <tr><td>Catalog</td><td>PostgreSQL（可迁移至 OceanBase）</td></tr>
+      <tr><td rowspan="4" style="border-bottom:1px solid #2d3a50"><b style="color:#a78bfa">知识层</b></td><td>本体建模</td><td>Prot&eacute;g&eacute; (OWL)</td></tr>
+      <tr><td>图数据库</td><td>Neo4j / NebulaGraph</td></tr>
+      <tr><td>图计算</td><td>GraphScope 分布式内存引擎</td></tr>
+      <tr><td>RDF 存储</td><td>Apache Jena / Virtuoso</td></tr>
+      <tr><td rowspan="4"><b style="color:#10b981">AI 层</b></td><td>LLM</td><td>DeepSeek V3 / Gemini 3 Flash</td></tr>
+      <tr><td>Agent 编排</td><td>LangGraph</td></tr>
+      <tr><td>RAG</td><td>LlamaIndex + Graph RAG</td></tr>
+      <tr><td>Embedding</td><td>BGE-M3 / Legal-BERT</td></tr>
+      <tr><td><b style="color:#fb923c">实时</b></td><td>流计算</td><td>Flink + Kafka</td></tr>
+      <tr><td><b style="color:#fbbf24">向量</b></td><td>向量库</td><td>Milvus / PGVector</td></tr>
+    </table>
+  </div>
+</div>`);
+
+// === Slide 10: Roadmap ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>实施路线图</h2>
+  <p class="lead mb1">V 字模型从数据基座到实战演练</p>
+  <div class="steps mb1" style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center">
+    <div class="step" style="flex:1;min-width:140px;max-width:180px;border-color:rgba(16,185,129,0.4)">
+      <div class="n gn" style="background:#10b981;color:#000">1</div>
+      <h4 style="font-size:0.85rem">基石行动</h4>
+      <p style="font-size:0.75rem">政策全量数字化<br>GLake 数据湖建立</p>
+      <p style="font-size:0.7rem;color:#10b981;margin-top:0.3rem">&#x2705; 已完成</p>
+    </div>
+    <div class="sa" style="color:#10b981;font-size:1.2rem;align-self:center">&rarr;</div>
+    <div class="step" style="flex:1;min-width:140px;max-width:180px;border-color:rgba(16,185,129,0.4)">
+      <div class="n gn" style="background:#10b981;color:#000">2</div>
+      <h4 style="font-size:0.85rem">数据入库</h4>
+      <p style="font-size:0.75rem">三大数据源<br>全部入库</p>
+      <p style="font-size:0.7rem;color:#10b981;margin-top:0.3rem">&#x2705; 已就绪</p>
+    </div>
+    <div class="sa" style="color:#f59e0b;font-size:1.2rem;align-self:center">&rarr;</div>
+    <div class="step" style="flex:1;min-width:140px;max-width:180px;border-color:rgba(245,158,11,0.4)">
+      <div class="n g" style="background:#f59e0b;color:#000">3</div>
+      <h4 style="font-size:0.85rem">应用验证</h4>
+      <p style="font-size:0.75rem">考公/法官模拟<br>数据链路打通</p>
+      <p style="font-size:0.7rem;color:#f59e0b;margin-top:0.3rem">&#x1F504; 进行中</p>
+    </div>
+    <div class="sa" style="color:#475569;font-size:1.2rem;align-self:center">&rarr;</div>
+    <div class="step" style="flex:1;min-width:140px;max-width:180px">
+      <div class="n" style="background:#475569;color:#94a3b8">4</div>
+      <h4 style="font-size:0.85rem">织网行动</h4>
+      <p style="font-size:0.75rem">De Jure 图谱<br>三元组抽取</p>
+      <p style="font-size:0.7rem;color:#475569">&#x1F6A7; 规划中</p>
+    </div>
+    <div class="sa" style="color:#475569;font-size:1.2rem;align-self:center">&rarr;</div>
+    <div class="step" style="flex:1;min-width:140px;max-width:180px">
+      <div class="n" style="background:#475569;color:#94a3b8">5</div>
+      <h4 style="font-size:0.85rem">大脑进阶</h4>
+      <p style="font-size:0.75rem">Agent编排<br>推演沙箱</p>
+      <p style="font-size:0.7rem;color:#475569">&#x1F6A7; 规划中</p>
+    </div>
+    <div class="sa" style="color:#475569;font-size:1.2rem;align-self:center">&rarr;</div>
+    <div class="step" style="flex:1;min-width:140px;max-width:180px">
+      <div class="n" style="background:#475569;color:#94a3b8">6</div>
+      <h4 style="font-size:0.85rem">实战演练</h4>
+      <p style="font-size:0.75rem">接入政务平台<br>全省试点</p>
+      <p style="font-size:0.7rem;color:#475569">&#x1F6A7; 远期</p>
+    </div>
+  </div>
+  <div class="g3 mt1">
+    <div class="card tc"><h4 style="font-size:0.95rem;color:#10b981">&#x2705; 已完成</h4><p>GLake 部署 + 数据入库</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem;color:#f59e0b">&#x1F504; 进行中</h4><p>应用场景验证</p></div>
+    <div class="card tc"><h4 style="font-size:0.95rem;color:#475569">&#x1F6A7; 规划中</h4><p>图谱 + Agent + 实战</p></div>
+  </div>
+</div>`);
+
+// === Slide 11: GLake vs Policy Brain ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>GLake 与政策大脑的关系</h2>
+  <p class="lead mb1">一条明确的界线——各司其职</p>
+  <div class="arch-box mb1 tc" style="font-size:clamp(1rem,1.4vw,1.2rem);padding:1.5rem">
+    <span style="color:#06b6d4;font-weight:700">GLake</span> <span style="color:#475569">= 数据基础设施</span><br>
+    <span style="color:#64748b">（回答"数据能不能用"）</span><br><br>
+    <span style="color:#475569;font-size:1.5rem">&downarrow;</span><br><br>
+    <span style="color:#f59e0b;font-weight:700">政策大脑</span> <span style="color:#475569">= AI 决策系统</span><br>
+    <span style="color:#64748b">（回答"数据怎么用"）</span>
+  </div>
+  <div class="g2">
+    <div class="card" style="border-color:rgba(6,182,212,0.3)">
+      <h4 style="color:#06b6d4">GLake 回答</h4>
+      <ul>
+        <li>数据在哪里？</li>
+        <li>怎么存？怎么查？</li>
+        <li>谁有权限？</li>
+        <li>怎么更新？</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:rgba(245,158,11,0.3)">
+      <h4 style="color:#f59e0b">政策大脑回答</h4>
+      <ul>
+        <li>政策之间有什么关联？</li>
+        <li>执行效果如何？</li>
+        <li>如果调整会怎样？</li>
+        <li>谁应该受益？</li>
+      </ul>
+    </div>
+  </div>
+  <div class="q mt1"><strong>一句话</strong>：GLake 是政策大脑的<b>数据底座</b>，政策大脑是 GLake 的<b>智能引擎</b>。</div>
+</div>`);
+
+// === Slide 12: Closing ===
+slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+  <div style="max-width:900px">
+    <p style="font-size:clamp(1.1rem,1.8vw,1.4rem);color:#64748b;margin-bottom:1.5rem">政策大脑不是"一个AI模型"，</p>
+    <p style="font-size:clamp(1.6rem,3vw,2.5rem);font-weight:800;background:linear-gradient(135deg,#06b6d4,#f59e0b,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:2rem;line-height:1.3">
+      而是一个人机协同的<br>决策操作系统
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2rem">
+      <div class="card"><h4 style="color:#06b6d4;font-size:1rem">&#x1F4E6; GLake</h4><p>管好数据</p></div>
+      <div class="card"><h4 style="color:#a78bfa;font-size:1rem">&#x1F9E0; 双本体</h4><p>理解政策</p></div>
+      <div class="card"><h4 style="color:#10b981;font-size:1rem">&#x1F30D; 五端应用</h4><p>服务社会</p></div>
+    </div>
+    <div class="q" style="border-left-color:#06b6d4;max-width:700px;margin:0 auto">
+      从"搜索引擎"到"数字孪生"，这是治理范式的一次跃迁。<br><br>
+      不仅是为"数字政府"打样，更是为全球公共治理贡献<b>"中国方案"</b>和<b>"浙江智慧"</b>。
+    </div>
+  </div>
+</div>`);
+
+
+// === Engine ===
+let cur = 0;
+const app = document.getElementById('app');
+const pg = document.getElementById('progress');
+const sn = document.getElementById('sn');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+
+function render() {
+  app.innerHTML = slides.map((fn, i) => `<div class="slide ${i === cur ? 'active' : ''}">${fn()}</div>`).join('');
+  pg.style.width = `${((cur + 1) / slides.length) * 100}%`;
+  sn.textContent = `${cur + 1} / ${slides.length}`;
+  prev.disabled = cur === 0;
+  next.disabled = cur === slides.length - 1;
+}
+function go(n) { if (n < 0 || n >= slides.length) return; cur = n; render(); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(cur - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+});
+prev.addEventListener('click', () => go(cur - 1));
+next.addEventListener('click', () => go(cur + 1));
+let wt;
+app.addEventListener('wheel', e => { clearTimeout(wt); wt = setTimeout(() => { if (e.deltaY > 0) go(cur + 1); else go(cur - 1); }, 200); }, { passive: true });
+let ty = 0;
+app.addEventListener('touchstart', e => { ty = e.touches[0].clientY; });
+app.addEventListener('touchend', e => { const d = ty - e.changedTouches[0].clientY; if (Math.abs(d) > 50) { if (d > 0) go(cur + 1); else go(cur - 1); } });
+render();
+</script>
+</body>
+</html>
