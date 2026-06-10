@@ -5,133 +5,164 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GLake — 1 页速览</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; background: #0a0e1a; overflow: hidden; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #e2e8f0; display: flex; align-items: center; justify-content: center; }
-  .page { width: 100vw; height: 100vh; padding: 3vh 4vw; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+  * { margin:0; padding:0; box-sizing:border-box }
+  html,body { width:100%; height:100%; background:#0a0e1a; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; color:#e2e8f0 }
+  .page { width:100vw; height:100vh; padding:2.2vh 3vw; display:flex; flex-direction:column; overflow:hidden }
 
-  /* Header */
-  .hdr { display: flex; align-items: center; gap: 0.8rem; }
-  .logo { font-size: clamp(2rem,3.5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .tagline { color: #64748b; font-size: clamp(0.85rem,1.1vw,1rem); border-left: 2px solid #2d3a50; padding-left: 0.8rem; }
+  /* ── Top bar ── */
+  .top { display:flex; align-items:center; gap:0.6rem; padding-bottom:1.2vh }
+  .glake-badge { font-size:clamp(1.6rem,2.8vw,2.4rem); font-weight:900;
+    background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    letter-spacing:-0.02em }
+  .subtitle { color:#64748b; font-size:clamp(0.7rem,0.9vw,0.82rem); border-left:2px solid #2d3a50; padding-left:0.7rem; line-height:1.3 }
 
-  /* Grid layout: problem | solution | impact */
-  .main { flex: 1; display: grid; grid-template-columns: 1fr 1.7fr 1fr; gap: 1.2rem; align-items: stretch; min-height: 0; }
-  @media(max-width:800px){ .main { grid-template-columns: 1fr; overflow-y: auto; } }
+  /* ── Main grid ── */
+  .body { flex:1; display:grid; grid-template-columns:0.9fr 1.1fr 1fr; gap:0.8rem; min-height:0 }
+  @media(max-width:800px){ .body { grid-template-columns:1fr; overflow-y:auto } }
 
-  .col { display: flex; flex-direction: column; gap: 0.6rem; }
-  .col-hdr { font-size: clamp(0.7rem,0.85vw,0.78rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
+  .col { display:flex; flex-direction:column; gap:0.5rem }
 
-  /* Cards */
-  .c { background: #1e293b; border: 1px solid #2d3a50; border-radius: 10px; padding: 0.9rem; }
-  .c h4 { font-size: clamp(0.85rem,1.1vw,0.95rem); font-weight: 600; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.4rem; }
-  .c p, .c li { font-size: clamp(0.72rem,0.9vw,0.82rem); color: #94a3b8; line-height: 1.5; }
-  .c ul { list-style: none; padding: 0; }
-  .c li { padding: 0.15rem 0; padding-left: 1rem; position: relative; }
-  .c li::before { content: "›"; position: absolute; left: 0.2rem; color: #f59e0b; font-weight: 700; }
+  .sectitle { font-size:clamp(0.6rem,0.7vw,0.65rem); font-weight:700; text-transform:uppercase;
+    letter-spacing:0.1em; color:#475569; padding-bottom:0.15rem; border-bottom:1px solid #1e293b }
 
-  .pb { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
-  .pg { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
-  .pc { border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.05); }
-  .py { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
+  /* ── Cards ── */
+  .card { background:#111827; border:1px solid #1e293b; border-radius:10px; padding:0.7rem 0.8rem }
+  .card p, .card li { font-size:clamp(0.7rem,0.82vw,0.78rem); color:#94a3b8; line-height:1.55 }
+  .card ul { list-style:none; padding:0; margin:0 }
+  .card li { padding:0.08rem 0; padding-left:1rem; position:relative }
+  .card li::before { content:"·"; position:absolute; left:0.25rem; color:#f59e0b; font-weight:700; font-size:1.2rem; line-height:1.4 }
 
-  /* Metrics row */
-  .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
-  .m { text-align: center; background: #111827; border-radius: 8px; padding: 0.5rem 0.3rem; }
-  .m .v { font-size: clamp(1.1rem,1.8vw,1.5rem); font-weight: 800; line-height: 1.1; }
-  .m .l { font-size: clamp(0.6rem,0.75vw,0.7rem); color: #64748b; }
+  .accent-red { border-color:rgba(239,68,68,0.25); background:rgba(239,68,68,0.04) }
+  .accent-green { border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.05) }
+  .accent-cyan { border-color:rgba(6,182,212,0.25); background:rgba(6,182,212,0.04) }
+  .accent-amber { border-color:rgba(245,158,11,0.25); background:rgba(245,158,11,0.05) }
+  .accent-purple { border-color:rgba(139,92,246,0.25); background:rgba(139,92,246,0.04) }
 
-  /* Footer */
-  .ftr { text-align: center; padding: 1vh 0 0; }
-  .ftr p { font-size: clamp(0.7rem,0.85vw,0.78rem); color: #475569; }
-  .ftr em { color: #f59e0b; font-style: normal; }
+  .label-sm { font-size:clamp(0.6rem,0.7vw,0.65rem); font-weight:600; margin-bottom:0.15rem; display:flex; align-items:center; gap:0.3rem }
+  .warn { color:#ef4444 } .ok { color:#10b981 } .info { color:#06b6d4 } .gold { color:#f59e0b }
 
-  .num { color: #06b6d4; font-weight: 700; }
-  .hl { color: #f59e0b; }
-  .tag { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: clamp(0.62rem,0.75vw,0.7rem); font-weight: 600; margin: 0.05rem; }
-  .tg { background: rgba(245,158,11,0.15); color: #f59e0b; }
-  .tt { background: rgba(6,182,212,0.15); color: #06b6d4; }
-  .tgg { background: rgba(16,185,129,0.15); color: #10b981; }
+  /* ── Hero number row ── */
+  .hero { display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:0.35rem }
+  .hero-item { text-align:center; background:#0d1117; border-radius:8px; padding:0.35rem 0.2rem; border:1px solid #1e293b }
+  .hero-val { font-size:clamp(1rem,1.6vw,1.4rem); font-weight:800; line-height:1.1 }
+  .hero-lbl { font-size:clamp(0.55rem,0.65vw,0.6rem); color:#64748b; margin-top:0.05rem }
+
+  /* ── Highlight box ── */
+  .spotlight { background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02));
+    border:1px solid #f59e0b; border-radius:10px; padding:0.6rem 0.8rem; text-align:center;
+    flex:1; display:flex; flex-direction:column; justify-content:center }
+  .spotlight p { font-size:clamp(0.7rem,0.82vw,0.78rem); color:#cbd5e1; line-height:1.5 }
+  .spotlight strong { color:#f59e0b }
+
+  .bounce { animation:b2 2s infinite } @keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+  .tag { display:inline-block; padding:0.05rem 0.35rem; border-radius:3px; font-size:clamp(0.55rem,0.65vw,0.6rem); font-weight:600; margin:0.03rem }
+  .t1 { background:rgba(245,158,11,0.15); color:#f59e0b }
+  .t2 { background:rgba(6,182,212,0.15); color:#06b6d4 }
+  .t3 { background:rgba(16,185,129,0.15); color:#10b981 }
+
+  /* ── Bottom ── */
+  .footer { text-align:center; padding:0.5vh 0 0 }
+  .footer p { font-size:clamp(0.6rem,0.7vw,0.65rem); color:#334155 }
+  .footer span { color:#f59e0b }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="hdr">
-    <div class="logo">GLake</div>
-    <div class="tagline">轻量级 AI 原生数据湖基础设施</div>
+
+  <div class="top">
+    <div class="glake-badge">GLake</div>
+    <div class="subtitle">数据太多太散？一个平台统一管理<br>政策 · 司法 · 法规 · 人才 · 家调</div>
   </div>
 
-  <div class="main">
-    <!-- Left: Problem -->
+  <div class="body">
+
+    <!-- ─── LEFT: 痛点 ─── -->
     <div class="col">
-      <div class="col-hdr">AI 时代数据困局</div>
-      <div class="c pb">
-        <h4>⚠️ 数据散落在哪？</h4>
-        <ul>
-          <li>CSV / PDF / API 散落各处</li>
-          <li>人肉记忆"数据在哪"</li>
-          <li>导数据脚本一次性的</li>
-          <li>非结构化文件无人管理</li>
-          <li>权限管不住 / 迁移要命</li>
-        </ul>
+      <div class="sectitle">🤔 做研究时，您是不是也有这些困扰？</div>
+
+      <div class="card accent-red">
+        <div class="label-sm warn">😵 数据在哪靠人脑记</div>
+        <p>CSV 在U盘、PDF 在微信、数据表在服务器……每次找数据，先问一圈同事。</p>
       </div>
-      <div class="c" style="flex:1;border-color:#2d3a50">
-        <h4>核心追问</h4>
-        <p style="font-size:clamp(0.78rem,1vw,0.9rem);color:#cbd5e1;line-height:1.6">
-          <em style="color:#f59e0b">"新能源汽车补贴政策，对整个产业链的影响有多大？"</em><br><br>
-          每个团队都面临同样的困境：<br>
-          有数据，但管不住、查不到、没法复用。
+
+      <div class="card accent-red">
+        <div class="label-sm warn">😤 导数据像做苦力</div>
+        <p>好不容易找到，还得写脚本导格式、手动上传、记笔记。<br><b>下次再找？</b>笔记又不知道丢哪了。</p>
+      </div>
+
+      <div class="card accent-red">
+        <div class="label-sm warn">😰 权限管不住，迁移更头疼</div>
+        <p>给合作方看数据，要么给全部权限，要么单独复制一份。换个服务器，所有路径重新改。</p>
+      </div>
+
+      <div class="card accent-amber" style="flex:1">
+        <p style="color:#cbd5e1;text-align:center;font-size:clamp(0.72rem,0.85vw,0.8rem)">
+          <b class="gold">说到底</b>——<br>
+          <span style="color:#64748b">有数据，但管不住、查不到、没法复用。</span><br>
+          <span style="color:#f59e0b;font-size:1.1rem">👇</span>
         </p>
       </div>
     </div>
 
-    <!-- Center: Solution -->
+    <!-- ─── CENTER: 方案 ─── -->
     <div class="col">
-      <div class="col-hdr">GLake 一站式方案</div>
-      <div class="c pg">
-        <h4>✅ 存储计算解耦</h4>
-        <p>逻辑路径 + 物理路径分离。切换 <span class="hl">MinIO → 阿里云 OSS</span> 改一个环境变量即可。<br>
-        计算在 Docker 沙箱隔离执行，不占管理节点资源。</p>
+      <div class="sectitle">✅ GLake——您专属的"数据管家"</div>
+
+      <div class="card accent-green" style="border-color:rgba(16,185,129,0.4)">
+        <div class="label-sm ok">📂 所有数据一个入口</div>
+        <p>政策文本、裁判文书、法律法规、LinkedIn全球人才数据、CHFS家庭金融调查——<br>
+        <b style="color:#e2e8f0">5大类数据统一管理</b>，打开 WebUI 像逛文件夹一样浏览。</p>
       </div>
-      <div class="c pc">
-        <h4>✅ AI 驱动的数据管道</h4>
-        <p>AI 按 YAML 模板 + <span class="hl">AI_INGESTION_GUIDE</span> 规范生成生产级导入脚本。<br>
-        CSV → Parquet / PDF 原样 / API 拉取 → 自动注册到 Catalog。</p>
+
+      <div class="card accent-green">
+        <div class="label-sm ok">🤖 AI 帮你导数据</div>
+        <p>告诉AI"把某某数据导进来"，AI 按规范模板自动生成导入脚本。<br>
+        <span style="color:#64748b">不用写代码，不用记步骤，</span><b style="color:#10b981">可复现、可传承</b>。</p>
       </div>
-      <div class="c py">
-        <h4>✅ 统一 Catalog 管理</h4>
-        <p>PostgreSQL 记录路径、标签（<span class="tag tg">新能源</span><span class="tag tt">补贴</span><span class="tag tgg">产业政策</span>）、README、权限。<br>
-        WebUI 浏览 + tags 搜索 + DuckDB 查询。</p>
+
+      <div class="card accent-green">
+        <div class="label-sm ok">🔐 权限精细到每条路径</div>
+        <p>每个合作方一个专属 Key，只看得到授权范围。<br>
+        <b style="color:#10b981">存储空间不够了？</b>改一个环境变量，本地 MinIO 秒切阿里云 OSS。</p>
       </div>
-      <div class="metrics" style="grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:0.35rem">
-        <div class="m"><div class="v" style="color:#f59e0b;font-size:clamp(0.9rem,1.4vw,1.2rem)">129万</div><div class="l">政策文本</div></div>
-        <div class="m"><div class="v" style="color:#06b6d4;font-size:clamp(0.9rem,1.4vw,1.2rem)">1.637亿</div><div class="l">裁判文书</div></div>
-        <div class="m"><div class="v" style="color:#10b981;font-size:clamp(0.9rem,1.4vw,1.2rem)">497万</div><div class="l">法律法规</div></div>
-        <div class="m"><div class="v" style="color:#8b5cf6;font-size:clamp(0.9rem,1.4vw,1.2rem)">187亿+</div><div class="l">LinkedIn人才</div></div>
-        <div class="m"><div class="v" style="color:#ec4899;font-size:clamp(0.9rem,1.4vw,1.2rem)">5轮</div><div class="l">CHFS家调</div></div>
+
+      <!-- ── five big numbers ── -->
+      <div class="hero" style="margin-top:auto">
+        <div class="hero-item"><div class="hero-val" style="color:#f59e0b">129万</div><div class="hero-lbl">📄 政策文件</div></div>
+        <div class="hero-item"><div class="hero-val" style="color:#06b6d4">1.637亿</div><div class="hero-lbl">⚖️ 裁判文书</div></div>
+        <div class="hero-item"><div class="hero-val" style="color:#10b981">497万</div><div class="hero-lbl">📜 法律法规</div></div>
+        <div class="hero-item"><div class="hero-val" style="color:#8b5cf6">187亿+</div><div class="hero-lbl">🌍 LinkedIn</div></div>
+        <div class="hero-item"><div class="hero-val" style="color:#ec4899">5轮</div><div class="hero-lbl">🏠 CHFS家调</div></div>
       </div>
     </div>
 
-    <!-- Right: Impact -->
+    <!-- ─── RIGHT: 价值 ─── -->
     <div class="col">
-      <div class="col-hdr">基于 GLake 能做什么</div>
-      <div class="c"><h4 style="color:#06b6d4">⚡ 政策匹配</h4><p>标签系统做多维索引，案例自动匹配相关政策做交叉分析。</p></div>
-      <div class="c"><h4 style="color:#10b981">🔍 Policy-Graph RAG</h4><p>"浙江 2023 补贴标准" → 精准定位到具体 PDF 和 Parquet 表。</p></div>
-      <div class="c"><h4 style="color:#f59e0b">⚠️ 政策冲突检测</h4><p>上下位法冲突、跨部门"政策打架"自动检测。</p></div>
-      <div class="c"><h4 style="color:#06b6d4">🔗 供应链传导分析</h4><p>"新能源补贴"→ 整车厂 → 电池供应商 → 锂矿厂，沿图谱网络传导。</p></div>
-      <div class="c" style="border-color:#f59e0b;background:rgba(245,158,11,0.06)">
-        <p style="font-size:clamp(0.72rem,0.88vw,0.8rem);color:#cbd5e1;line-height:1.5">
-          <b style="color:#f59e0b">让任何团队花最少的力气拥有自己的数据基础设施。</b><br>
-          <span style="color:#64748b">一台 Linux + Docker，</span><code style="color:#06b6d4;font-size:0.78em">bash manage.sh setup</code><span style="color:#64748b"> 搞定。</span>
-        </p>
+      <div class="sectitle">🎯 有了 GLake 能做什么？</div>
+
+      <div class="card"><div class="label-sm gold">⚡ 政策一键匹配</div><p>拿一个案例，自动找到所有相关政策和判例做交叉分析。不再靠人工翻文件。</p></div>
+
+      <div class="card"><div class="label-sm gold">🔍 问一句话，精准定位</div><p>"浙江 2023 年补贴标准是什么？"——系统秒级定位到具体文件和表格。</p></div>
+
+      <div class="card"><div class="label-sm gold">⚠️ 自动发现"政策打架"</div><p>上下位法冲突、不同部门政策矛盾——系统自动检测，不用等人发现。</p></div>
+
+      <div class="card"><div class="label-sm gold">🔗 一张图看清产业传导</div><p>"新能源补贴"从整车厂 → 电池供应商 → 锂矿厂，优惠政策如何一层层传导到全产业链。</p></div>
+
+      <div class="spotlight">
+        <p><strong>让任何团队花最少力气，拥有自己的数据基础设施。</strong><br>
+        <span style="color:#64748b">存储、格式转换、权限、元数据、定时更新——<br>这些脏活，GLake 帮你干了。</span><br>
+        <span style="color:#4b5563;font-size:clamp(0.6rem,0.7vw,0.65rem)">一台 Linux 服务器 + Docker，命令行一句搞定搭建</span></p>
       </div>
     </div>
+
   </div>
 
-  <div class="ftr">
-    <p>GLake 是 <em>数据基础设施基座</em>，不是 AI 产品。<br>
-    存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。<span style="color:#2d3a50;margin-left:1rem">yujianke100.github.io/glake</span></p>
+  <div class="footer">
+    <p>GLake —— 数据基础设施基座 &nbsp;·&nbsp; <span>yujianke100.github.io/slides/glake</span></p>
   </div>
+
 </div>
 </body>
 </html>

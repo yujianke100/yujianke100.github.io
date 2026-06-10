@@ -5,78 +5,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GLake — 3 页速览</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #e2e8f0; }
-  .stage { width: 100%; height: 100vh; position: relative; overflow: hidden; }
-  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 5vh 6vw; opacity: 0; transform: scale(0.97); pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; overflow-y: auto; }
-  .slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-  .slide:nth-child(even) { background: #111827; }
-  .slide:nth-child(odd) { background: #0a0e1a; }
-  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: #f59e0b; z-index: 100; transition: width 0.3s ease; }
-  .sn { position: fixed; bottom: 16px; right: 24px; color: #475569; font-size: 0.9rem; font-weight: 600; z-index: 100; font-variant-numeric: tabular-nums; user-select: none; }
-  .na { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(30,41,59,0.8); border: 1px solid #2d3a50; color: #94a3b8; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; transition: all 0.2s; backdrop-filter: blur(8px); }
-  .na:hover { background: rgba(245,158,11,0.2); color: #f59e0b; border-color: #f59e0b; }
-  .na.pl { left: 12px; } .na.nx { right: 12px; }
-  .na:disabled { opacity: 0; pointer-events: none; }
+  * { margin:0; padding:0; box-sizing:border-box }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0a0e1a }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; color:#e2e8f0 }
+  .stage { width:100%; height:100vh; position:relative; overflow:hidden }
+  .slide { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; padding:5vh 6vw; opacity:0; transform:scale(0.97); pointer-events:none; transition:opacity 0.4s ease, transform 0.4s ease; overflow-y:auto }
+  .slide.active { opacity:1; transform:scale(1); pointer-events:auto }
+  .slide:nth-child(even) { background:#111827 }
+  .slide:nth-child(odd) { background:#0a0e1a }
+  .progress { position:fixed; bottom:0; left:0; height:3px; background:linear-gradient(90deg,#06b6d4,#f59e0b); z-index:100; transition:width 0.3s ease }
+  .sn { position:fixed; bottom:16px; right:24px; color:#475569; font-size:0.9rem; font-weight:600; z-index:100; font-variant-numeric:tabular-nums; user-select:none }
+  .na { position:fixed; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; background:rgba(30,41,59,0.85); border:1px solid #2d3a50; color:#94a3b8; font-size:1.6rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100; transition:all 0.2s; backdrop-filter:blur(8px) }
+  .na:hover { background:rgba(245,158,11,0.2); color:#f59e0b; border-color:#f59e0b }
+  .na.pl { left:12px } .na.nx { right:12px }
+  .na:disabled { opacity:0; pointer-events:none }
 
-  .w { max-width: 1100px; margin: 0 auto; width: 100%; }
-  .w h1 { font-size: clamp(2.2rem,4.5vw,3.5rem); font-weight: 800; margin-bottom: 0.8rem; line-height: 1.2; }
-  .w h2 { font-size: clamp(1.4rem,2.8vw,2rem); font-weight: 700; margin-bottom: 0.8rem; padding-bottom: 0.4rem; border-bottom: 2px solid #f59e0b; display: inline-block; }
-  .w h3 { font-size: clamp(1rem,1.4vw,1.2rem); font-weight: 600; margin-bottom: 0.4rem; color: #f59e0b; }
-  .w p { line-height: 1.6; font-size: clamp(0.95rem,1.3vw,1.1rem); color: #cbd5e1; }
-  .w .lead { font-size: clamp(1rem,1.5vw,1.2rem); color: #e2e8f0; line-height: 1.7; }
+  .w { max-width:1100px; margin:0 auto; width:100% }
+  .w h1 { font-size:clamp(2.2rem,4.5vw,3.5rem); font-weight:800; margin-bottom:0.6rem; line-height:1.2 }
+  .w h2 { font-size:clamp(1.3rem,2.5vw,1.8rem); font-weight:700; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem }
+  .w h2::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,#f59e0b,transparent) }
+  .w p { line-height:1.6; font-size:clamp(0.9rem,1.2vw,1.05rem); color:#cbd5e1 }
 
-  .ht { font-size: clamp(2.5rem,6vw,4.5rem); font-weight: 800; text-align: center; background: linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.8rem; line-height: 1.1; }
-  .hs { text-align: center; font-size: clamp(0.95rem,1.5vw,1.2rem); max-width: 750px; margin: 0 auto; color: #94a3b8; line-height: 1.7; }
-  .htg { display: inline-block; margin: 0.8rem auto 0; padding: 0.4rem 1.4rem; border: 1px solid #06b6d4; border-radius: 10px; background: rgba(6,182,212,0.08); color: #06b6d4; font-size: clamp(0.85rem,1vw,0.95rem); text-align: center; }
+  .ht { font-size:clamp(2.5rem,6vw,4.5rem); font-weight:900; text-align:center;
+    background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:0.5rem; line-height:1.1; letter-spacing:-0.02em }
+  .hs { text-align:center; font-size:clamp(0.9rem,1.4vw,1.15rem); max-width:750px; margin:0 auto; color:#94a3b8; line-height:1.7 }
+  .htg { display:inline-block; margin:1rem auto 0; padding:0.4rem 1.4rem; border:1px solid #06b6d4; border-radius:10px; background:rgba(6,182,212,0.08); color:#06b6d4; font-size:clamp(0.8rem,0.95vw,0.9rem); text-align:center }
 
-  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; } .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; } .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.8rem; }
-  @media(max-width:800px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem }
+  .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem }
+  .g4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.7rem }
+  .g5 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:0.5rem }
+  @media(max-width:800px){ .g2,.g3,.g4,.g5{grid-template-columns:1fr} }
 
-  .card { background: #1e293b; border:1px solid #2d3a50; border-radius:12px; padding:1rem; }
-  .card h4 { color:#f59e0b; margin-bottom:0.3rem; font-size:clamp(0.9rem,1.1vw,1rem); }
-  .card p { font-size:clamp(0.8rem,0.95vw,0.88rem); color:#94a3b8; line-height:1.5; }
+  .card { background:#1e293b; border:1px solid #2d3a50; border-radius:12px; padding:1rem }
+  .card h4 { color:#f59e0b; margin-bottom:0.3rem; font-size:clamp(0.82rem,1vw,0.92rem); display:flex; align-items:center; gap:0.3rem }
+  .card p { font-size:clamp(0.75rem,0.9vw,0.84rem); color:#94a3b8; line-height:1.5 }
 
-  .pb { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:0.8rem 1rem; }
-  .pb .l { color:#ef4444; font-weight:600; font-size:clamp(0.75rem,0.85vw,0.82rem); margin-bottom:0.2rem; }
-  .pb p { font-size:clamp(0.78rem,0.9vw,0.85rem); color:#94a3b8; }
-  .pg { background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:0.8rem 1rem; }
-  .pg .l { color:#10b981; font-weight:600; font-size:clamp(0.75rem,0.85vw,0.82rem); margin-bottom:0.2rem; }
-  .pg p { font-size:clamp(0.78rem,0.9vw,0.85rem); color:#94a3b8; }
+  .pb { background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.25); border-radius:10px; padding:0.7rem 0.9rem }
+  .pb .l { color:#ef4444; font-weight:600; font-size:clamp(0.72rem,0.82vw,0.78rem); margin-bottom:0.15rem }
+  .pb p { font-size:clamp(0.72rem,0.85vw,0.8rem); color:#94a3b8 }
+  .pg { background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:0.7rem 0.9rem }
+  .pg .l { color:#10b981; font-weight:600; font-size:clamp(0.72rem,0.82vw,0.78rem); margin-bottom:0.15rem }
+  .pg p { font-size:clamp(0.72rem,0.85vw,0.8rem); color:#94a3b8 }
 
-  .dc { background:#1e293b; border:1px solid #2d3a50; border-radius:10px; padding:0.8rem 1rem; }
-  .dc h4 { color:#06b6d4; margin-bottom:0.2rem; font-size:clamp(0.82rem,1vw,0.9rem); }
-  .dc p { font-size:clamp(0.72rem,0.85vw,0.8rem); color:#94a3b8; line-height:1.4; }
+  .dc { background:#1e293b; border:1px solid #2d3a50; border-radius:10px; padding:0.7rem 0.9rem }
+  .dc h4 { color:#06b6d4; margin-bottom:0.2rem; font-size:clamp(0.78rem,0.95vw,0.86rem) }
+  .dc p { font-size:clamp(0.68rem,0.8vw,0.76rem); color:#94a3b8; line-height:1.45 }
 
-  .tag { display:inline-block; padding:0.1rem 0.4rem; border-radius:4px; font-size:clamp(0.65rem,0.75vw,0.72rem); font-weight:600; margin:0.04rem; }
-  .tg { background:rgba(245,158,11,0.15); color:#f59e0b; }
-  .tt { background:rgba(6,182,212,0.15); color:#06b6d4; }
-  .tgg { background:rgba(16,185,129,0.15); color:#10b981; }
+  .ex-b { background:#1e293b; border:1px solid #f59e0b; border-radius:12px; padding:0.8rem 1rem; margin:0.5rem 0; text-align:center }
+  .ex-b p { font-size:clamp(0.78rem,0.92vw,0.86rem); color:#cbd5e1 }
 
-  .eb { background:rgba(6,182,212,0.06); border:1px solid rgba(6,182,212,0.3); border-radius:12px; padding:1rem; margin:0.5rem 0; }
-  .eb .el { color:#06b6d4; font-size:clamp(0.7rem,0.8vw,0.75rem); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.1rem; }
-  .eb h3 { color:#e2e8f0; font-size:clamp(0.95rem,1.2vw,1.05rem); margin-bottom:0.3rem; }
-  .eb p { font-size:clamp(0.8rem,0.95vw,0.88rem); color:#94a3b8; }
+  .eb { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.3); border-radius:12px; padding:0.8rem 1rem; margin:0.5rem 0 }
+  .eb .el { color:#f59e0b; font-size:clamp(0.65rem,0.75vw,0.72rem); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.05rem }
+  .eb h3 { color:#e2e8f0; font-size:clamp(0.9rem,1.15vw,1rem); margin-bottom:0.2rem }
+  .eb p { font-size:clamp(0.75rem,0.9vw,0.84rem); color:#94a3b8 }
 
-  .ex-b { background:#1e293b; border:1px solid #f59e0b; border-radius:12px; padding:1rem; margin:0.5rem 0; text-align:center; }
-  .ex-b p { font-size:clamp(0.8rem,0.95vw,0.88rem); color:#cbd5e1; }
+  .steps { display:flex; gap:0.35rem; flex-wrap:wrap; justify-content:center }
+  .step { flex:1; min-width:85px; max-width:130px; background:#1e293b; border:1px solid #2d3a50; border-radius:8px; padding:0.45rem 0.35rem; text-align:center }
+  .step .n { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 0.25rem; font-weight:700; font-size:0.65rem }
+  .g { background:#f59e0b; color:#000 } .t { background:#06b6d4; color:#000 } .gn { background:#10b981; color:#000 }
+  .step h4 { font-size:clamp(0.68rem,0.75vw,0.76rem); margin-bottom:0.05rem }
+  .step p { font-size:clamp(0.6rem,0.65vw,0.68rem); color:#64748b }
+  .sa { color:#f59e0b; font-size:0.9rem; align-self:center }
+  @media(max-width:800px){.sa{display:none}}
 
-  .steps { display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center; }
-  .step { flex:1; min-width:90px; max-width:140px; background:#1e293b; border:1px solid #2d3a50; border-radius:8px; padding:0.5rem 0.4rem; text-align:center; }
-  .step .n { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 0.3rem; font-weight:700; font-size:0.72rem; }
-  .step .g { background:#f59e0b; color:#000; } .step .t { background:#06b6d4; color:#000; } .step .gn { background:#10b981; color:#000; }
-  .step h4 { font-size:clamp(0.72rem,0.8vw,0.8rem); margin-bottom:0.1rem; }
-  .step p { font-size:clamp(0.65rem,0.7vw,0.72rem); color:#64748b; }
-  .sa { color:#f59e0b; font-size:1rem; align-self:center; } @media(max-width:800px){.sa{display:none}}
+  .tag { display:inline-block; padding:0.08rem 0.35rem; border-radius:4px; font-size:clamp(0.6rem,0.7vw,0.68rem); font-weight:600; margin:0.03rem }
+  .tg { background:rgba(245,158,11,0.15); color:#f59e0b }
+  .tt { background:rgba(6,182,212,0.15); color:#06b6d4 }
+  .tgg { background:rgba(16,185,129,0.15); color:#10b981 }
 
-  .q { border-left:3px solid #f59e0b; padding:0.6rem 0.8rem; margin:0.5rem 0; background:rgba(245,158,11,0.04); border-radius:0 8px 8px 0; font-size:clamp(0.82rem,0.95vw,0.9rem); color:#94a3b8; line-height:1.5; }
-  .q strong { color:#e2e8f0; }
+  .num-xl { font-size:clamp(1.2rem,2vw,1.7rem); font-weight:800; line-height:1.1; display:block }
+  .lbl-sm { font-size:clamp(0.55rem,0.65vw,0.6rem); color:#64748b; display:block; margin-top:0.05rem }
 
-  .tree { background:#0d1117; border-radius:10px; padding:0.6rem 0.8rem; font-family:'SF Mono','Fira Code',monospace; font-size:clamp(0.72rem,0.85vw,0.8rem); line-height:1.6; border:1px solid #2d3a50; }
-  .mb1 { margin-bottom:0.5rem; } .mt1 { margin-top:0.5rem; }
-  ul { margin:0.2rem 0 0.2rem 1.2rem; } li { line-height:1.5; color:#94a3b8; font-size:clamp(0.82rem,0.95vw,0.9rem); }
-  .bounce { animation:b2 2s infinite; } @keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .mb1 { margin-bottom:0.5rem } .mt1 { margin-top:0.5rem }
+  ul { margin:0.2rem 0 0.2rem 1.2rem } li { line-height:1.5; color:#94a3b8; font-size:clamp(0.78rem,0.9vw,0.84rem) }
+  .bounce { animation:b2 2s infinite } @keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
 </head>
 <body>
@@ -89,93 +94,128 @@
 <script>
 const slides = [];
 
-// ────────────── PAGE 1: Cover + Problem ──────────────
+// ══════════ PAGE 1: 封面 · 痛点 · 对比 ══════════
 slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
   <div class="ht">GLake</div>
-  <p class="hs">一个面向 AI 的轻量级数据湖基础设施<br>散落的 CSV、PDF、API 数据统一管理 → AI 帮你导、查、用</p>
-  <div class="htg mt1" style="font-size:clamp(0.8rem,1vw,0.9rem)">以前人直接和数据库打交道 → 现在人 + WebUI + AI</div>
+  <p class="hs">别再让数据拖慢你的研究速度<br>
+  政策、案例、法规、人才数据、家庭金融调查——<span style="color:#e2e8f0;font-weight:600">一个平台统一管起来</span></p>
 
-  <div style="max-width:650px;margin:2.5vh auto 0;text-align:left">
-    <div class="eb" style="border-color:#f59e0b;background:rgba(245,158,11,0.05)">
-      <div class="el" style="color:#f59e0b">贯穿全文的问题</div>
-      <h3 style="color:#f59e0b;font-size:clamp(1rem,1.3vw,1.2rem)">"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
-      <p style="color:#e2e8f0"><span class="tag tg" style="font-size:clamp(0.65rem,0.75vw,0.72rem)">政策文本</span> <span class="tag tt" style="font-size:clamp(0.65rem,0.75vw,0.72rem)">企业数据</span> <span class="tag tgg" style="font-size:clamp(0.65rem,0.75vw,0.72rem)">供应链关系</span> <span class="tag tg" style="font-size:clamp(0.65rem,0.75vw,0.72rem)">历史案例</span></p>
+  <div class="htg">从"四处找数据"到"数据来找你"</div>
+
+  <div style="max-width:800px;margin:2.5vh auto 0">
+
+    <div class="eb" style="margin-bottom:0.5rem">
+      <div class="el">🧐 用一个例子理解 GLake 在做什么</div>
+      <h3>"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
+      <p><span class="tag tg">政策文本</span> <span class="tag tt">企业数据</span> <span class="tag tgg">供应链关系</span> <span class="tag tg">历史案例</span></p>
+    </div>
+
+    <div class="g2" style="text-align:left">
+      <div class="pb">
+        <div class="l">😣 传统做法（即使有 AI）</div>
+        <p>AI 帮忙写脚本导入 CSV —— 是能跑。<br>
+        <b style="color:#e2e8f0">但下一次呢？</b>脚本丢在哪？格式变了找谁改？新同事来了又要从零开始？<br>
+        <span style="color:#64748b">没有标准化，每次都是"一次性"。</span></p>
+      </div>
+      <div class="pg">
+        <div class="l">😊 GLake 做法</div>
+        <p>AI 按标准化模板填个表单，按规范自动生成导入脚本。<br>
+        数据<b style="color:#10b981">自动注册到目录</b>，打上标签、写上说明。<br>
+        <b style="color:#10b981">可复现、可管理、可传承，不怕人走茶凉。</b></p>
+      </div>
     </div>
   </div>
 
-  <div class="g2 mt1" style="max-width:750px">
-    <div class="pb" style="padding:0.7rem 0.9rem">
-      <div class="l">传统做法（即使有 AI）</div>
-      <p>AI 写一个脚本导入 CSV → 能跑。<b style="color:#e2e8f0">但下一次呢？</b>脚本在哪？格式变了谁改？新同事来了去哪找？没有标准化流程，每次都从零开始。</p>
-    </div>
-    <div class="pg" style="padding:0.7rem 0.9rem">
-      <div class="l">GLake 做法</div>
-      <p>AI 按标准化<b>YAML 模板</b>填表单，按 <b style="color:#e2e8f0">AI_INGESTION_GUIDE</b> 规范生成脚本，自动注册到 Catalog（带 tags + README）。<br><b style="color:#10b981">可复现、可管理、可传承。</b></p>
-    </div>
-  </div>
-
-  <p style="margin-top:2vh;color:#475569;font-size:0.82rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 看方案</p>
+  <p style="margin-top:2vh;color:#475569;font-size:0.8rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 看方案</p>
 </div>`);
 
-// ────────────── PAGE 2: Architecture + Pipeline ──────────────
+// ══════════ PAGE 2: 四句话架构 + 数据管道 + 解耦 ══════════
 slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>四句话讲清架构</h2>
-  <div class="g4" style="margin-bottom:0.6rem">
-    <div class="card tc"><div style="font-size:1.4rem;font-weight:800;color:#f59e0b">①</div><h4 style="font-size:0.88rem">存储层放数据</h4><p>结构化→Parquet<br>非结构化→原生文件</p></div>
-    <div class="card tc"><div style="font-size:1.4rem;font-weight:800;color:#f59e0b">②</div><h4 style="font-size:0.88rem">Catalog 管元数据</h4><p>PostgreSQL 记录路径、标签、权限、README。<b style="color:#f59e0b">不存数据本身</b></p></div>
-    <div class="card tc"><div style="font-size:1.4rem;font-weight:800;color:#f59e0b">③</div><h4 style="font-size:0.88rem">控制面操作</h4><p>WebUI 浏览<br>API 编程 / AI 导入</p></div>
-    <div class="card tc"><div style="font-size:1.4rem;font-weight:800;color:#f59e0b">④</div><h4 style="font-size:0.88rem">计算层做脏活</h4><p>Docker 沙箱格式转换<br><b style="color:#f59e0b">不占管理节点资源</b></p></div>
+  <h2>🏗️ 四句话说清 GLake 怎么工作</h2>
+  <div class="g4">
+    <div class="card tc"><div style="font-size:1.3rem;font-weight:800;color:#f59e0b">①</div><h4 style="justify-content:center">放数据</h4><p>结构化 → Parquet 表<br>文件 → 原样保存<br>各归其位</p></div>
+    <div class="card tc"><div style="font-size:1.3rem;font-weight:800;color:#f59e0b">②</div><h4 style="justify-content:center">管目录</h4><p>PostgreSQL 记录<br>每份数据在哪、<br>有什么标签、谁能用</p></div>
+    <div class="card tc"><div style="font-size:1.3rem;font-weight:800;color:#f59e0b">③</div><h4 style="justify-content:center">操作它</h4><p>WebUI 像逛文件夹<br>API 给程序调用<br>AI 帮忙导入</p></div>
+    <div class="card tc"><div style="font-size:1.3rem;font-weight:800;color:#f59e0b">④</div><h4 style="justify-content:center">做运算</h4><p>格式转换在独立<br>沙箱处理<br>不占管理节点</p></div>
   </div>
 
-  <h2 style="font-size:clamp(1.1rem,2vw,1.4rem)">AI 驱动的数据管道</h2>
+  <h2 style="font-size:clamp(1rem,1.8vw,1.3rem);margin-top:0.6rem">🤖 AI 帮你走完数据全流程</h2>
   <div class="steps mb1">
-    <div class="step"><div class="n g">1</div><h4>开项目</h4><p>WebUI 创建<br>生成 API Key</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n t">2</div><h4>AI 填表单</h4><p>按 YAML 模板<br>填写 + 人确认</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n g">3</div><h4>AI 出脚本</h4><p>按 GUIDE.md<br>生成导入脚本</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n gn">4</div><h4>执行导入</h4><p>CSV→Parquet<br>上传 + 注册</p></div>
-    <div class="sa">&rarr;</div>
-    <div class="step"><div class="n t">5</div><h4>调度增量</h4><p>月更/日更<br>cron 自动拉取</p></div>
+    <div class="step"><div class="n g">1</div><h4>开项目</h4><p>WebUI 创建<br>自动生成 Key</p></div>
+    <div class="sa">→</div>
+    <div class="step"><div class="n t">2</div><h4>告诉AI</h4><p>"把这份政策<br>数据导进来"</p></div>
+    <div class="sa">→</div>
+    <div class="step"><div class="n g">3</div><h4>AI 出脚本</h4><p>按规范模板<br>自动生成</p></div>
+    <div class="sa">→</div>
+    <div class="step"><div class="n gn">4</div><h4>执行导入</h4><p>CSV→Parquet<br>自动上传注册</p></div>
+    <div class="sa">→</div>
+    <div class="step"><div class="n t">5</div><h4>自动更新</h4><p>设定好周期<br>以后不用管</p></div>
   </div>
 
-  <div style="background:#0d1117;border-radius:8px;padding:0.6rem 0.8rem;font-family:'SF Mono',monospace;font-size:clamp(0.7rem,0.8vw,0.78rem);line-height:1.5;border:1px solid #2d3a50;margin:0.3rem 0">
-    <span style="color:#f59e0b"># 存储计算解耦</span><br>
-    开发: <span style="color:#94a3b8">逻辑路径 /新能源/政策</span> → <span style="color:#06b6d4">s3://minio:9000/warehouse/...</span><br>
-    生产: <span style="color:#94a3b8">逻辑路径 /新能源/政策</span> → <span style="color:#06b6d4">s3://aliyun-oss/warehouse/...</span><br>
-    <span style="color:#64748b">切换只需改一个环境变量，所有代码路径不用动。</span>
+  <div style="background:#0d1117;border-radius:8px;padding:0.6rem 0.8rem;font-size:clamp(0.68rem,0.78vw,0.75rem);line-height:1.5;border:1px solid #1e293b">
+    <b style="color:#f59e0b">存储不够了怎么办？</b><br>
+    <span style="color:#94a3b8">开发时数据存在本地（MinIO），上线了改一个配置 → 自动切到阿里云OSS。</span><br>
+    <span style="color:#64748b">所有代码不用改，所有路径不用动。就像搬家不用换门牌号。</span>
   </div>
 </div>`);
 
-// ────────────── PAGE 3: Data + Capabilities + Impact ──────────────
+// ══════════ PAGE 3: 数据一览 + 能做什么 + 亮点 ══════════
 slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <h2>GLake 已入库数据</h2>
-  <div class="g3 mb1" style="margin-bottom:0.6rem">
-    <div class="card tc" style="border-color:rgba(245,158,11,0.3)"><div style="font-size:1.4rem;font-weight:800;color:#f59e0b">129 万</div><p>政策文本<br><span style="color:#64748b;font-size:0.7rem">含标题/全文/标签等23字段</span></p></div>
-    <div class="card tc" style="border-color:rgba(6,182,212,0.3)"><div style="font-size:1.4rem;font-weight:800;color:#06b6d4">1.637 亿</div><p>裁判文书<br><span style="color:#64748b;font-size:0.7rem">408GiB，36字段</span></p></div>
-    <div class="card tc" style="border-color:rgba(16,185,129,0.3)"><div style="font-size:1.4rem;font-weight:800;color:#10b981">497 万</div><p>法律法规<br><span style="color:#64748b;font-size:0.7rem">44字段，浙为主</span></p></div>
-    <div class="card tc" style="border-color:rgba(139,92,246,0.3)"><div style="font-size:1.3rem;font-weight:800;color:#8b5cf6">187 亿+</div><p>LinkedIn<br><span style="color:#64748b;font-size:0.7rem">20+表，全球人才数据</span></p></div>
-    <div class="card tc" style="border-color:rgba(236,72,153,0.3)"><div style="font-size:1.4rem;font-weight:800;color:#ec4899">5 轮</div><p>CHFS 家调<br><span style="color:#64748b;font-size:0.7rem">2011-2019，三层次</span></p></div>
-    <div class="card tc" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.04)">
-      <div style="font-size:1rem;font-weight:700;color:#f59e0b">总计 940GiB+</div>
-      <p>政策-法律-案例-人才-家调<br><span style="color:#64748b;font-size:0.7rem">五大领域统一管理</span></p>
+  <h2>📊 五大数据资源，GLake 统一管理</h2>
+
+  <div class="g5 mb1" style="margin-bottom:1rem">
+    <div class="card tc" style="border-color:rgba(245,158,11,0.3)">
+      <span class="num-xl" style="color:#f59e0b">129万</span>
+      <span class="lbl-sm">📄 政策文件</span>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">国家→省→市→县<br>全文+标题+标签</p>
+    </div>
+    <div class="card tc" style="border-color:rgba(6,182,212,0.3)">
+      <span class="num-xl" style="color:#06b6d4">1.637亿</span>
+      <span class="lbl-sm">⚖️ 裁判文书</span>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">全国法院全覆盖<br>36个关键字段</p>
+    </div>
+    <div class="card tc" style="border-color:rgba(16,185,129,0.3)">
+      <span class="num-xl" style="color:#10b981">497万</span>
+      <span class="lbl-sm">📜 法律法规</span>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">法律·法规·规章<br>44字段精细分类</p>
+    </div>
+    <div class="card tc" style="border-color:rgba(139,92,246,0.3)">
+      <span class="num-xl" style="color:#8b5cf6;font-size:clamp(1rem,1.7vw,1.4rem)">187亿+</span>
+      <span class="lbl-sm">🌍 LinkedIn</span>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">全球20+张专业表<br>人才·企业·岗位·技能</p>
+    </div>
+    <div class="card tc" style="border-color:rgba(236,72,153,0.3)">
+      <span class="num-xl" style="color:#ec4899">5轮</span>
+      <span class="lbl-sm">🏠 CHFS家调</span>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">2011-2019全覆盖<br>家庭·个人·综合</p>
     </div>
   </div>
 
-  <h2 style="font-size:clamp(1rem,1.8vw,1.3rem)">基于 GLake 的学术方向</h2>
+  <h2 style="font-size:clamp(1rem,1.6vw,1.2rem)">🎯 基于 GLake 可以做哪些研究？</h2>
   <div class="g2" style="margin-bottom:0.5rem">
-    <div class="dc"><h4>⚡ 政策匹配</h4><p>标签系统多维索引 + LLM 条件抽取 + 语义检索召回 + 交叉排序。</p></div>
-    <div class="dc"><h4>🔍 Policy-Graph RAG</h4><p>结构化元数据 + 全文内容同库管理。问"浙江补贴标准"→精准定位到文档。</p></div>
-    <div class="dc"><h4>⚠️ 政策冲突检测</h4><p>上下位法冲突、跨部门政策打架。图模式匹配 + 异常检测。</p></div>
-    <div class="dc"><h4>🔗 政策红利传导</h4><p>"新能源补贴"沿供应链传播：整车厂→电池供应商→锂矿厂。图传播分析。</p></div>
+    <div class="dc">
+      <h4>⚡ 政策一键匹配</h4>
+      <p>拿一个案例自动匹配所有相关政策和判例，做交叉分析。标签系统就是多维索引，搜"新能源汽车补贴"秒出全部相关内容。</p>
+    </div>
+    <div class="dc">
+      <h4>🔍 问一句，精准定位</h4>
+      <p>"浙江2023年的补贴标准是什么？"——系统定位到具体文件和表格，不用在一堆PDF里人工翻找。</p>
+    </div>
+    <div class="dc">
+      <h4>⚠️ "政策打架"自动检测</h4>
+      <p>A部门发的政策跟B部门的法规冲突？系统自动检测矛盾点，不等问题暴露才被发现。</p>
+    </div>
+    <div class="dc">
+      <h4>🔗 产业链传导分析</h4>
+      <p>"新能源补贴"从整车厂→电池供应商→锂矿厂，沿着供应链网络看政策红利如何层层传递。</p>
+    </div>
   </div>
 
-  <div class="ex-b" style="padding:0.7rem 1rem;margin:0.3rem 0">
-    <p><b style="color:#f59e0b">让任何团队都能花最少的力气，拥有自己的数据基础设施。</b><br>
-    <span style="color:#64748b">存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。</span></p>
+  <div class="ex-b" style="padding:0.6rem 1rem">
+    <p><b style="color:#f59e0b;font-size:clamp(0.85rem,1vw,0.95rem)">让任何团队花最少的力气，拥有自己的数据基础设施。</b><br>
+    <span style="color:#64748b">存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。</span><br>
+    <span style="color:#4b5563;font-size:clamp(0.6rem,0.7vw,0.65rem)">一台 Linux + Docker，</span><code style="color:#06b6d4;font-size:clamp(0.6rem,0.7vw,0.65rem)">bash manage.sh setup</code> <span style="color:#4b5563;font-size:clamp(0.6rem,0.7vw,0.65rem)">搞定搭建</span></p>
   </div>
-  <p style="text-align:center;font-size:clamp(0.72rem,0.8vw,0.78rem);color:#475569">一台 Linux + Docker，<code style="color:#06b6d4">bash manage.sh setup</code> 搞定全部环境搭建。</p>
 </div>`);
 
 
