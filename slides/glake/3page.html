@@ -105,8 +105,8 @@ slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;a
   <div style="max-width:800px;margin:2.5vh auto 0">
 
     <div class="eb" style="margin-bottom:0.5rem">
-      <div class="el">🧐 用一个例子理解 GLake 在做什么</div>
-      <h3>"新能源汽车补贴政策，对整个产业链的影响到底有多大？"</h3>
+      <div class="el">🧐 用一个例子理解 GLake 在解决什么问题</div>
+      <h3>研究"新能源汽车补贴政策对产业链的影响"——<br>需要政策文本、企业数据、供应链关系、历史案例，<br><span style="color:#f59e0b">但这些数据分散在各处，怎么统一管起来？</span></h3>
       <p><span class="tag tg">政策文本</span> <span class="tag tt">企业数据</span> <span class="tag tgg">供应链关系</span> <span class="tag tg">历史案例</span></p>
     </div>
 
@@ -191,23 +191,23 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     </div>
   </div>
 
-  <h2 style="font-size:clamp(1rem,1.6vw,1.2rem)">🎯 基于 GLake 可以做哪些研究？</h2>
+  <h2 style="font-size:clamp(1rem,1.6vw,1.2rem)">💡 GLake 的核心优势：传统做法 vs GLake</h2>
   <div class="g2" style="margin-bottom:0.5rem">
     <div class="dc">
-      <h4>⚡ 政策一键匹配</h4>
-      <p>拿一个案例自动匹配所有相关政策和判例，做交叉分析。标签系统就是多维索引，搜"新能源汽车补贴"秒出全部相关内容。</p>
+      <h4>📂 传统：数据散落各处，靠人脑记</h4>
+      <p><b style="color:#10b981">GLake：</b>5类数据统一Catalog管理，WebUI像逛文件夹一样定位，再用标签快速筛选，不用问一圈人"数据在哪"</p>
     </div>
     <div class="dc">
-      <h4>🔍 问一句，精准定位</h4>
-      <p>"浙江2023年的补贴标准是什么？"——系统定位到具体文件和表格，不用在一堆PDF里人工翻找。</p>
+      <h4>🤖 传统：导数据写脚本→转格式→手动注册</h4>
+      <p><b style="color:#10b981">GLake：</b>告诉AI"把这份数据导进来"，AI按YAML模板+规范自动生成脚本，可复现可传承，不怕人走茶凉</p>
     </div>
     <div class="dc">
-      <h4>⚠️ "政策打架"自动检测</h4>
-      <p>A部门发的政策跟B部门的法规冲突？系统自动检测矛盾点，不等问题暴露才被发现。</p>
+      <h4>🔐 传统：给合作方看要么全给，要么单独复制一份</h4>
+      <p><b style="color:#10b981">GLake：</b>每条数据路径独立授权，一个Key只看得到允许范围，全程操作留痕可追溯</p>
     </div>
     <div class="dc">
-      <h4>🔗 产业链传导分析</h4>
-      <p>"新能源补贴"从整车厂→电池供应商→锂矿厂，沿着供应链网络看政策红利如何层层传递。</p>
+      <h4>🔄 传统：换台服务器所有路径重改、大文件断了重传</h4>
+      <p><b style="color:#10b981">GLake：</b>逻辑/物理解耦，存哪里改一个配置秒切，代码不动；大文件分片续传，不用从头来</p>
     </div>
   </div>
 
