@@ -98,7 +98,7 @@ const slides = [];
 slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
   <div class="ht">GLake</div>
   <p class="hs">别再让数据拖慢你的研究速度<br>
-  政策、案例、法规、人才数据、家庭金融调查——<span style="color:#e2e8f0;font-weight:600">一个平台统一管起来</span></p>
+  所有数据在一个网页，按项目分门别类，<span style="color:#e2e8f0;font-weight:600">AI全程辅助</span></p>
 
   <div class="htg">从"四处找数据"到"数据来找你"</div>
 
@@ -152,10 +152,11 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     <div class="step"><div class="n t">5</div><h4>自动更新</h4><p>设定好周期<br>以后不用管</p></div>
   </div>
 
-  <div style="background:#0d1117;border-radius:8px;padding:0.6rem 0.8rem;font-size:clamp(0.68rem,0.78vw,0.75rem);line-height:1.5;border:1px solid #1e293b">
-    <b style="color:#f59e0b">存储不够了怎么办？</b><br>
-    <span style="color:#94a3b8">开发时数据存在本地（MinIO），上线了改一个配置 → 自动切到阿里云OSS。</span><br>
-    <span style="color:#94a3b8">所有代码不用改，所有路径不用动。就像搬家不用换门牌号。</span>
+  <div style="background:#0d1117;border-radius:8px;padding:0.6rem 0.8rem;font-size:clamp(0.68rem,0.78vw,0.75rem);line-height:1.5;border:1px solid #1e293b;margin-top:0.4rem">
+    <b style="color:#f59e0b">存储算力灵活扩展</b><br>
+    <span style="color:#e2e8f0">数据存在本地（MinIO）还是云端（OSS）？</span> <span style="color:#94a3b8">改一个配置就切换，代码不用动。</span><br>
+    <span style="color:#94a3b8">算力不够了可以扩展到集群节点做并行处理；数据压缩率高，省大量存储空间。</span><br>
+    <span style="color:#64748b">还支持定时任务——设定好更新计划，平台自动定期拉取新数据，不用人手动操作。</span>
   </div>
 </div>`);
 
@@ -194,20 +195,20 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
   <h2 style="font-size:clamp(1rem,1.6vw,1.2rem)">💡 GLake 的核心优势：传统做法 vs GLake</h2>
   <div class="g2" style="margin-bottom:0.5rem">
     <div class="dc">
-      <h4>📂 传统：数据散落各处，靠人脑记</h4>
-      <p><b style="color:#10b981">GLake：</b>5类数据统一Catalog管理，WebUI像逛文件夹一样定位，再用标签快速筛选，不用问一圈人"数据在哪"</p>
+      <h4>📂 传统：数据散落各处，文件夹式管理靠人工</h4>
+      <p><b style="color:#10b981">GLake：</b>所有数据一个网页，按项目分门别类。每份数据有标签、说明文档、可翻看样本，像逛文件夹一样直观</p>
     </div>
     <div class="dc">
-      <h4>🤖 传统：导数据写脚本→转格式→手动注册</h4>
-      <p><b style="color:#10b981">GLake：</b>告诉AI"把这份数据导进来"，AI按YAML模板+规范自动生成脚本，可复现可传承，不怕人走茶凉</p>
+      <h4>🤖 传统：导数据写脚本→另开工具分析→做完就忘</h4>
+      <p><b style="color:#10b981">GLake：</b>AI贯穿全程——AI导入数据，也AI直接做查询和分析。从导入到出结果全在网页完成，不用另开工具</p>
     </div>
     <div class="dc">
-      <h4>🔐 传统：给合作方看要么全给，要么单独复制一份</h4>
-      <p><b style="color:#10b981">GLake：</b>每条数据路径独立授权，一个Key只看得到允许范围，全程操作留痕可追溯</p>
+      <h4>🔧 传统：存储满了迁移是噩梦，算力不够卡死</h4>
+      <p><b style="color:#10b981">GLake：</b>存储算力按需迁移扩展，甚至到集群。数据压缩率高、查询快，省大量存储和算力成本</p>
     </div>
     <div class="dc">
-      <h4>🔄 传统：换台服务器所有路径重改、大文件断了重传</h4>
-      <p><b style="color:#10b981">GLake：</b>逻辑/物理解耦，存哪里改一个配置秒切，代码不动；大文件分片续传，不用从头来</p>
+      <h4>⏰ 传统：定期数据每次手动拉，漏一次分析全偏</h4>
+      <p><b style="color:#10b981">GLake：</b>定时任务设置好，平台自动定期更新数据，不用操心</p>
     </div>
   </div>
 

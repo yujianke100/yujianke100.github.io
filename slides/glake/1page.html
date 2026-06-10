@@ -11,51 +11,45 @@
 
   .page { width:100vw; height:100vh; padding:2vh 2.5vw; display:flex; flex-direction:column; overflow:hidden }
 
-  /* ── Top ── */
-  .top { display:flex; align-items:center; gap:0.8rem; flex-shrink:0; margin-bottom:0.8vh }
-  .logo { font-size:clamp(1.6rem,3vw,2.5rem); font-weight:900; background:linear-gradient(135deg,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
-  .tagline { color:#cbd5e1; font-size:clamp(0.85rem,1.1vw,1rem); border-left:2px solid #334155; padding-left:0.7rem; line-height:1.4 }
-  .tagline b { color:#fff }
+  /* Top */
+  .top { display:flex; align-items:center; gap:0.8rem; flex-shrink:0; margin-bottom:0.6vh }
+  .logo { font-size:clamp(1.5rem,2.8vw,2.2rem); font-weight:900; background:linear-gradient(135deg,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+  .tagline { color:#cbd5e1; font-size:clamp(0.8rem,1vw,0.92rem); border-left:2px solid #334155; padding-left:0.6rem; line-height:1.3 }
 
-  /* ── Top row: 痛点 + 方案 ── */
-  .row1 { flex:3; display:grid; grid-template-columns:1fr 1.2fr; gap:0.8rem; min-height:0; margin-bottom:0.6rem }
+  /* Row 1: 痛点 + 方案 */
+  .row1 { flex:3; display:grid; grid-template-columns:0.9fr 1.15fr; gap:0.7rem; min-height:0; margin-bottom:0.5rem }
+  .col { display:flex; flex-direction:column; gap:0.3rem; min-height:0 }
+  .stitle { flex-shrink:0 }
+  .stitle span { font-size:clamp(0.7rem,0.9vw,0.82rem); font-weight:700; color:#fff }
 
-  .col { display:flex; flex-direction:column; gap:0.35rem; min-height:0 }
-
-  .stitle { display:flex; align-items:center; gap:0.4rem; flex-shrink:0 }
-  .stitle span { font-size:clamp(0.75rem,1vw,0.9rem); font-weight:700; color:#fff }
-
-  .box { background:#111827; border-radius:10px; padding:0.5rem 0.7rem;
-    display:flex; align-items:center; gap:0.5rem; flex:1; min-height:0 }
-  .box .ico { font-size:clamp(1rem,1.4vw,1.3rem); flex-shrink:0 }
-  .box .bd { font-size:clamp(0.82rem,1.1vw,1rem); color:#fff; line-height:1.4 }
-  .box .bd small { color:#94a3b8; font-size:clamp(0.72rem,0.95vw,0.88rem) }
-
+  .box { background:#111827; border-radius:8px; padding:0.4rem 0.6rem; display:flex; align-items:center; gap:0.45rem; flex:1; min-height:0 }
+  .box .ico { font-size:clamp(0.9rem,1.2vw,1.1rem); flex-shrink:0 }
+  .box .bd { font-size:clamp(0.78rem,1vw,0.9rem); color:#fff; line-height:1.35 }
+  .box .bd small { color:#94a3b8; font-size:clamp(0.65rem,0.85vw,0.78rem) }
   .box-r { border:1px solid rgba(239,68,68,0.2) }
   .box-g { border:1px solid rgba(16,185,129,0.3) }
 
-  /* ── Numbers strip ── */
-  .nums { display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr; gap:0.4rem; flex-shrink:0 }
-  .nbox { text-align:center; background:#111827; border:1px solid #1e293b; border-radius:8px; padding:0.3rem 0.1rem }
-  .nbox .n { font-size:clamp(1.1rem,1.6vw,1.5rem); font-weight:800; line-height:1.1 }
-  .nbox .l { font-size:clamp(0.7rem,0.9vw,0.85rem); color:#fff; margin-top:0.05rem }
+  /* Numbers strip */
+  .nums { display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr; gap:0.3rem; flex-shrink:0 }
+  .nbox { text-align:center; background:#111827; border:1px solid #1e293b; border-radius:6px; padding:0.25rem 0.1rem }
+  .nbox .n { font-size:clamp(1rem,1.5vw,1.3rem); font-weight:800; line-height:1.1 }
+  .nbox .l { font-size:clamp(0.65rem,0.8vw,0.75rem); color:#fff; margin-top:0.03rem }
 
-  /* ── Bottom row: 应用场景 + 亮点 ── */
-  .row2 { flex:2; display:grid; grid-template-columns:2fr 1fr; gap:0.8rem; min-height:0 }
-
-  .usecases { display:grid; grid-template-columns:1fr 1fr; gap:0.35rem }
-  .uc { background:#111827; border:1px solid #1e293b; border-radius:8px; padding:0.4rem 0.6rem; display:flex; flex-direction:column; justify-content:center }
-  .uc h4 { color:#f59e0b; font-size:clamp(0.78rem,1vw,0.92rem); margin-bottom:0.05rem }
-  .uc p { color:#fff; font-size:clamp(0.72rem,0.9vw,0.85rem); line-height:1.35 }
+  /* Row 2: 优势 */
+  .row2 { flex:2; display:grid; grid-template-columns:2fr 1fr; gap:0.7rem; min-height:0 }
+  .advs { display:grid; grid-template-columns:1fr 1fr; gap:0.3rem }
+  .av { background:#111827; border:1px solid #1e293b; border-radius:8px; padding:0.35rem 0.55rem; display:flex; flex-direction:column; justify-content:center }
+  .av h4 { color:#f59e0b; font-size:clamp(0.72rem,0.9vw,0.84rem); margin-bottom:0.04rem }
+  .av p { color:#fff; font-size:clamp(0.65rem,0.82vw,0.76rem); line-height:1.3 }
 
   .spt { background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(245,158,11,0.01));
-    border:1px solid #f59e0b; border-radius:10px; padding:0.6rem 0.8rem;
+    border:1px solid #f59e0b; border-radius:8px; padding:0.5rem 0.7rem;
     display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center }
-  .spt .big { color:#f59e0b; font-size:clamp(0.85rem,1.1vw,1rem); font-weight:700; margin-bottom:0.15rem }
-  .spt p { color:#94a3b8; font-size:clamp(0.7rem,0.85vw,0.8rem); line-height:1.4 }
+  .spt .big { color:#f59e0b; font-size:clamp(0.78rem,1vw,0.9rem); font-weight:700; margin-bottom:0.1rem }
+  .spt p { color:#94a3b8; font-size:clamp(0.62rem,0.78vw,0.72rem); line-height:1.35 }
 
-  .ft { text-align:center; flex-shrink:0; padding:0.4vh 0 0 }
-  .ft p { font-size:clamp(0.6rem,0.75vw,0.7rem); color:#4b5563 }
+  .ft { text-align:center; flex-shrink:0; padding:0.3vh 0 0 }
+  .ft p { font-size:clamp(0.55rem,0.65vw,0.6rem); color:#4b5563 }
 </style>
 </head>
 <body>
@@ -63,69 +57,58 @@
 
   <div class="top">
     <div class="logo">GLake</div>
-    <div class="tagline">数据太多太散？一个平台统一管理 · <b>政策 · 司法 · 法规 · 人才 · 家调</b></div>
+    <div class="tagline">所有数据一个平台，按项目分门别类 · 政策 · 司法 · 法规 · 人才 · 家调</div>
   </div>
 
-  <!-- ═══ ROW 1: 痛点 + 方案 ═══ -->
+  <!-- ═══ ROW 1 ═══ -->
   <div class="row1">
 
     <!-- LEFT: 痛点 -->
     <div class="col">
       <div class="stitle"><span>😟 做研究时，这些困扰你也有吗？</span></div>
-
-      <div class="box box-r">
-        <div class="ico">📁</div>
-        <div class="bd">不知道数据在哪&nbsp;&nbsp;<small>CSV在U盘、PDF在微信、数据表在服务器来回找</small></div>
-      </div>
-      <div class="box box-r">
-        <div class="ico">🔧</div>
-        <div class="bd">导数据像做苦力&nbsp;&nbsp;<small>写脚本→转格式→手动上传→记笔记，下次还得重来</small></div>
-      </div>
-      <div class="box box-r">
-        <div class="ico">🔐</div>
-        <div class="bd">权限迁移都头疼&nbsp;&nbsp;<small>给合作方看要么全给要么单拷，换服务器路径全改</small></div>
-      </div>
-      <div class="box" style="border:1px solid #1e293b;justify-content:center;flex:0.7">
-        <div class="bd" style="text-align:center;color:#94a3b8;font-size:clamp(0.75rem,1vw,0.9rem)"><b style="color:#f59e0b">说到底</b> —— 有数据，但管不住、查不到、用不了</div>
+      <div class="box box-r"><div class="ico">📁</div><div class="bd">不知道数据在哪&nbsp;&nbsp;<small>CSV在U盘、PDF在微信、数据表在服务器，来回问人</small></div></div>
+      <div class="box box-r"><div class="ico">🔧</div><div class="bd">导数据做分析太折腾&nbsp;&nbsp;<small>写脚本→转格式→手动查→记笔记，下次还得重来</small></div></div>
+      <div class="box box-r"><div class="ico">🔐</div><div class="bd">权限迁移都头疼&nbsp;&nbsp;<small>给合作方看要么全给要么单拷，存储满了迁移噩梦</small></div></div>
+      <div class="box box-r"><div class="ico">⏰</div><div class="bd">定期数据没人管&nbsp;&nbsp;<small>月更的数据每次要人手动拉，漏一次整个分析偏了</small></div></div>
+      <div class="box" style="border:1px solid #1e293b;justify-content:center;flex:0.6">
+        <div class="bd" style="text-align:center;color:#94a3b8;font-size:clamp(0.7rem,0.9vw,0.82rem)"><b style="color:#f59e0b">说到底</b> —— 有数据，但管不住、查不到、用不了</div>
       </div>
     </div>
 
-    <!-- RIGHT: 方案 + 数据 -->
+    <!-- RIGHT: 方案 -->
     <div class="col">
-      <div class="stitle"><span>✅ GLake —— 您专属的"数据管家"</span></div>
+      <div class="stitle"><span>✅ GLake —— 您的数据工作台</span></div>
+      <div class="box box-g" style="flex:1">
+        <div class="ico">📂</div><div class="bd">所有数据一个网页&nbsp;&nbsp;<small>按项目分门别类，文件夹式浏览。每份数据有标签、说明文档、样本，随便翻看</small></div>
+      </div>
+      <div class="box box-g" style="flex:1">
+        <div class="ico">🤖</div><div class="bd">AI贯穿全程&nbsp;&nbsp;<small>AI帮你导数据，也AI直接查询分析。从导入到出结果，一个网页搞定，不写代码</small></div>
+      </div>
+      <div class="box box-g" style="flex:1">
+        <div class="ico">🔧</div><div class="bd">存储算力灵活扩展&nbsp;&nbsp;<small>按需迁移扩展，甚至到集群。高压缩存储省空间，查询快，定时任务自动更新数据</small></div>
+      </div>
+      <div class="box box-g" style="flex:1">
+        <div class="ico">🔐</div><div class="bd">权限精细到每份数据&nbsp;&nbsp;<small>每个合作方专属授权，只看得到允许的范围，全程留痕可追溯</small></div>
+      </div>
 
-      <div class="box box-g" style="flex:1">
-        <div class="ico">📂</div>
-        <div class="bd">所有数据一个入口&nbsp;&nbsp;<small>5大类数据统一管理，打开界面像逛文件夹一样浏览</small></div>
-      </div>
-      <div class="box box-g" style="flex:1">
-        <div class="ico">🤖</div>
-        <div class="bd">AI 自动导数据&nbsp;&nbsp;<small>告诉AI把数据导进来，自动生成脚本，不用写代码</small></div>
-      </div>
-      <div class="box box-g" style="flex:1">
-        <div class="ico">🔐</div>
-        <div class="bd">精细权限 + 灵活扩容&nbsp;&nbsp;<small>各合作方专属授权，存不下了改一个配置秒切云端</small></div>
-      </div>
-
-      <!-- Numbers -->
       <div class="nums">
         <div class="nbox"><div class="n" style="color:#f59e0b">129万</div><div class="l">📄 政策</div></div>
         <div class="nbox"><div class="n" style="color:#38bdf8">1.637亿</div><div class="l">⚖️ 裁判文书</div></div>
         <div class="nbox"><div class="n" style="color:#34d399">497万</div><div class="l">📜 法规</div></div>
         <div class="nbox"><div class="n" style="color:#a78bfa">187亿+</div><div class="l">🌍 LinkedIn</div></div>
         <div class="nbox"><div class="n" style="color:#f472b6">5轮</div><div class="l">🏠 CHFS</div></div>
-        <div class="nbox" style="border-color:#f59e0b"><div class="n" style="color:#f59e0b;font-size:clamp(0.95rem,1.4vw,1.3rem)">940GB+</div><div class="l">📊 总计</div></div>
+        <div class="nbox" style="border-color:#f59e0b"><div class="n" style="color:#f59e0b;font-size:clamp(0.85rem,1.3vw,1.15rem)">940GB+</div><div class="l">📊 总计</div></div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ ROW 2: GLake 核心优势 + 亮点 ═══ -->
+  <!-- ═══ ROW 2 ═══ -->
   <div class="row2">
-    <div class="usecases">
-      <div class="uc"><h4>📂 传统：数据散在各处，找起来靠人脑记</h4><p><b style="color:#10b981">GLake：</b>5类数据统一Catalog，一个界面全部可见，用标签快速定位</p></div>
-      <div class="uc"><h4>🤖 传统：导数据写脚本→转格式→手动注册</h4><p><b style="color:#10b981">GLake：</b>告诉AI"把这份数据导进来"，按标准化模板自动生成，可复现可传承</p></div>
-      <div class="uc"><h4>🔐 传统：给合作方看要么全给、要么单独复制</h4><p><b style="color:#10b981">GLake：</b>每条路径独立授权，一个Key只看得到允许的范围，全程留痕可追溯</p></div>
-      <div class="uc"><h4>🔄 传统：换台服务器所有路径重改、大文件断了重传</h4><p><b style="color:#10b981">GLake：</b>存哪里改一个配置秒切，代码不动；断点续传，不用从头来</p></div>
+    <div class="advs">
+      <div class="av"><h4>📂 传统：数据散落各处，文件夹式管理靠人工</h4><p><b style="color:#10b981">GLake：</b>所有数据一个网页，按项目组织，标签+说明+样本随时看</p></div>
+      <div class="av"><h4>🤖 传统：导数据写脚本，分析另开工具，做完就忘</h4><p><b style="color:#10b981">GLake：</b>AI导入+AI查询分析一条龙，全流程标准化，可复现可传承</p></div>
+      <div class="av"><h4>🔧 传统：存储满了要迁移是噩梦，算力不够卡死</h4><p><b style="color:#10b981">GLake：</b>存储算力按需迁移扩展到集群；高压缩省空间，查询快</p></div>
+      <div class="av"><h4>⏰ 传统：定期更新的数据要人手动拉取</h4><p><b style="color:#10b981">GLake：</b>定时任务设置好，平台自动定期更新，不用操心</p></div>
     </div>
 
     <div class="spt">
