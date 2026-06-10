@@ -14,7 +14,7 @@
   .slide:nth-child(even) { background:#111827 }
   .slide:nth-child(odd) { background:#0a0e1a }
   .progress { position:fixed; bottom:0; left:0; height:3px; background:linear-gradient(90deg,#06b6d4,#f59e0b); z-index:100; transition:width 0.3s ease }
-  .sn { position:fixed; bottom:16px; right:24px; color:#475569; font-size:0.9rem; font-weight:600; z-index:100; font-variant-numeric:tabular-nums; user-select:none }
+  .sn { position:fixed; bottom:16px; right:24px; color:#94a3b8; font-size:0.9rem; font-weight:600; z-index:100; font-variant-numeric:tabular-nums; user-select:none }
   .na { position:fixed; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; background:rgba(30,41,59,0.85); border:1px solid #2d3a50; color:#94a3b8; font-size:1.6rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:100; transition:all 0.2s; backdrop-filter:blur(8px) }
   .na:hover { background:rgba(245,158,11,0.2); color:#f59e0b; border-color:#f59e0b }
   .na.pl { left:12px } .na.nx { right:12px }
@@ -115,7 +115,7 @@ slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;a
         <div class="l">😣 传统做法（即使有 AI）</div>
         <p>AI 帮忙写脚本导入 CSV —— 是能跑。<br>
         <b style="color:#e2e8f0">但下一次呢？</b>脚本丢在哪？格式变了找谁改？新同事来了又要从零开始？<br>
-        <span style="color:#64748b">没有标准化，每次都是"一次性"。</span></p>
+        <span style="color:#94a3b8">没有标准化，每次都是"一次性"。</span></p>
       </div>
       <div class="pg">
         <div class="l">😊 GLake 做法</div>
@@ -126,7 +126,7 @@ slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;a
     </div>
   </div>
 
-  <p style="margin-top:2vh;color:#475569;font-size:0.8rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 看方案</p>
+  <p style="margin-top:2vh;color:#94a3b8;font-size:0.8rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 看方案</p>
 </div>`);
 
 // ══════════ PAGE 2: 四句话架构 + 数据管道 + 解耦 ══════════
@@ -155,7 +155,7 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
   <div style="background:#0d1117;border-radius:8px;padding:0.6rem 0.8rem;font-size:clamp(0.68rem,0.78vw,0.75rem);line-height:1.5;border:1px solid #1e293b">
     <b style="color:#f59e0b">存储不够了怎么办？</b><br>
     <span style="color:#94a3b8">开发时数据存在本地（MinIO），上线了改一个配置 → 自动切到阿里云OSS。</span><br>
-    <span style="color:#64748b">所有代码不用改，所有路径不用动。就像搬家不用换门牌号。</span>
+    <span style="color:#94a3b8">所有代码不用改，所有路径不用动。就像搬家不用换门牌号。</span>
   </div>
 </div>`);
 
@@ -167,27 +167,27 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
     <div class="card tc" style="border-color:rgba(245,158,11,0.3)">
       <span class="num-xl" style="color:#f59e0b">129万</span>
       <span class="lbl-sm">📄 政策文件</span>
-      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">国家→省→市→县<br>全文+标题+标签</p>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#94a3b8;margin-top:0.15rem">国家→省→市→县<br>全文+标题+标签</p>
     </div>
     <div class="card tc" style="border-color:rgba(6,182,212,0.3)">
       <span class="num-xl" style="color:#06b6d4">1.637亿</span>
       <span class="lbl-sm">⚖️ 裁判文书</span>
-      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">全国法院全覆盖<br>36个关键字段</p>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#94a3b8;margin-top:0.15rem">全国法院全覆盖<br>36个关键字段</p>
     </div>
     <div class="card tc" style="border-color:rgba(16,185,129,0.3)">
       <span class="num-xl" style="color:#10b981">497万</span>
       <span class="lbl-sm">📜 法律法规</span>
-      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">法律·法规·规章<br>44字段精细分类</p>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#94a3b8;margin-top:0.15rem">法律·法规·规章<br>44字段精细分类</p>
     </div>
     <div class="card tc" style="border-color:rgba(139,92,246,0.3)">
       <span class="num-xl" style="color:#8b5cf6;font-size:clamp(1rem,1.7vw,1.4rem)">187亿+</span>
       <span class="lbl-sm">🌍 LinkedIn</span>
-      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">全球20+张专业表<br>人才·企业·岗位·技能</p>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#94a3b8;margin-top:0.15rem">全球20+张专业表<br>人才·企业·岗位·技能</p>
     </div>
     <div class="card tc" style="border-color:rgba(236,72,153,0.3)">
       <span class="num-xl" style="color:#ec4899">5轮</span>
       <span class="lbl-sm">🏠 CHFS家调</span>
-      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#64748b;margin-top:0.15rem">2011-2019全覆盖<br>家庭·个人·综合</p>
+      <p style="font-size:clamp(0.6rem,0.7vw,0.66rem);color:#94a3b8;margin-top:0.15rem">2011-2019全覆盖<br>家庭·个人·综合</p>
     </div>
   </div>
 
@@ -213,8 +213,8 @@ slides.push(() => `<div class="w" style="display:flex;flex-direction:column;just
 
   <div class="ex-b" style="padding:0.6rem 1rem">
     <p><b style="color:#f59e0b;font-size:clamp(0.85rem,1vw,0.95rem)">让任何团队花最少的力气，拥有自己的数据基础设施。</b><br>
-    <span style="color:#64748b">存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。</span><br>
-    <span style="color:#4b5563;font-size:clamp(0.6rem,0.7vw,0.65rem)">一台 Linux + Docker，</span><code style="color:#06b6d4;font-size:clamp(0.6rem,0.7vw,0.65rem)">bash manage.sh setup</code> <span style="color:#4b5563;font-size:clamp(0.6rem,0.7vw,0.65rem)">搞定搭建</span></p>
+    <span style="color:#94a3b8">存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。</span><br>
+    <span style="color:#94a3b8;font-size:clamp(0.6rem,0.7vw,0.65rem)">一台 Linux + Docker，</span><code style="color:#06b6d4;font-size:clamp(0.6rem,0.7vw,0.65rem)">bash manage.sh setup</code> <span style="color:#94a3b8;font-size:clamp(0.6rem,0.7vw,0.65rem)">搞定搭建</span></p>
   </div>
 </div>`);
 
