@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLake — 1 页速览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #0a0e1a; overflow: hidden; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #e2e8f0; display: flex; align-items: center; justify-content: center; }
+  .page { width: 100vw; height: 100vh; padding: 3vh 4vw; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+
+  /* Header */
+  .hdr { display: flex; align-items: center; gap: 0.8rem; }
+  .logo { font-size: clamp(2rem,3.5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .tagline { color: #64748b; font-size: clamp(0.85rem,1.1vw,1rem); border-left: 2px solid #2d3a50; padding-left: 0.8rem; }
+
+  /* Grid layout: problem | solution | impact */
+  .main { flex: 1; display: grid; grid-template-columns: 1fr 1.7fr 1fr; gap: 1.2rem; align-items: stretch; min-height: 0; }
+  @media(max-width:800px){ .main { grid-template-columns: 1fr; overflow-y: auto; } }
+
+  .col { display: flex; flex-direction: column; gap: 0.6rem; }
+  .col-hdr { font-size: clamp(0.7rem,0.85vw,0.78rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
+
+  /* Cards */
+  .c { background: #1e293b; border: 1px solid #2d3a50; border-radius: 10px; padding: 0.9rem; }
+  .c h4 { font-size: clamp(0.85rem,1.1vw,0.95rem); font-weight: 600; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.4rem; }
+  .c p, .c li { font-size: clamp(0.72rem,0.9vw,0.82rem); color: #94a3b8; line-height: 1.5; }
+  .c ul { list-style: none; padding: 0; }
+  .c li { padding: 0.15rem 0; padding-left: 1rem; position: relative; }
+  .c li::before { content: "›"; position: absolute; left: 0.2rem; color: #f59e0b; font-weight: 700; }
+
+  .pb { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+  .pg { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+  .pc { border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.05); }
+  .py { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
+
+  /* Metrics row */
+  .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+  .m { text-align: center; background: #111827; border-radius: 8px; padding: 0.5rem 0.3rem; }
+  .m .v { font-size: clamp(1.1rem,1.8vw,1.5rem); font-weight: 800; line-height: 1.1; }
+  .m .l { font-size: clamp(0.6rem,0.75vw,0.7rem); color: #64748b; }
+
+  /* Footer */
+  .ftr { text-align: center; padding: 1vh 0 0; }
+  .ftr p { font-size: clamp(0.7rem,0.85vw,0.78rem); color: #475569; }
+  .ftr em { color: #f59e0b; font-style: normal; }
+
+  .num { color: #06b6d4; font-weight: 700; }
+  .hl { color: #f59e0b; }
+  .tag { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: clamp(0.62rem,0.75vw,0.7rem); font-weight: 600; margin: 0.05rem; }
+  .tg { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .tt { background: rgba(6,182,212,0.15); color: #06b6d4; }
+  .tgg { background: rgba(16,185,129,0.15); color: #10b981; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hdr">
+    <div class="logo">GLake</div>
+    <div class="tagline">轻量级 AI 原生数据湖基础设施</div>
+  </div>
+
+  <div class="main">
+    <!-- Left: Problem -->
+    <div class="col">
+      <div class="col-hdr">AI 时代数据困局</div>
+      <div class="c pb">
+        <h4>⚠️ 数据散落在哪？</h4>
+        <ul>
+          <li>CSV / PDF / API 散落各处</li>
+          <li>人肉记忆"数据在哪"</li>
+          <li>导数据脚本一次性的</li>
+          <li>非结构化文件无人管理</li>
+          <li>权限管不住 / 迁移要命</li>
+        </ul>
+      </div>
+      <div class="c" style="flex:1;border-color:#2d3a50">
+        <h4>核心追问</h4>
+        <p style="font-size:clamp(0.78rem,1vw,0.9rem);color:#cbd5e1;line-height:1.6">
+          <em style="color:#f59e0b">"新能源汽车补贴政策，对整个产业链的影响有多大？"</em><br><br>
+          每个团队都面临同样的困境：<br>
+          有数据，但管不住、查不到、没法复用。
+        </p>
+      </div>
+    </div>
+
+    <!-- Center: Solution -->
+    <div class="col">
+      <div class="col-hdr">GLake 一站式方案</div>
+      <div class="c pg">
+        <h4>✅ 存储计算解耦</h4>
+        <p>逻辑路径 + 物理路径分离。切换 <span class="hl">MinIO → 阿里云 OSS</span> 改一个环境变量即可。<br>
+        计算在 Docker 沙箱隔离执行，不占管理节点资源。</p>
+      </div>
+      <div class="c pc">
+        <h4>✅ AI 驱动的数据管道</h4>
+        <p>AI 按 YAML 模板 + <span class="hl">AI_INGESTION_GUIDE</span> 规范生成生产级导入脚本。<br>
+        CSV → Parquet / PDF 原样 / API 拉取 → 自动注册到 Catalog。</p>
+      </div>
+      <div class="c py">
+        <h4>✅ 统一 Catalog 管理</h4>
+        <p>PostgreSQL 记录路径、标签（<span class="tag tg">新能源</span><span class="tag tt">补贴</span><span class="tag tgg">产业政策</span>）、README、权限。<br>
+        WebUI 浏览 + tags 搜索 + DuckDB 查询。</p>
+      </div>
+      <div class="metrics">
+        <div class="m"><div class="v" style="color:#f59e0b">1.29M</div><div class="l">政策文本</div></div>
+        <div class="m"><div class="v" style="color:#06b6d4">163.7M</div><div class="l">裁判文书</div></div>
+        <div class="m"><div class="v" style="color:#10b981">4.97M</div><div class="l">法律法规</div></div>
+      </div>
+    </div>
+
+    <!-- Right: Impact -->
+    <div class="col">
+      <div class="col-hdr">基于 GLake 能做什么</div>
+      <div class="c"><h4 style="color:#06b6d4">⚡ 政策匹配</h4><p>标签系统做多维索引，案例自动匹配相关政策做交叉分析。</p></div>
+      <div class="c"><h4 style="color:#10b981">🔍 Policy-Graph RAG</h4><p>"浙江 2023 补贴标准" → 精准定位到具体 PDF 和 Parquet 表。</p></div>
+      <div class="c"><h4 style="color:#f59e0b">⚠️ 政策冲突检测</h4><p>上下位法冲突、跨部门"政策打架"自动检测。</p></div>
+      <div class="c"><h4 style="color:#06b6d4">🔗 供应链传导分析</h4><p>"新能源补贴"→ 整车厂 → 电池供应商 → 锂矿厂，沿图谱网络传导。</p></div>
+      <div class="c" style="border-color:#f59e0b;background:rgba(245,158,11,0.06)">
+        <p style="font-size:clamp(0.72rem,0.88vw,0.8rem);color:#cbd5e1;line-height:1.5">
+          <b style="color:#f59e0b">让任何团队花最少的力气拥有自己的数据基础设施。</b><br>
+          <span style="color:#64748b">一台 Linux + Docker，</span><code style="color:#06b6d4;font-size:0.78em">bash manage.sh setup</code><span style="color:#64748b"> 搞定。</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ftr">
+    <p>GLake 是 <em>数据基础设施基座</em>，不是 AI 产品。<br>
+    存储、格式转换、权限、元数据、定时更新——这些脏活，GLake 帮你干了。<span style="color:#2d3a50;margin-left:1rem">yujianke100.github.io/glake</span></p>
+  </div>
+</div>
+</body>
+</html>
