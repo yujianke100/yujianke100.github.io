@@ -7,128 +7,75 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box }
   html,body { width:100%; height:100%; background:#0a0e1a; overflow:hidden }
-  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; color:#fff }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; color:#fff; display:flex; align-items:center; justify-content:center }
 
-  .page { width:100vw; height:100vh; padding:3vh 3.5vw; display:flex; flex-direction:column; overflow:hidden }
+  .page { width:80vw; max-width:1000px; display:flex; flex-direction:column; align-items:center; gap:2.5rem }
 
-  /* ── Top ── */
-  .top { flex-shrink:0; text-align:center; margin-bottom:2vh }
-  .top h1 { font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:900; background:linear-gradient(135deg,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:0.05em }
-  .top .sub { font-size:clamp(0.85rem,1.1vw,1rem); color:#94a3b8; margin-top:0.3rem }
+  /* ── Title ── */
+  .title { font-size:clamp(1.8rem,3.2vw,2.8rem); font-weight:800; color:#f1f5f9; letter-spacing:0.05em }
+  .title small { display:block; font-size:clamp(0.9rem,1.4vw,1.2rem); font-weight:400; color:#94a3b8; letter-spacing:0; margin-top:0.3rem }
 
-  /* ── Main: 3 big cards ── */
-  .main { flex:1; display:grid; grid-template-columns:1fr 1.3fr 0.7fr; gap:1rem; min-height:0 }
+  /* ── Three cards ── */
+  .cards { display:flex; gap:1.5rem; width:100% }
 
-  .card { background:#111827; border-radius:12px; border:1px solid #1e293b; padding:1rem 0.9rem; display:flex; flex-direction:column }
-  .card-inv { background:rgba(245,158,11,0.06); border:1px solid #f59e0b }
+  .card { flex:1; background:#111827; border-radius:12px; padding:1.8rem 1.2rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.6rem }
+  .card-c1 { border:1px solid rgba(16,185,129,0.3) }
+  .card-c2 { border:1px solid rgba(56,189,248,0.25) }
+  .card-c3 { border:2px solid #f59e0b; background:rgba(245,158,11,0.06) }
 
-  .card .label { font-size:clamp(0.8rem,1vw,0.9rem); color:#94a3b8; flex-shrink:0; margin-bottom:0.15rem; letter-spacing:0.02em }
-  .card .big { font-size:clamp(2rem,3.5vw,3rem); font-weight:900; line-height:1.15; flex-shrink:0; margin-bottom:0.1rem }
+  .card .icon { font-size:clamp(1.6rem,2.5vw,2.2rem) }
+  .card .label { font-size:clamp(1rem,1.5vw,1.3rem); color:#94a3b8; font-weight:500 }
+  .card .big { font-size:clamp(2.2rem,3.5vw,3rem); font-weight:900; color:#f1f5f9; line-height:1.1 }
+  .card .big em { font-style:normal; font-size:clamp(1rem,1.4vw,1.2rem); color:#94a3b8 }
+  .card .big span { color:#f59e0b }
+  .card .sub { font-size:clamp(0.9rem,1.3vw,1.1rem); color:#64748b; line-height:1.4 }
 
-  .card .detail { flex:1; font-size:clamp(0.75rem,0.95vw,0.85rem); color:#cbd5e1; line-height:1.6; margin-top:0.3rem }
-  .card .detail .hl { color:#f59e0b; font-weight:600 }
-  .card .detail small { color:#64748b; font-size:clamp(0.6rem,0.75vw,0.68rem) }
+  /* ── Bottom info strip ── */
+  .info { display:flex; gap:2rem; flex-wrap:wrap; justify-content:center }
+  .info-item { font-size:clamp(0.82rem,1.1vw,0.95rem); color:#64748b }
+  .info-item b { color:#94a3b8; font-weight:600 }
 
-  /* Specs in a minimal inline table */
-  .specs { display:flex; flex-wrap:wrap; gap:0.15rem 1rem; margin-top:0.2rem }
-  .specs span { font-size:clamp(0.68rem,0.85vw,0.78rem); color:#cbd5e1 }
-  .specs .tag { color:#64748b; min-width:4.5ch }
-
-  /* Price total - centered big */
-  .total-wrap { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center }
-  .total-wrap .label { font-size:clamp(0.75rem,0.95vw,0.85rem); color:#94a3b8; letter-spacing:0.03em }
-  .total-wrap .num { font-size:clamp(2.5rem,4vw,3.5rem); font-weight:900; color:#f59e0b; line-height:1.15; margin:0.15rem 0 }
-  .total-wrap .note { font-size:clamp(0.6rem,0.75vw,0.68rem); color:#64748b }
-
-  /* ── Bottom strip ── */
-  .bottom { flex-shrink:0; margin-top:1.5vh; display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem }
-  .b-item { display:flex; align-items:center; gap:0.4rem; padding:0.35rem 0.6rem; background:#111827; border:1px solid #1e293b; border-radius:8px }
-  .b-item .ico { font-size:clamp(1rem,1.3vw,1.2rem); flex-shrink:0 }
-  .b-item .txt { font-size:clamp(0.62rem,0.78vw,0.7rem); color:#94a3b8; line-height:1.3 }
-  .b-item .txt b { color:#cbd5e1 }
-
-  .ft { text-align:center; flex-shrink:0; padding:0.8vh 0 0 }
-  .ft p { font-size:clamp(0.5rem,0.6vw,0.55rem); color:#4b5563 }
+  .ft { font-size:clamp(0.6rem,0.75vw,0.65rem); color:#334155; margin-top:0.5rem }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="top">
-    <h1>⚡ 存储平台搭建方案</h1>
-    <div class="sub">为课题组搭建高性能数据处理与存储基础设施</div>
+  <div class="title">
+    存储平台搭建方案
+    <small>高性能计算节点 + 磁盘阵列 · 面向课题组数据底座建设</small>
   </div>
 
-  <!-- ═══ 核心卡片 ═══ -->
-  <div class="main">
-
-    <!-- 计算节点 -->
-    <div class="card">
-      <div class="label">🧠 计算节点</div>
-      <div class="big"><span style="color:#f1f5f9">× 2</span></div>
-      <div class="detail">
-        Intel® Xeon® Gold 6542Y × 2 / 台<br>
-        48 核 / 96 线程 · 512 GB DDR5<br>
-        25GbE · 支持 RDMA · 硬盘柜可扩展
-      </div>
-      <div class="specs">
-        <span><span class="tag">单价</span>¥15 万</span>
-        <span><span class="tag">小计</span><b style="color:#f59e0b">¥30 万</b></span>
-      </div>
+  <div class="cards">
+    <div class="card card-c1">
+      <div class="icon">🧠</div>
+      <div class="label">计算节点</div>
+      <div class="big">× <span>2</span> 台</div>
+      <div class="sub">Intel® Xeon® Gold 6542Y × 2<br>单台 ¥15 万，合计 <b style="color:#34d399">¥30 万</b></div>
     </div>
 
-    <!-- 存储阵列 -->
-    <div class="card">
-      <div class="label">💾 存储阵列</div>
-      <div class="big" style="display:flex;align-items:baseline;gap:0.5rem">
-        <span style="color:#f1f5f9;font-size:clamp(1.4rem,2.2vw,1.8rem)">HDD</span>
-        <span>~133<span style="font-size:clamp(0.9rem,1.4vw,1.2rem)">TiB</span></span>
-        <span style="color:#64748b;font-size:clamp(0.8rem,1.2vw,1rem)">+</span>
-        <span style="color:#06b6d4;font-size:clamp(1.4rem,2.2vw,1.8rem)">SSD</span>
-        <span style="color:#06b6d4">48T</span>
-      </div>
-      <div class="detail" style="margin-top:0.15rem">
-        机械盘 <span class="hl">182.4T</span>（RAID 6）· 固态 <span class="hl">54.56T</span>（缓存）<br>
-        机架式磁盘柜 · 支持在线扩容<br>
-        SSD 读写缓存加速，热数据访问 <small>延迟降低 10×</small>
-      </div>
-      <div class="specs">
-        <span><span class="tag">满配</span>¥170 万</span>
-        <span><span class="tag">含</span>全部硬盘</span>
-      </div>
+    <div class="card card-c2">
+      <div class="icon">💾</div>
+      <div class="label">存储容量</div>
+      <div class="big"><span>~133</span> TiB <em>+ 48T 缓存</em></div>
+      <div class="sub">HDD RAID 6 + SSD 读写加速<br>磁盘柜可继续扩展</div>
     </div>
 
-    <!-- 总价 -->
-    <div class="card card-inv">
-      <div class="label">📋 方案总价</div>
-      <div class="total-wrap">
-        <div class="num">¥200 万</div>
-        <div class="note">含 2 台计算节点 + 满配存储阵列</div>
-        <div class="note" style="margin-top:0.1rem;color:#cbd5e1">开源软件 · 不限用户数</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ═══ 辅助信息 ═══ -->
-  <div class="bottom">
-    <div class="b-item">
-      <span class="ico">🖥️</span>
-      <span class="txt"><b>计算节点</b><br>Intel® Xeon® Gold 6542Y × 2 · 48 核 / 96 线程 · 512 GB DDR5</span>
-    </div>
-    <div class="b-item">
-      <span class="ico">💿</span>
-      <span class="txt"><b>存储容量</b><br>~133 TiB HDD RAID 6 · 48T SSD 缓存加速 · 支持在线扩容</span>
-    </div>
-    <div class="b-item">
-      <span class="ico">⚙️</span>
-      <span class="txt"><b>部署说明</b><br>配合 GLake 数据平台使用，提供全部数据底座算力支撑</span>
+    <div class="card card-c3">
+      <div class="icon">📋</div>
+      <div class="label" style="color:#f59e0b;font-weight:700">方案总预算</div>
+      <div class="big" style="color:#f59e0b">¥<span>200</span> 万</div>
+      <div class="sub" style="color:#cbd5e1">计算 ¥30 万 + 存储 ¥170 万<br>开源软件，不限用户数</div>
     </div>
   </div>
 
-  <div class="ft">
-    <p>yujianke100.github.io/slides/storage-procurement</p>
+  <div class="info">
+    <span class="info-item"><b>处理器</b> Intel® Xeon® Gold 6542Y × 2 / 台 · 48 核 / 96 线程</span>
+    <span class="info-item"><b>磁盘</b> 182.4T HDD + 54.56T SSD</span>
+    <span class="info-item"><b>扩容</b> 硬盘柜支持在线扩展</span>
   </div>
+
+  <div class="ft">yujianke100.github.io/slides/storage-procurement</div>
 
 </div>
 </body>
