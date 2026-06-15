@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星瀚 · 智能算存系统 — 采购方案</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box }
+  html,body { width:100%; height:100%; background:#0a0e1a; overflow:hidden }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; color:#fff }
+
+  .page { width:100vw; height:100vh; padding:2vh 2.5vw; display:flex; flex-direction:column; overflow:hidden }
+
+  /* ── Top bar ── */
+  .top { display:flex; align-items:center; gap:0.8rem; flex-shrink:0; margin-bottom:1.2vh }
+  .logo { font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; background:linear-gradient(135deg,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+  .tagline { color:#cbd5e1; font-size:clamp(0.85rem,1.1vw,1rem); border-left:2px solid #334155; padding-left:0.6rem; line-height:1.3 }
+  .budget-tag { margin-left:auto; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; border-radius:8px; padding:0.25rem 0.8rem; font-size:clamp(0.9rem,1.2vw,1.1rem); font-weight:700; color:#f59e0b; white-space:nowrap }
+
+  /* ── Row 1: two cards side by side ── */
+  .row1 { flex:5; display:grid; grid-template-columns:1.1fr 0.9fr; gap:0.7rem; min-height:0; margin-bottom:0.5rem }
+  .col { display:flex; flex-direction:column; gap:0.35rem; min-height:0 }
+  .stitle { flex-shrink:0; font-size:clamp(0.75rem,0.95vw,0.88rem); font-weight:700; color:#f1f5f9; padding:0.15rem 0 }
+
+  .card { background:#111827; border-radius:8px; border:1px solid #1e293b; padding:0.5rem 0.7rem; display:flex; flex-direction:column; flex:1; min-height:0 }
+  .card-g { border-color:rgba(16,185,129,0.3) }
+  .card-b { border-color:rgba(56,189,248,0.25) }
+
+  .card h3 { font-size:clamp(0.78rem,1vw,0.92rem); color:#f59e0b; font-weight:700; margin-bottom:0.15rem; flex-shrink:0 }
+  .card .sub { font-size:clamp(0.65rem,0.8vw,0.72rem); color:#94a3b8; margin-bottom:0.2rem; flex-shrink:0 }
+
+  /* Spec table */
+  .specs { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:0.15rem 0.5rem; align-content:start }
+  .specs .lbl { font-size:clamp(0.62rem,0.78vw,0.7rem); color:#94a3b8 }
+  .specs .val { font-size:clamp(0.68rem,0.85vw,0.78rem); color:#e2e8f0 }
+  .specs .val em { color:#f59e0b; font-style:normal }
+
+  /* ── Storage capacity section ── */
+  .card .cap-row { display:flex; align-items:center; gap:0.4rem; flex-shrink:0; margin:0.2rem 0 }
+  .cap-bar-wrap { flex:1; height:clamp(1rem,1.3vw,1.2rem); background:#1e293b; border-radius:4px; overflow:hidden; display:flex }
+  .cap-bar-fill { height:100%; display:flex; align-items:center; justify-content:center; font-size:clamp(0.55rem,0.68vw,0.62rem); font-weight:600; color:#fff; transition:width 0.3s }
+  .cap-label { font-size:clamp(0.65rem,0.8vw,0.72rem); color:#e2e8f0; white-space:nowrap; flex-shrink:0; width:6ch }
+
+  /* Scale indicator */
+  .flow-row { flex:1; display:flex; align-items:center; gap:0.3rem; justify-content:center }
+  .flow-step { background:#1e293b; border-radius:6px; padding:0.25rem 0.45rem; text-align:center; flex:1 }
+  .flow-step .n { font-size:clamp(0.75rem,0.95vw,0.85rem); font-weight:700; color:#f1f5f9 }
+  .flow-step .d { font-size:clamp(0.55rem,0.65vw,0.6rem); color:#94a3b8 }
+  .flow-arrow { color:#334155; font-size:clamp(0.9rem,1.1vw,1rem); flex-shrink:0 }
+
+  /* ── Row 2: Bottom strip ── */
+  .row2 { flex:2.5; display:grid; grid-template-columns:0.7fr 1.3fr; gap:0.7rem; min-height:0 }
+  .summary-box { background:#111827; border:1px solid #1e293b; border-radius:8px; padding:0.4rem 0.6rem; display:flex; flex-direction:column; justify-content:center }
+  .summary-box h3 { font-size:clamp(0.72rem,0.9vw,0.82rem); color:#f59e0b; font-weight:700; margin-bottom:0.1rem }
+  .summary-box .big-num { font-size:clamp(1.4rem,2vw,1.8rem); font-weight:900; color:#f1f5f9; line-height:1.15 }
+  .summary-box .big-num span { color:#f59e0b }
+  .summary-box .desc { font-size:clamp(0.65rem,0.8vw,0.72rem); color:#94a3b8; line-height:1.35 }
+
+  .price-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.3rem }
+  .price-card { background:#111827; border:1px solid #1e293b; border-radius:8px; padding:0.35rem 0.5rem; text-align:center; display:flex; flex-direction:column; justify-content:center }
+  .price-card .item { font-size:clamp(0.62rem,0.75vw,0.68rem); color:#94a3b8; margin-bottom:0.05rem }
+  .price-card .price { font-size:clamp(0.85rem,1.1vw,1rem); font-weight:700; color:#f1f5f9 }
+  .price-card .price span { font-size:clamp(0.55rem,0.65vw,0.6rem); color:#64748b; font-weight:400 }
+
+  .ft { text-align:center; flex-shrink:0; padding:0.4vh 0 0 }
+  .ft p { font-size:clamp(0.5rem,0.6vw,0.55rem); color:#4b5563 }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ TOP ═══ -->
+  <div class="top">
+    <div class="logo">星瀚 · 智能算存系统</div>
+    <div class="tagline">高性能数据处理节点 × 2 · 全闪混合存储阵列 · 预算 ¥200 万</div>
+    <div class="budget-tag">¥200 万</div>
+  </div>
+
+  <!-- ═══ ROW 1 ═══ -->
+  <div class="row1">
+
+    <!-- LEFT: Compute Nodes -->
+    <div class="col">
+      <div class="stitle">🧠 计算节点 × 2 台 — 「星瀚 · 天枢数据处理节点」</div>
+      <div class="card card-g">
+        <h3>每台核心配置</h3>
+        <div class="sub">Intel® Xeon® Gold 6542Y × 2 · 总计 48 核 / 96 线程 · 2.9 GHz 基础频率</div>
+        <div class="specs">
+          <span class="lbl">处理器</span><span class="val">Intel® Xeon® Gold 6542Y × 2</span>
+          <span class="lbl">核心</span><span class="val">24 核 × 2 = 48 核 / 96 线程</span>
+          <span class="lbl">内存</span><span class="val">512 GB DDR5（可扩展）</span>
+          <span class="lbl">网络</span><span class="val">25GbE × 2 · 支持 RDMA</span>
+          <span class="lbl">扩展性</span><span class="val"><em>硬盘柜可继续扩展</em></span>
+          <span class="lbl">参考单价</span><span class="val">¥15 万 / 台</span>
+        </div>
+      </div>
+      <div class="card" style="flex:0.5;border-color:rgba(245,158,11,0.15);justify-content:center">
+        <div style="text-align:center;font-size:clamp(0.72rem,0.9vw,0.82rem);color:#cbd5e1">
+          <b style="color:#f59e0b">异构计算能力：</b>满足大规模数据清洗、AI 模型推理、并行计算任务
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Storage Array -->
+    <div class="col">
+      <div class="stitle">💾 存储阵列 — 「星瀚 · 沧海全闪混合存储阵列」</div>
+      <div class="card card-b">
+        <h3>磁盘配置</h3>
+        <div class="sub">SSD 高速缓存 + HDD RAID 6 主存储 · 机架式磁盘柜，支持在线扩容</div>
+
+        <!-- HDD bar -->
+        <div class="cap-row" style="margin-top:0.1rem">
+          <span style="font-size:clamp(0.62rem,0.75vw,0.68rem);color:#64748b;width:3ch">HDD</span>
+          <div class="cap-bar-wrap">
+            <div class="cap-bar-fill" style="width:80%;background:linear-gradient(90deg,#2563eb,#3b82f6)">RAID 6 可用 80%</div>
+            <div class="cap-bar-fill" style="width:20%;background:#1e293b;color:#64748b;font-size:clamp(0.5rem,0.6vw,0.55rem)">校验</div>
+          </div>
+          <div class="cap-label"><b>~146T</b></div>
+        </div>
+        <div class="specs" style="grid-template-columns:1.2fr 1fr;gap:0.08rem 0.3rem">
+          <span class="lbl">机械盘总量</span><span class="val">182.4T（约 10 × 18T）</span>
+          <span class="lbl">RAID 6 可用</span><span class="val">~146T（扣除 2 盘校验）</span>
+          <span class="lbl">系统格式化后</span><span class="val"><em>~133 TiB</em>（服务器识别容量）</span>
+        </div>
+
+        <!-- SSD bar -->
+        <div class="cap-row" style="margin-top:0.15rem">
+          <span style="font-size:clamp(0.62rem,0.75vw,0.68rem);color:#64748b;width:3ch">SSD</span>
+          <div class="cap-bar-wrap">
+            <div class="cap-bar-fill" style="width:88%;background:linear-gradient(90deg,#0891b2,#06b6d4)">缓存可用 88%</div>
+            <div class="cap-bar-fill" style="width:12%;background:#1e293b;color:#64748b;font-size:clamp(0.5rem,0.6vw,0.55rem)">预留</div>
+          </div>
+          <div class="cap-label"><b>~48T</b></div>
+        </div>
+        <div class="specs" style="grid-template-columns:1.2fr 1fr;gap:0.08rem 0.3rem">
+          <span class="lbl">固态盘总量</span><span class="val">54.56T（多点热数据缓存）</span>
+          <span class="lbl">有效缓存容量</span><span class="val"><em>~48T</em>（读写加速层）</span>
+          <span class="lbl">加速效果</span><span class="val">冷数据自动缓存为热数据，<em>访问延迟降低 10×</em></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ROW 2 ═══ -->
+  <div class="row2">
+    <!-- Left: Storage flow -->
+    <div class="summary-box">
+      <h3>📊 容量计算链路</h3>
+      <div class="flow-row">
+        <div class="flow-step"><div class="n">182.4T</div><div class="d">硬盘标称</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="n">~146T</div><div class="d">RAID 6</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="n">~133<em style="color:#f59e0b">TiB</em></div><div class="d">服务器识别</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="border-color:#06b6d4"><div class="n">+ 48T</div><div class="d" style="color:#06b6d4">SSD 缓存</div></div>
+      </div>
+      <div class="desc" style="margin-top:0.15rem;text-align:center">
+        硬盘 &times; 0.909 → TiB · RAID 6 损耗 2 盘 · SSD 缓存加速热数据
+      </div>
+    </div>
+
+    <!-- Right: Price breakdown -->
+    <div class="price-grid">
+      <div class="price-card" style="border-color:rgba(16,185,129,0.3)">
+        <div class="item">🧠 计算节点 × 2</div>
+        <div class="price">¥30 万</div>
+        <div class="item">¥15 万 / 台</div>
+      </div>
+      <div class="price-card" style="border-color:rgba(56,189,248,0.25)">
+        <div class="item">💾 存储阵列（满配）</div>
+        <div class="price">¥170 万</div>
+        <div class="item">含 182.4T HDD + 54.56T SSD</div>
+      </div>
+      <div class="price-card" style="border-color:#f59e0b;background:rgba(245,158,11,0.06)">
+        <div class="item" style="color:#f59e0b;font-weight:700">📋 方案总价</div>
+        <div class="price" style="color:#f59e0b;font-size:clamp(1rem,1.4vw,1.3rem)">¥200 万</div>
+        <div class="item" style="color:#cbd5e1">开源软件 · 不限用户数</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <p>yujianke100.github.io/slides/storage-procurement · 2026 · 面向课题组的存储算力建设方案</p>
+  </div>
+
+</div>
+</body>
+</html>
