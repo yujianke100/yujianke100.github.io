@@ -204,11 +204,15 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <div class="w tc"><h2>为什么要在此刻讨论 KG 构建？</h2></div>
   <p class="lead tc">数据已经就位，但知识还是散装的</p>
   <div class="g2">
-    <div class="pg"><div class="l">✅ 已有数据资产</div>
-      <p>政策文本 1.3M · 裁判文书 163.7M · 法律法规 4.97M · LinkedIn 18.7B 行 · CHFS 五轮<br><b style="color:#e2e8f0">总计 940GiB+</b></p>
+    <div class="pg"><div class="l">✅ 已有数据资产 · 一仓五库框架</div>
+      <p><b>政策主题仓</b>：政策文本百万级 · AI政策（中央/省/地市）<br>
+         <b>法人综合库</b>：企业注册与退出 800万+<br>
+         <b>人口综合库</b>：LinkedIn · CHFS · 雇主-雇员匹配<br>
+         <b>宏观经济库</b>：宏观统计面板·上市公司MD&A<br>
+         <b>公共信用库</b>：裁判文书千万级 · 法律法规十万级</p>
     </div>
     <div class="pb"><div class="l">❌ 当前瓶颈</div>
-      <p>政策之间没有关系链接，裁判文书无法关联到引用政策，企业的政策红利传导无法被结构化查询——数据是"散装"的</p>
+      <p>数据是"散装"的——政策之间没有关系链接，裁判文书无法关联到引用政策，企业的政策红利传导无法被结构化查询</p>
     </div>
   </div>
   <div class="q"><strong>一个简单的问题暴露了差距</strong>：<br>"2024年国务院发布的减税降费政策，哪些在2025年被废止？被废止后有多少裁判文书还引用它们？"<br>没有 KG → 搜索 + 人工拼凑；有了 KG → 一条 Cypher 查询</div>
@@ -395,7 +399,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
       <p style="margin-top:0.3rem"><code>pip install neug</code>，Cypher 查询 + HTAP 双模式。GraphScope 同团队出品。</p>
     </div>
     <div class="card"><h4>⚡ 图计算</h4><span class="tag tt">GraphScope</span>
-      <p style="margin-top:0.3rem">分布式图引擎，已纳入 GLake 专利。内置 GraphLearn 直接跑 GNN。</p>
+      <p style="margin-top:0.3rem">阿里开源分布式图引擎，支持千亿级图分析。内置 GraphLearn 可直接跑 GNN。</p>
     </div>
     <div class="card"><h4>🔗 实体对齐</h4><span class="tag tg">Harrier 270m</span>
       <p style="margin-top:0.3rem">已有本地 embedding 服务（:8900），用于 EL 和实体归一化。</p>
