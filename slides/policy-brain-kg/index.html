@@ -509,16 +509,8 @@ const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
 
 function render(idx) {
-  const html = slides[idx]();
+  const html = `<div class="slide active">${slides[idx]()}</div>`;
   app.innerHTML = html;
-  const el = app.querySelector('.slide');
-  if (el) { el.classList.add('active'); }
-  else {
-    requestAnimationFrame(() => {
-      const a = app.querySelector('.slide');
-      if (a) a.classList.add('active');
-    });
-  }
   progress.style.width = ((idx + 1) / slides.length * 100) + '%';
   sn.textContent = (idx + 1) + ' / ' + slides.length;
   prevBtn.disabled = idx === 0;
