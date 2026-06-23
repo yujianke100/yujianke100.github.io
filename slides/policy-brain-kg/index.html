@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Policy Brain KG 构建工作流 — Ontology-Driven KG Construction</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0a0e1a}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#e2e8f0}
+  .stage{width:100%;height:100vh;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:5vh 6vw;opacity:0;transform:scale(0.97);pointer-events:none;transition:opacity 0.45s ease,transform 0.45s ease;overflow-y:auto}
+  .slide.active{opacity:1;transform:scale(1);pointer-events:auto}
+  .slide:nth-child(even){background:#111827}
+  .slide:nth-child(odd){background:#0a0e1a}
+  .progress{position:fixed;bottom:0;left:0;height:3px;background:#f59e0b;z-index:100;transition:width 0.3s ease}
+  .sn{position:fixed;bottom:16px;right:24px;color:#475569;font-size:0.9rem;font-weight:600;z-index:100;font-variant-numeric:tabular-nums;user-select:none}
+  .na{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(30,41,59,0.8);border:1px solid #2d3a50;color:#94a3b8;font-size:1.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:100;transition:all 0.2s;backdrop-filter:blur(8px)}
+  .na:hover{background:rgba(245,158,11,0.2);color:#f59e0b;border-color:#f59e0b}
+  .na.pl{left:12px}.na.nx{right:12px}
+  .na:disabled{opacity:0;pointer-events:none}
+  .w{max-width:1100px;margin:0 auto;width:100%}
+  .w h1{font-size:clamp(2.4rem,5vw,3.8rem);font-weight:800;margin-bottom:1.2rem;line-height:1.2}
+  .w h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:1.2rem;padding-bottom:0.5rem;border-bottom:2px solid #f59e0b;display:inline-block}
+  .w h3{font-size:clamp(1.1rem,1.6vw,1.3rem);font-weight:600;margin-bottom:0.6rem;color:#f59e0b}
+  .w p{line-height:1.7;font-size:clamp(1rem,1.5vw,1.2rem);color:#cbd5e1}
+  .w .lead{font-size:clamp(1.1rem,1.8vw,1.35rem);color:#e2e8f0;line-height:1.8}
+  .ht{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;text-align:center;background:linear-gradient(135deg,#06b6d4 0%,#f59e0b 50%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.2rem;line-height:1.1}
+  .hs{text-align:center;font-size:clamp(1rem,1.8vw,1.4rem);max-width:800px;margin:0 auto;color:#94a3b8;line-height:1.8}
+  .htg{display:inline-block;margin:1.2rem auto 0;padding:0.6rem 1.8rem;border:1px solid #06b6d4;border-radius:12px;background:rgba(6,182,212,0.08);color:#06b6d4;font-size:clamp(0.9rem,1.2vw,1.05rem);text-align:center}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem}.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem}
+  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:#1e293b;border:1px solid #2d3a50;border-radius:14px;padding:1.4rem}.card h4{color:#f59e0b;margin-bottom:0.4rem;font-size:clamp(0.95rem,1.2vw,1.05rem)}.card p{font-size:clamp(0.85rem,1.1vw,0.95rem);color:#cbd5e1;line-height:1.5}
+  .card .tag{margin-bottom:0.5rem}
+  .pb{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:1rem 1.3rem}
+  .pb .l{color:#ef4444;font-weight:600;font-size:clamp(0.8rem,1vw,0.9rem);margin-bottom:0.3rem}
+  .pb p{font-size:clamp(0.85rem,1vw,0.95rem);color:#cbd5e1}
+  .pg{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:1rem 1.3rem}
+  .pg .l{color:#10b981;font-weight:600;font-size:clamp(0.8rem,1vw,0.9rem);margin-bottom:0.3rem}
+  .pg p{font-size:clamp(0.85rem,1vw,0.95rem);color:#cbd5e1}
+  .py{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:1rem 1.3rem}
+  .py .l{color:#f59e0b;font-weight:600;font-size:clamp(0.8rem,1vw,0.9rem);margin-bottom:0.3rem}
+  .py p{font-size:clamp(0.85rem,1vw,0.95rem);color:#cbd5e1}
+  .tag{display:inline-block;padding:0.15rem 0.5rem;border-radius:6px;font-size:clamp(0.72rem,0.9vw,0.82rem);font-weight:600}
+  .tg{background:rgba(245,158,11,0.15);color:#f59e0b}.tt{background:rgba(6,182,212,0.15);color:#06b6d4}.tgg{background:rgba(16,185,129,0.15);color:#10b981}.tr{background:rgba(239,68,68,0.15);color:#ef4444}
+  .tw{overflow-x:auto;margin:0.8rem 0}
+  table{width:100%;border-collapse:collapse;font-size:clamp(0.72rem,1vw,0.88rem)}
+  th,td{padding:0.5rem 0.6rem;text-align:left;border-bottom:1px solid #2d3a50}
+  th{background:#1e293b;color:#f59e0b;font-weight:600}
+  td{color:#cbd5e1}td b{color:#e2e8f0}
+  .q{border-left:3px solid #f59e0b;padding:0.8rem 1.2rem;margin:0.8rem 0;background:rgba(245,158,11,0.05);border-radius:0 8px 8px 0;font-size:clamp(0.88rem,1.1vw,0.95rem);color:#cbd5e1;line-height:1.6}
+  .q strong{color:#e2e8f0}
+  .mb1{margin-bottom:0.8rem}.mt1{margin-top:0.8rem}.tc{text-align:center}
+  ul{margin:0.4rem 0 0.4rem 1.5rem}li{line-height:1.6;color:#cbd5e1;font-size:clamp(0.85rem,1.1vw,0.95rem)}
+  .bounce{animation:b2 2s infinite}@keyframes b2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .arch-box{background:#0d1117;border-radius:12px;padding:1.2rem;border:1px solid #2d3a50;font-family:'SF Mono','Fira Code',monospace;font-size:clamp(0.78rem,1vw,0.9rem);line-height:1.6;overflow-x:auto}
+  .flow-row{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin:0.6rem 0}
+  .flow-box{padding:0.6rem 1rem;border-radius:8px;border:1.5px solid;font-size:clamp(0.78rem,1vw,0.88rem);font-weight:600;text-align:center;min-width:80px}
+  .flow-arrow{color:#475569;font-size:1.2rem}
+  .hl-green{color:#10b981}.hl-blue{color:#38bdf8}.hl-amber{color:#f59e0b}.hl-purple{color:#a78bfa}.hl-red{color:#ef4444}
+  .timeline{position:relative;padding-left:24px;margin:1rem 0}
+  .timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:#2d3a50}
+  .tl-item{position:relative;margin-bottom:1rem;padding-left:0.5rem}
+  .tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid}
+  .tl-item.green::before{border-color:#10b981;background:rgba(16,185,129,0.2)}
+  .tl-item.blue::before{border-color:#38bdf8;background:rgba(56,189,248,0.2)}
+  .tl-item.amber::before{border-color:#f59e0b;background:rgba(245,158,11,0.2)}
+  .tl-item.purple::before{border-color:#a78bfa;background:rgba(167,139,250,0.2)}
+  .tl-title{font-weight:600;font-size:clamp(0.9rem,1.1vw,1rem)}
+  .tl-desc{font-size:clamp(0.78rem,0.95vw,0.85rem);color:#94a3b8;margin-top:0.2rem}
+  .hl-box{background:#0d1117;border:1px solid #2d3a50;border-radius:8px;padding:0.8rem 1rem;font-family:'SF Mono','Fira Code',monospace;font-size:clamp(0.78rem,1vw,0.88rem);line-height:1.6;overflow-x:auto;margin:0.5rem 0}
+  .hl-gray{color:#64748b}.hl-key{color:#f59e0b}.hl-str{color:#10b981}.hl-op{color:#38bdf8}
+</style>
+</head>
+<body>
+<div class="stage" id="app"></div>
+<div class="progress" id="progress"></div>
+<div class="sn" id="sn"></div>
+<button class="na pl" id="prev">&lsaquo;</button>
+<button class="na nx" id="next">&rsaquo;</button>
+
+<script>
+const slides = [];
+
+// === Slide 1: Cover ===
+slides.push(() => `<div class="w tc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+  <div class="ht">Policy Brain KG</div>
+  <p class="hs" style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Ontology-Driven Knowledge Graph Construction</p>
+  <p class="hs" style="margin-top:0.8rem">从 Human-in-the-loop 到自动构建的知识图谱工作流</p>
+  <div class="htg mt1">本体驱动 · 大规模政策数据 · GNN 下游</div>
+  <p style="margin-top:2vh;color:#475569;font-size:0.85rem"><span class="bounce" style="display:inline-block">&darr;</span> 按 &rarr; 键或点击右侧箭头浏览</p>
+</div>`);
+
+// === Slide 2: 为什么要在此刻讨论KG构建 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>为什么要在此刻讨论KG构建？</h2>
+  <p class="lead mb1">政策大脑的数据资源已经就位，但知识还是散装的</p>
+  <div class="g2 mb1">
+    <div class="pg"><div class="l">✅ 已有数据资产</div>
+      <p>政策文本 1.3M · 裁判文书 163.7M · 法律法规 4.97M · LinkedIn 18.7B 行 · CHFS 五轮<br><b>总计 940GiB+</b></p>
+    </div>
+    <div class="pb"><div class="l">❌ 当前瓶颈</div>
+      <p>数据是"散装"的——政策之间没有关系链接，裁判文书无法关联到其引用的政策，企业的政策红利传导无法被结构化查询</p>
+    </div>
+  </div>
+  <div class="q"><strong>一个简单的问题暴露了差距</strong>："2024年国务院发布的减税降费政策，哪些在2025年被废止？被废止后有多少裁判文书还引用它们？"<br>没有 KG，答案是搜索 + 人工拼凑；有了 KG，一条 Cypher 查询即可。</div>
+</div>`);
+
+// === Slide 3: 问题——全局构图为什么难？ ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>全局构图最大的困难在哪？</h2>
+  <p class="lead mb1">不是技术不会，是量太大、质量不可控</p>
+  <div class="g2 mb1">
+    <div class="pb"><div class="l">🔴 数据规模</div>
+      <p>940GiB 全量 LLM 实体关系抽取：以单条政策 2K tokens 计，1.3M 条 = 2.6B tokens。全量用顶级模型做抽取，成本不可接受。<br><br>裁判文书 163.7M 条全量抽取更不可能——那不是"抽取"，是"全文翻译"级别的开销。</p>
+    </div>
+    <div class="pb"><div class="l">🔴 抽取质量</div>
+      <p>政策文本是中国特色法律语言——"按照《xx法》第x条有关规定"、"除另有规定外"、缩略语、引用的引用嵌套。LLM 抽取的准确率在 85-92% 之间波动，且 8% 的噪声在 1.3M 规模下就是 <b>10万+ 条错误三元组</b>。</p>
+    </div>
+  </div>
+  <div class="q"><strong>但正因为难，所以有学术价值。</strong> "大规模政策领域本体驱动的知识图谱自动构建"——工程挑战 = 研究贡献。</div>
+</div>`);
+
+// === Slide 4: 路线选择——为什么本体驱动？ ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>为什么选本体驱动（Ontology-Driven）？</h2>
+  <p class="lead mb1">不是"要不要"本体，是"怎么建"本体</p>
+  <div class="g2 mb1">
+    <div class="card"><h4>🗺️ 纯 LLM Wiki（RAG）</h4>
+      <span class="tag tg">搜索好，结构差</span>
+      <p style="margin-top:0.5rem">向量检索 + LLM 总结在"找文档"上很好，但回答不了结构化问题：哪些政策之间是废止关系？哪些企业适合同一政策？<br><b>GNN 没有图可喂。</b></p>
+    </div>
+    <div class="card"><h4>🏗️ 纯 KG（自底向上）</h4>
+      <span class="tag tr">噪声不可控</span>
+      <p style="margin-top:0.5rem">没有 schema 约束，LLM 自由抽取的海量三元组充满噪声、冗余、不一致。虽然看起来有图，但<b>垃圾进垃圾出</b>。</p>
+    </div>
+    <div class="card" style="grid-column:1/-1"><h4>🎯 本体驱动 KG（我们选的）</h4>
+      <span class="tag tgg">Schema 先定义，LLM 再填充</span>
+      <p style="margin-top:0.5rem">先由 Human + LLM 协作定义领域本体（类、关系、约束），再让 LLM<b>按 schema 约束</b> 抽取实例。噪声可检测、质量可衡量、GNN 有干净输入。</p>
+    </div>
+  </div>
+  <div class="q"><strong>核心区别</strong>：不是"LLM 随便抽"→"拼成图"；而是"先画好框→LLM 往里填"→"填完检查"。</div>
+</div>`);
+
+// === Slide 5: LLM 实例填充到底是什么意思？ ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>术语澄清 · LLM 实例填充是什么</h2>
+  <p class="lead mb1">不是动态编程，是 <b>Schema-Guided Extraction</b></p>
+  <div class="q"><strong>不是</strong>"写一个动态程序去抽取"——没有代码在跑，没有 if-else 控制流。<br><strong>而是</strong>：给定 schema → 给 LLM 看文本 + 抽取规范 → LLM 输出结构化的 JSON 实例。</div>
+  <div class="hl-box mb1">
+<span class="hl-gray">// 输入：schema 定义</span><br>
+{<br>
+  <span class="hl-key">"policy":</span> { <span class="hl-str">"properties"</span>: [发文机关, 发文时间, 文号, 效力层级], <span class="hl-str">"relations"</span>: [废止, 修订, 依据, 适用于, 补充] }<br>
+}<br><br>
+<span class="hl-gray">// LLM 读政策文本 → 输出实例</span><br>
+{<br>
+  <span class="hl-key">"entities"</span>: [{<span class="hl-str">"type"</span>: <span class="hl-str">"policy"</span>, <span class="hl-str">"id"</span>: <span class="hl-str">"财税[2023]1号"</span>, <span class="hl-str">"发文机关"</span>: <span class="hl-str">"财政部"</span>, ...}],<br>
+  <span class="hl-key">"relations"</span>: [{<span class="hl-str">"source"</span>: <span class="hl-str">"财税[2023]1号"</span>, <span class="hl-str">"type"</span>: <span class="hl-str">"废止"</span>, <span class="hl-str">"target"</span>: <span class="hl-str">"财税[1999]5号"</span>}]<br>
+}
+  </div>
+  <div class="g3">
+    <div class="pg tc"><b style="color:#10b981">✅ Schema 约束</b><p style="font-size:0.85rem">LLM 输出类型受限，不会凭空创造新关系</p></div>
+    <div class="pg tc"><b style="color:#10b981">✅ 结构化可查</b><p style="font-size:0.85rem">输出直接是 JSON，无需 NER→RE 两阶段管线</p></div>
+    <div class="pg tc"><b style="color:#10b981">✅ 质量可检</b><p style="font-size:0.85rem">schema compliance 可自动校验，异常值可隔离</p></div>
+  </div>
+</div>`);
+
+// === Slide 6: 全流程概览 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>全流程概览</h2>
+  <p class="lead mb1">四条阶段，由人工到自动，由设计到 GNN</p>
+  <div class="arch-box mb1">
+<span style="color:#475569">┌─ 数据源 ──────────────────────────────────────────────────────────────────┐</span><br>
+<span style="color:#64748b">　MySQL: 政策1.3M │ MongoDB: 裁判文书163.7M │ ES: 法规4.97M │ LinkedIn 18.7B</span><br>
+<span style="color:#10b981">└────────────────────────────────────────────────────────────────────── v ──┘</span><br>
+<span style="color:#10b981">　Phase 1: HITL 本体设计</span><span style="color:#475569"> ───────── </span><span style="color:#10b981">LLM产候选→专家审→OWL schema</span><br>
+<span style="color:#38bdf8">　Phase 2: LLM 实例填充</span><span style="color:#475569"> ───────── </span><span style="color:#38bdf8">按 schema 约束 → 批量抽取 1.3M 政策</span><br>
+<span style="color:#a78bfa">　Phase 3: KG 存储 & 链接</span><span style="color:#475569"> ──── </span><span style="color:#a78bfa">NeuG/GraphScope入库 + 裁判文书 EL</span><br>
+<span style="color:#ef4444">　Phase 4: GNN 下游</span><span style="color:#475569"> ─────────── </span><span style="color:#ef4444">政策匹配 / 冲突检测 / 企业传导</span><br>
+<span style="color:#f59e0b">　⚡ 学术机会: 每个Phase都有可发表的创新点</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-item green"><div class="tl-title">Phase 1: HITL 本体设计 [1-2周]</div><div class="tl-desc">LLM 读 500 条政策样本 → 输出候选本体 → 专家在 Gra.fo 审核确认</div></div>
+    <div class="tl-item blue"><div class="tl-title">Phase 2: LLM 实例填充 [2-3周]</div><div class="tl-desc">按确认 schema 批量抽取 1.3M 政策三元组 → 质量校验 → 迭代修正 schema</div></div>
+    <div class="tl-item purple"><div class="tl-title">Phase 3: NeuG + Entity Linking [并行]</div><div class="tl-desc">kg入库 + 裁判文书 163.7M 关联到政策节点</div></div>
+    <div class="tl-item amber"><div class="tl-title">Phase 4: GNN + 论文 [持续]</div><div class="tl-desc">GNN 模型产出 + 学术论文投递</div></div>
+  </div>
+</div>`);
+
+// === Slide 7: Phase 1 详解——HITL ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>Phase 1 详解 · HITL 本体设计</h2>
+  <p class="lead mb1"><span class="tag tgg">Human-In-The-Loop</span> 人类在回路中</p>
+  <p><b>HITL</b> = AI 提出候选，人类审核修正。不追求一步到位，而是 <b>快速出初稿 → 审 → 改 → 再抽</b> 的闭环。</p>
+  <div class="g2 mb1" style="margin-top:0.8rem">
+    <div class="card">
+      <h4>Step 1 · LLM 产候选</h4>
+      <p>输入 500-1000 条代表性政策文本。<br>LLM 归纳候选类（政策/法规/企业/行业/地区）、候选关系（废止/依据/适用于/补充）、候选属性（发文机关/时间/效力层级）。</p>
+      <div class="hl-box" style="margin-top:0.5rem">
+        <span class="hl-gray">LLM output:</span><br>
+        Classes: 政策, 发文机构, 行业, 地区, 企业<br>
+        Relations: 废止, 修订, 依据, 适用于, 补充<br>
+        Attributes: 发文时间, 文号, 效力层级
+      </div>
+    </div>
+    <div class="card">
+      <h4>Step 2 · 专家用 Gra.fo 审核</h4>
+      <p>俞鉴珂 + 张老师 在 <b>Gra.fo</b>（Web 版本体编辑器，替代桌面端 Protégé）中：</p>
+      <ul>
+        <li>审核类层次关系（is-a 正确吗？）</li>
+        <li>修正关系定义（"依据"和"按照"是同一个关系吗？）</li>
+        <li>添加约束（policy 必须有发文时间）</li>
+        <li>确认 → 导出 OWL schema</li>
+      </ul>
+    </div>
+  </div>
+  <div class="q"><strong>为什么先 HITL 不是全自动？</strong> 政策领域无人可用的现成本体，纯 LLM 产出的错误率在 15-25%。人工审核 500 条产生的候选成本只需要 <b>半天-1天</b>，但能把噪声降到 &lt;3%。</div>
+</div>`);
+
+// === Slide 8: Phase 2 详解——LLM 实例填充 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>Phase 2 详解 · LLM 实例填充</h2>
+  <p class="lead mb1">按 schema 约束，批量抽取 1.3M 政策</p>
+  <div class="g2 mb1">
+    <div class="card">
+      <h4>抽取管线</h4>
+      <p>每条政策文本 → 拼接 prompt（政策原文 + schema 定义 + 输出格式约束）→ LLM 输出 JSON 实例</p>
+      <div class="hl-box" style="margin-top:0.5rem;font-size:clamp(0.72rem,0.9vw,0.8rem)">
+<span class="hl-gray"># 管线示意（不是代码）</span><br>
+batch = read_policies(limit=<span class="hl-str">"1.3M"</span>)<br>
+<span class="hl-key">for</span> policy <span class="hl-op">in</span> batch:<br>
+&nbsp;&nbsp;json = llm.extract(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text=policy,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;schema=confirmed_schema,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;format=<span class="hl-str">"structured_JSON"</span><br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;validate(json, schema)  <span class="hl-gray">// 质量门</span><br>
+&nbsp;&nbsp;kg.append(json)
+      </div>
+    </div>
+    <div class="card">
+      <h4>质量控制策略</h4>
+      <ul>
+        <li><b>Schema compliance check</b>：LLM 输出是否遵守了 schema 的类型约束？不合规的直接标记重抽</li>
+        <li><b>一致性校验</b>：同一发文机关的名字不一致（"财政部" vs "中华人民共和国财政部"）→ 实体对齐</li>
+        <li><b>冲突检测</b>：政策 A 说废止 B，B 说修订 A → 冲突三元组打标</li>
+        <li><b>抽样评估</b>：每 1000 条抽 1 条人工审核，统计精度</li>
+      </ul>
+    </div>
+  </div>
+  <div class="q"><strong>这里的学术机会</strong> (R2)：1.3M 场景下 LLM 抽取的噪声分布是长尾还是随机？是否存在自纠正机制可以设计？</div>
+</div>`);
+
+// === Slide 9: 技术选型——为什么是这个栈 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>技术选型</h2>
+  <p class="lead mb1">开源优先 · 阿里系协作 · 学术友好</p>
+  <div class="g3 mb1">
+    <div class="card"><h4>📐 本体设计</h4>
+      <span class="tag tt">Gra.fo (Web)</span><span class="tag tg" style="margin-left:0.4rem">或 Protégé (Desktop)</span>
+      <p style="margin-top:0.5rem">Gra.fo 是 Web 端的本体编辑器，无需安装，适合远程协作审核。Protégé 是桌面端 gold standard。</p>
+    </div>
+    <div class="card"><h4>🗄️ 图存储</h4>
+      <span class="tag tgg">NeuG (阿里开源)</span>
+      <p style="margin-top:0.5rem"><code>pip install neug</code>，支持 Cypher 查询 + HTAP（嵌入式/服务双模式）。<br>与 GraphScope 同团队出品，原生对接。</p>
+    </div>
+    <div class="card"><h4>⚡ 图计算</h4>
+      <span class="tag tt">GraphScope (阿里开源)</span>
+      <p style="margin-top:0.5rem">分布式图计算引擎，已纳入 GLake 专利架构。内置 GraphLearn 可直接跑 GNN，无需导出数据。</p>
+    </div>
+    <div class="card"><h4>🧠 LLM 抽取</h4>
+      <span class="tag tg">DeepSeek v4 系列</span>
+      <p style="margin-top:0.5rem">已有 Hermes + DeepSeek 基础设施。flash 版性价比极高，pro 版用于质量抽检。</p>
+    </div>
+    <div class="card"><h4>🔗 桥接</h4>
+      <span class="tag tt">Neosemantics (n10s)</span>
+      <p style="margin-top:0.5rem">如果用 Neo4j，n10s 做 OWL→Property Graph 映射。NeuG 原生 Cypher 支持。</p>
+    </div>
+    <div class="card"><h4>🏠 已有资产</h4>
+      <span class="tag tgg">Harrier 270m embedding</span>
+      <p style="margin-top:0.5rem">已有本地 embedding 服务（:8900），可用于实体对齐、EL 的向量检索底座。</p>
+    </div>
+  </div>
+</div>`);
+
+// === Slide 10: 学术机会一览 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>6 个学术机会</h2>
+  <p class="lead mb1">每个 Phase 都可拆出创新点</p>
+  <div class="tw">
+    <table>
+      <tr><th>#</th><th>机会</th><th>关联阶段</th><th>创新点</th></tr>
+      <tr><td><b>R1</b></td><td>LLM 辅助政策本体自动生成</td><td><span class="tag tgg">Phase 1</span></td><td>HITL → 半自动的过渡方法</td></tr>
+      <tr><td><b>R2</b></td><td>大规模政策关系抽取质量与噪声</td><td><span class="tag tgg">Phase 2</span></td><td>1.3M 规模下的噪声分布 + 自纠正</td></tr>
+      <tr><td><b>R3</b></td><td>Schema Feedback Loop</td><td><span class="tag tt">Phase 1→2</span></td><td>抽取中发现边界 case → 自动建议本体修正</td></tr>
+      <tr><td><b>R4</b></td><td>跨域 Entity Linking</td><td><span class="tag tt">Phase 3</span></td><td>163.7M 裁判文书 → 政策节点</td></tr>
+      <tr><td><b>R5</b></td><td>时序政策 KG (Temporal Evolution)</td><td><span class="tag tg">Phase 3</span></td><td>政策版本化 + 增量更新</td></tr>
+      <tr><td><b>R6</b></td><td>GNN-on-KG 政策分析</td><td><span class="tag tg">Phase 4</span></td><td>政策匹配/冲突检测/企业传导模型</td></tr>
+    </table>
+  </div>
+  <div class="g3 mt1">
+    <div class="py tc"><b style="color:#f59e0b">🎯 近期 (6-8月)</b><p style="font-size:0.85rem">R1 HITL 阶段 → CCF-B/C 会议</p></div>
+    <div class="py tc"><b style="color:#f59e0b">🏆 年底</b><p style="font-size:0.85rem">R1+R2 → HITL→半自动 → 冲 CCF-A</p></div>
+    <div class="py tc"><b style="color:#f59e0b">🚀 明年</b><p style="font-size:0.85rem">全链路 → 系统型论文</p></div>
+  </div>
+</div>`);
+
+// === Slide 11: R1 深度展开 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>🎯 R1 · LLM 辅助政策本体自动生成</h2>
+  <p class="lead mb1">从 HITL 到半自动到全自动的三阶段进化</p>
+  <div class="g2 mb1">
+    <div class="pg"><div class="l">Stage 1 · HITL（可落地）</div>
+      <p>LLM 产候选本体 → 专家审 → 确认。1-2 周出第一版。</p>
+      <p style="margin-top:0.3rem"><b>论文角度</b>：提出"政策领域 HITL 本体设计方法"，比较纯 LLM vs HITL 的质量差异。实验成本低，团队沟通本身也是实验数据。</p>
+    </div>
+    <div class="py"><div class="l">Stage 2 · 半自动（学术创新）</div>
+      <p>LLM 自动产出 + 只让专家审"高置信度错误"的样本。用不确定性采样 + active learning 减少人工量。</p>
+      <p style="margin-top:0.3rem"><b>论文角度</b>："How few edits can achieve policy ontology of expert quality?"</p>
+    </div>
+    <div class="py" style="grid-column:1/-1"><div class="l">Stage 3 · 全自动 + 微调（前沿）</div>
+      <p>从全量政策文本自底向上归纳本体：文本聚类 → 候选类 → 关系归纳 → 层次化。人工只做最终整体校验。</p>
+      <p style="margin-top:0.3rem"><b>论文角度</b>："Automatic Ontology Induction from 1.3M Policy Documents"——这个规模的尝试尚未有同类工作。</p>
+    </div>
+  </div>
+  <div class="q"><strong>为什么这本子能发</strong>：大规模政策领域的本体自动构建，尚无人做过。1.3M 的规模本身就是亮点（比现有最大 ontology learning 实验大 2-3 个数量级）。</div>
+</div>`);
+
+// === Slide 12: R2 深度展开 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>🎯 R2 · 大规模政策关系抽取的质量与噪声</h2>
+  <p class="lead mb1">1.3M 规模下，8% 的误差 = 10 万条噪声</p>
+  <div class="g2 mb1">
+    <div class="card"><h4>核心问题</h4>
+      <ul>
+        <li>LLM 抽取的<b>噪声分布</b>是什么特征？随机分布 vs 系统性偏误？</li>
+        <li>噪声是否会沿着 KG 的推理路径<b>传播放大</b>？</li>
+        <li>是否可以通过<b>图结构自身</b>检测噪声（如：大多数政策只有 1 个发文机关，出现 2+ 的可能是噪声）？</li>
+      </ul>
+    </div>
+    <div class="card"><h4>解决方案思路</h4>
+      <ul>
+        <li><b>Confidence-aware extraction</b>：LLM 输出每个三元组时附带置信度分数</li>
+        <li><b>图结构自检</b>：KG 本身的图统计特征（度分布、三角闭包）可用于异常检测</li>
+        <li><b>交叉验证</b>：多个样本/多个 prompt 策略的交叉一致性——不一致的三元组标记人工审查</li>
+        <li><b>Evolving extraction</b>：质量提升后 re-run 低置信度部分</li>
+      </ul>
+    </div>
+  </div>
+  <div class="q"><strong>R1 + R2 可以合一篇</strong>："Towards Automated Policy KG: From Schema Design to Quality-Controlled Extraction"，方法论 + 系统，适合 KDD Applied Data Science / WWW 系统 Track。</div>
+</div>`);
+
+// === Slide 13: 总结 + 下一个行动 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>下一步行动</h2>
+  <p class="lead mb1">先跑 Phase 1，再想论文</p>
+  <div class="g2 mb1">
+    <div class="card">
+      <h4>📋 立即开始</h4>
+      <ul>
+        <li>写 LLM prompt 让 DeepSeek 读 500 条政策样本</li>
+        <li>产候选本体初稿（类 + 关系 + 属性）</li>
+        <li>你和张老师在 Gra.fo 上审 1-2 轮</li>
+      </ul>
+      <p style="margin-top:0.5rem"><b>预估时间</b>：1-2 周</p>
+    </div>
+    <div class="card">
+      <h4>📄 论文立意（近期可投）</h4>
+      <ul>
+        <li>方向 1（快）：R1 Stage 1 → "LLM-Assisted Policy Ontology Design: A Human-in-the-Loop Approach"</li>
+        <li>方向 2（稳）：R1+R2 → "Automated Policy KG Construction: From HITL to Quality-Controlled Extraction"</li>
+        <li>方向 3（大）：R4+R5+R6 → "Policy Brain: A Large-Scale Temporal KG for Government Policy"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="q"><strong>一句话总结</strong>：先 HITL 跑起来做出东西，用产的 KG 去喂 GNN，再用 GNN 下游验证证明 KG 质量——工程和学术两条腿同时走。</div>
+</div>`);
+
+// === Slide 14: 附录——NeuG 简介 ===
+slides.push(() => `<div class="w" style="display:flex;flex-direction:column;justify-content:center;flex:1">
+  <h2>附录 · NeuG 是什么</h2>
+  <p class="lead mb1">阿里开源的 HTAP 图数据库</p>
+  <div class="g2 mb1">
+    <div class="card"><h4>基本信息</h4>
+      <ul>
+        <li><b>项目</b>：github.com/alibaba/neug</li>
+        <li><b>定位</b>：HTAP 图数据库（Hybrid Transactional/Analytical Processing）</li>
+        <li><b>安装</b>：<code>pip install neug</code></li>
+        <li><b>查询</b>：Cypher</li>
+        <li><b>许可证</b>：Apache 2.0</li>
+        <li><b>团队</b>：GraphScope 团队</li>
+      </ul>
+    </div>
+    <div class="card"><h4>双模式</h4>
+      <ul>
+        <li><b>Embedded mode</b>：<code>pip install neug[embedded]</code>，C++ 内嵌库，批量加载、复杂模式匹配、图分析</li>
+        <li><b>Service mode</b>：REST/gRPC 服务，实时事务、并发访问</li>
+        <li><b>切换</b>：同一套 API，按需选择</li>
+      </ul>
+      <p style="margin-top:0.5rem"><b>特色</b>：支持 GraphRAG，已刷新 LDBC SNB Interactive Benchmark 记录（80,000+ QPS）。</p>
+    </div>
+  </div>
+  <div class="q"><strong>为什么你们应该用 NeuG 而不是 Neo4j</strong>：开源免费、阿里系同团队维护、与 GraphScope 原生对接、pip 安装零运维。对你们的 GNN 路线来说是更干净的选择。</div>
+</div>`);
+
+// === Slide Manager ===
+let current = 0;
+const app = document.getElementById('app');
+const progress = document.getElementById('progress');
+const sn = document.getElementById('sn');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+
+function render(idx) {
+  const html = slides[idx]();
+  app.innerHTML = html;
+  const active = app.querySelector('.slide');
+  if (active) { active.classList.add('active'); }
+  else {
+    requestAnimationFrame(() => {
+      const a = app.querySelector('.slide');
+      if (a) a.classList.add('active');
+    });
+  }
+  progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+  sn.textContent = (idx + 1) + ' / ' + slides.length;
+  prevBtn.disabled = idx === 0;
+  nextBtn.disabled = idx === slides.length - 1;
+}
+
+function go(n) {
+  if (n < 0 || n >= slides.length) return;
+  current = n;
+  render(current);
+}
+
+// Event listeners
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(current - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+});
+prevBtn.addEventListener('click', () => go(current - 1));
+nextBtn.addEventListener('click', () => go(current + 1));
+// Touch/swipe
+let tsx = 0;
+document.addEventListener('touchstart', e => { tsx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tsx;
+  if (Math.abs(dx) > 60) { go(current + (dx < 0 ? 1 : -1)); }
+});
+
+// Init
+render(0);
+</script>
+</body>
+</html>
