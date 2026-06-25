@@ -301,12 +301,22 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 &nbsp;&nbsp;kg.bulk_load(json)
       </div>
     </div>
-    <div class="card"><h4>质量控制</h4>
+    <div class="card"><h4>质量校验 · 实现与资源</h4>
       <ul>
-        <li><b>Schema compliance</b>：不合规标注重抽</li>
-        <li><b>实体对齐</b>：同实体不同名归一化</li>
-        <li><b>冲突检测</b>：A 废止 B vs B 修订 A</li>
-        <li><b>抽样评估</b>：每千条抽 1 条审精度</li>
+        <li><b>Schema 合规门</b>：JSON schema 程序化校验，零 GPU 成本，单条 &lt;1ms</li>
+        <li><b>一致性校验</b>：同实体跨文档属性一致性检查，embedding 聚类后批量比对</li>
+        <li><b>冲突检测</b>：逻辑规则引擎（A废止B vs B修订A），规则可扩展</li>
+        <li><b>抽样评估</b>：每千条抽 1 条人工审，统计精度阈值，低于 90% 触发重抽</li>
+        <li><b>资源</b>：约占整体管线 5-8% 时间，无需额外 GPU</li>
+      </ul>
+    </div>
+    <div class="card"><h4>实体对齐 · 实现与资源</h4>
+      <p><b>核心逻辑</b>：新节点进入 KG → 比对已有节点 → 相同则合并/别名化，不同则新增。</p>
+      <ul>
+        <li><b>Step 1 字符串匹配</b>："财政部" vs "中华人民共和国财政部" → 编辑距离 + Jaro-Winkler</li>
+        <li><b>Step 2 embedding 比对</b>：Harrier 270m (:8900) 编码后 cosine 相似度，阈值判定</li>
+        <li><b>Step 3 LLM 消歧</b>：模糊 case 交由 LLM 决策（同名不同实体？异名同实体？）</li>
+        <li><b>资源</b>：1.3M 实体全量编码约 1-2 GPU·h，ANN 索引后单次查询 &lt;10ms</li>
       </ul>
     </div>
   </div>
@@ -407,7 +417,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
       </div>
       <div style="flex:1">
         <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">KG 存储与链接</div>
-        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">NeuG/GraphScope 入库 + 千万级裁判文书跨域 Entity Linking</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">NeuG/GraphScope 入库 + 跨数据源实体对齐与知识融合（政策↔法规模↔企业↔文书）</div>
       </div>
       <div style="display:flex;align-items:center">
         <span style="color:#a78bfa;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(167,139,250,0.1);padding:0.15rem 0.5rem;border-radius:4px">KG</span>
@@ -477,22 +487,22 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
       <tr><td><b style="color:#f59e0b">R1</b></td><td>LLM 辅助政策本体自动生成</td><td><span class="tag tgg">Phase 1</span></td><td>HITL → 半自动 → 全自动的过渡方法论</td></tr>
       <tr><td><b style="color:#f59e0b">R2</b></td><td>大规模政策关系抽取噪声控制</td><td><span class="tag tgg">Phase 2</span></td><td>百万级规模下的噪声分布与自纠正机制</td></tr>
       <tr><td><b style="color:#f59e0b">R3</b></td><td>Schema Feedback Loop</td><td><span class="tag tt">Phase 1→2</span></td><td>抽取发现边界 case → 自动建议本体修正</td></tr>
-      <tr><td><b style="color:#f59e0b">R4</b></td><td>跨域 Entity Linking</td><td><span class="tag tt">Phase 3</span></td><td>千万级裁判文书与政策节点跨库关联</td></tr>
+      <tr><td><b style="color:#f59e0b">R4</b></td><td>跨数据源实体对齐与知识融合</td><td><span class="tag tt">Phase 3</span></td><td>政策·法规·企业·文书多源异构实体统一</td></tr>
       <tr><td><b style="color:#f59e0b">R5</b></td><td>时序政策 KG</td><td><span class="tag tg">Phase 3</span></td><td>政策版本化与增量更新</td></tr>
       <tr><td><b style="color:#f59e0b">R6</b></td><td>GNN-on-KG 政策分析</td><td><span class="tag tg">Phase 4</span></td><td>政策匹配 · 冲突检测 · 企业红利传导</td></tr>
     </table>
   </div>
   <div class="g3" style="margin-top:0.5rem">
     <div class="py tc"><b style="color:#f59e0b">R1+R2</b><br><span style="color:#64748b;font-size:0.76rem">方法论 + 系统方向<br>KDD / WWW</span></div>
-    <div class="py tc"><b style="color:#f59e0b">R4+R5</b><br><span style="color:#64748b;font-size:0.76rem">数据管理方向<br>VLDB / SIGMOD</span></div>
+    <div class="py tc"><b style="color:#f59e0b">R4+R5</b><br><span style="color:#64748b;font-size:0.76rem">数据管理与知识融合<br>VLDB / SIGMOD / ISWC</span></div>
     <div class="py tc"><b style="color:#f59e0b">R6</b><br><span style="color:#64748b;font-size:0.76rem">图学习方向<br>NeurIPS / KDD</span></div>
   </div>
 </div>`);
 
-// === Slide 11: R1 Deep Dive ===
+// === Slide 11: Ontology Auto-Generation ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <div class="w tc"><h2>R1 · LLM 辅助政策本体自动生成</h2></div>
-  <p class="lead tc">从 HITL 到半自动到全自动的三阶段进化</p>
+  <div class="w tc"><h2>LLM 辅助本体自动生成的实现路线设想</h2></div>
+  <p class="lead tc">在依法规/政策这一大垂类上，LLM 能否做得比通用领域更好？</p>
   <div class="g2">
     <div class="pg"><div class="l">Stage 1 · HITL（可落地）</div>
       <p>LLM 产候选本体 → 人工审核 → 确认。1-2 周出第一版。</p>
