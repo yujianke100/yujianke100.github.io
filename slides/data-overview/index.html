@@ -25,7 +25,7 @@
     position:fixed;top:50%;transform:translateY(-50%);
     width:44px;height:44px;border-radius:50%;
     background:rgba(30,41,59,0.6);border:1px solid rgba(45,58,80,0.6);
-    color:#64748b;font-size:1.4rem;cursor:pointer;
+    color:#94a3b8;font-size:1.4rem;cursor:pointer;
     display:flex;align-items:center;justify-content:center;z-index:100;
     transition:all 0.25s;backdrop-filter:blur(6px);opacity:0.7;
   }
@@ -33,13 +33,7 @@
   .na.pl{left:16px}.na.nx{right:16px}.na:disabled{opacity:0;pointer-events:none}
   .w{max-width:1000px;width:100%;text-align:center}
   .wl{max-width:1000px;width:100%;text-align:left}
-  .w h2{
-    font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:0.8rem;
-    display:inline-block;
-    background:linear-gradient(135deg,#f59e0b,#fbbf24);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .wl h2{
+  .w h2,.wl h2{
     font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:0.8rem;
     display:inline-block;
     background:linear-gradient(135deg,#f59e0b,#fbbf24);
@@ -48,15 +42,16 @@
   .lead{font-size:clamp(1rem,1.5vw,1.2rem);color:#e2e8f0;line-height:1.7;margin-bottom:0.6rem}
   .tag{display:inline-block;padding:0.1rem 0.4rem;border-radius:4px;font-size:clamp(0.62rem,0.74vw,0.7rem);font-weight:600}
   .tgg{background:rgba(16,185,129,0.12);color:#10b981}
-  .ty{background:rgba(245,158,11,0.12);color:#f59e0b}
+  .ty{background:rgba(245,158,11,0.12);color:#fbbf24}
   .tc{text-align:center!important}
-  strong{color:#e2e8f0}
   .q{
     border-left:3px solid #f59e0b;padding:0.6rem 1rem;margin:0.4rem auto 0;max-width:860px;
     background:rgba(245,158,11,0.04);border-radius:0 8px 8px 0;
-    font-size:clamp(0.8rem,0.95vw,0.88rem);color:#94a3b8;line-height:1.5;text-align:left
+    font-size:clamp(0.8rem,0.95vw,0.88rem);color:#cbd5e1;line-height:1.5;text-align:left
   }
-  .q strong{color:#e2e8f0}
+  .q strong{color:#f1f5f9}
+  .dim{color:#94a3b8}
+  .src{color:#94a3b8;font-size:clamp(0.58rem,0.7vw,0.66rem)}
 </style>
 </head>
 <body>
@@ -69,81 +64,73 @@
 <script>
 const slides = [];
 
-// === Slide 1: 一仓五库治理架构 + 重要性体系 ===
+// === Slide 1: 一仓五库治理架构 ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
   <div class="w tc"><h2>数据资产全景 · 一仓五库治理架构</h2></div>
-  <p class="lead tc">政策溯源与智能合规平台 · GLake 数据中台 · 940GiB+ 总量</p>
+  <p class="lead tc">政策溯源与智能合规平台 · GLake 数据中台</p>
 
-  <!-- Legend -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;font-size:clamp(0.65rem,0.78vw,0.74rem);margin-bottom:0.4rem">
-    <span><span class="tag tgg">✓ 已有</span><span style="color:#94a3b8;margin-left:0.3rem">已接入系统或存有成型数据集</span></span>
-    <span><span class="tag ty">⏳ 将获取</span><span style="color:#94a3b8;margin-left:0.3rem">已规划采购/接口/爬取/IRS对接</span></span>
-    <span style="color:#f59e0b;font-weight:600">★ 核心重要</span>
+  <div style="display:flex;align-items:center;justify-content:center;gap:1.2rem;font-size:clamp(0.65rem,0.78vw,0.74rem);margin-bottom:0.4rem">
+    <span><span class="tag tgg">✓ 已有</span><span style="color:#cbd5e1;margin-left:0.3rem">已接入系统或存有成型数据集</span></span>
+    <span><span class="tag ty">⏳ 将获取</span><span style="color:#cbd5e1;margin-left:0.3rem">已规划采购/接口/IRS对接</span></span>
+    <span style="color:#fbbf24;font-weight:600">★ 核心重要</span>
   </div>
 
+  <!-- 5 warehouses in grid -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;max-width:920px;margin:0 auto;width:100%">
-    <!-- 政策主题仓 -->
     <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#10b981;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem);margin-bottom:0.2rem">政策主题仓</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.55">
-        中国政策文本 <span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span><br>
-        AI政策数据（央省地市）<span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span><br>
-        县域政府工作报告 <span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span><br>
-        县域数字经济政策 <span class="tag ty">⏳ 将获取</span>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.55">
+        中国政策文本 <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">百万级文档</span><br>
+        AI政策数据 <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">中央/省/地市</span><br>
+        县域政府工作报告 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">1998-2025 待采购</span><br>
+        县域数字经济政策 <span class="tag ty">⏳</span><span class="dim" style="margin-left:0.3rem">1998-2025 待采购</span>
       </div>
     </div>
-    <!-- 法人综合库 -->
     <div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#a78bfa;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem);margin-bottom:0.2rem">法人综合库</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.55">
-        企业注册与退出 800万+ <span class="tag tgg">✓ 已有</span><br>
-        工商数据（企查查/天眼查）<span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span><br>
-        微观工商主体及年报 <span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span><br>
-        IRS法人注册/准入资质 <span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.55">
+        企业注册与退出 <span class="tag tgg">✓ 已有</span><span class="dim" style="margin-left:0.3rem">800万+条</span><br>
+        企查查/天眼查工商 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">亿级主体</span><br>
+        微观工商主体年报 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span><br>
+        IRS法人注册/准入资质 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span>
       </div>
     </div>
-    <!-- 人口综合库 -->
     <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#38bdf8;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem);margin-bottom:0.2rem">人口综合库</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.55">
-        LinkedIn求职者档案 <span class="tag tgg">✓ 已有</span><br>
-        CHFS家庭金融调查 5轮 <span class="tag tgg">✓ 已有</span><br>
-        雇主-雇员匹配 <span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span><br>
-        IRS政务人口动态 <span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.55">
+        LinkedIn 求职者档案 <span class="tag tgg">✓ 已有</span><br>
+        CHFS 家庭金融调查 <span class="tag tgg">✓ 已有</span><span class="dim" style="margin-left:0.3rem">5轮跟踪面板</span><br>
+        雇主-雇员匹配 <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span><br>
+        IRS政务人口动态 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span>
       </div>
     </div>
-    <!-- 宏观经济库 -->
     <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#f59e0b;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem);margin-bottom:0.2rem">宏观经济库</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.55">
-        宏观统计面板（省市县）<span class="tag tgg">✓ 已有</span><br>
-        上市公司MD&A 2001-2024 <span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.55">
+        宏观统计面板 <span class="tag tgg">✓ 已有</span><span class="dim" style="margin-left:0.3rem">省市县三层面板</span><br>
+        上市公司MD&A <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">2001-2024年报</span>
       </div>
     </div>
-    <!-- 公共信用库 - full width -->
     <div style="grid-column:1/-1;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#ef4444;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem);margin-bottom:0.2rem">公共信用库</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.55">
-        司法裁判文书——千万级 / MongoDB <span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span>
-        · 核心法律法规——十万级 / ES <span class="tag tgg">✓ 已有</span> <span style="color:#f59e0b">★</span>
-        · IRS政务信用与司法执行 <span class="tag ty">⏳ 将获取</span> <span style="color:#f59e0b">★</span>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.55">
+        司法裁判文书 <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span><span class="dim"> 千万级 / MongoDB · 核心法律法规 <span class="tag tgg">✓ 已有</span> <span style="color:#fbbf24">★</span> 十万级 / ES · IRS政务信用与司法执行 <span class="tag ty">⏳</span> <span style="color:#fbbf24">★</span></span>
       </div>
     </div>
-    <!-- 空间地理库 + 学术验证层 -->
-    <div style="background:rgba(30,41,59,0.5);border:1px solid rgba(45,58,80,0.4);border-radius:8px;padding:0.4rem 0.6rem">
-      <div style="color:#64748b;font-weight:600;font-size:clamp(0.68rem,0.8vw,0.76rem);margin-bottom:0.1rem">空间地理库</div>
-      <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#64748b">行政边界GeoJSON <span style="color:#f59e0b">★</span> · 道路/POI/DEM</div>
+    <div style="background:rgba(30,41,59,0.5);border:1px solid rgba(45,58,80,0.4);border-radius:8px;padding:0.35rem 0.5rem">
+      <div style="color:#94a3b8;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">空间地理库</div>
+      <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#cbd5e1">行政边界GeoJSON <span style="color:#fbbf24">★</span> · 道路/POI/DEM</div>
     </div>
-    <div style="background:rgba(30,41,59,0.5);border:1px solid rgba(45,58,80,0.4);border-radius:8px;padding:0.4rem 0.6rem">
-      <div style="color:#64748b;font-weight:600;font-size:clamp(0.68rem,0.8vw,0.76rem);margin-bottom:0.1rem">学术验证层</div>
-      <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#64748b">OpenAlex 百万级论文 <span class="tag ty">⏳ 将获取</span></div>
+    <div style="background:rgba(30,41,59,0.5);border:1px solid rgba(45,58,80,0.4);border-radius:8px;padding:0.35rem 0.5rem">
+      <div style="color:#94a3b8;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">学术验证层</div>
+      <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#cbd5e1">OpenAlex 百万级论文 <span class="tag ty">⏳</span></div>
     </div>
   </div>
 
-  <div style="display:flex;align-items:center;justify-content:center;gap:0.3rem;flex-wrap:wrap;margin:0.4rem auto;background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.1);border-radius:8px;padding:0.3rem 0.8rem;max-width:860px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.3rem;flex-wrap:wrap;margin:0.35rem auto;background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.1);border-radius:8px;padding:0.3rem 0.8rem;max-width:860px">
     <span style="color:#06b6d4;font-weight:600;font-size:clamp(0.68rem,0.8vw,0.76rem)">来源</span>
     <span style="color:#475569">|</span>
-    <span style="color:#94a3b8;font-size:clamp(0.62rem,0.74vw,0.7rem)">政策大脑 · 马克数据网 · EPS · IRS · LinkedIn · 西南财大 · 人大 · 企查查/天眼查 · 国家地理信息 · OpenAlex</span>
+    <span style="color:#cbd5e1;font-size:clamp(0.62rem,0.74vw,0.7rem)">政策大脑 · 马克数据网 · EPS · IRS · LinkedIn · 西南财大 · 人大 · 企查查/天眼查 · 国家地理信息 · OpenAlex</span>
   </div>
 </div>`);
 
@@ -153,116 +140,111 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <p class="lead tc">五库均有成型数据直接可用，实时对接 GLake 与 KG 构建</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;max-width:860px;margin:0 auto;width:100%">
-    <!-- 政策主题仓 -->
     <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:0.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
         <span style="color:#10b981;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem)">政策主题仓</span>
-        <span style="color:#f59e0b;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
+        <span style="color:#fbbf24;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
       </div>
       <div style="background:rgba(16,185,129,0.06);border-radius:6px;padding:0.35rem 0.5rem;margin-bottom:0.3rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">中国政策文本</span>
+          <span style="color:#f1f5f9">中国政策文本</span>
           <span style="color:#94a3b8">百万级文档</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：政策大脑</div>
+        <div class="src">来源：政策大脑</div>
       </div>
       <div style="background:rgba(16,185,129,0.06);border-radius:6px;padding:0.35rem 0.5rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">AI政策数据</span>
+          <span style="color:#f1f5f9">AI政策数据</span>
           <span style="color:#94a3b8">中央/省/地市</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：马克数据网</div>
+        <div class="src">来源：马克数据网</div>
       </div>
     </div>
-    <!-- 人口综合库 -->
     <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:8px;padding:0.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
         <span style="color:#38bdf8;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem)">人口综合库</span>
-        <span style="color:#f59e0b;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
+        <span style="color:#fbbf24;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
       </div>
       <div style="background:rgba(56,189,248,0.06);border-radius:6px;padding:0.35rem 0.5rem;margin-bottom:0.3rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">LinkedIn</span>
+          <span style="color:#f1f5f9">LinkedIn 求职者</span>
           <span style="color:#94a3b8">结构化档案</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：LinkedIn（待脱敏）</div>
+        <div class="src">来源：LinkedIn（待脱敏）</div>
       </div>
       <div style="background:rgba(56,189,248,0.06);border-radius:6px;padding:0.35rem 0.5rem;margin-bottom:0.3rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">CHFS</span>
+          <span style="color:#f1f5f9">CHFS</span>
           <span style="color:#94a3b8">5轮跟踪调查</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：西南财经大学</div>
+        <div class="src">来源：西南财经大学</div>
       </div>
       <div style="background:rgba(56,189,248,0.06);border-radius:6px;padding:0.35rem 0.5rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">雇主-雇员匹配</span>
+          <span style="color:#f1f5f9">雇主-雇员匹配</span>
           <span style="color:#94a3b8">跟踪微观</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：中国人民大学</div>
+        <div class="src">来源：中国人民大学</div>
       </div>
     </div>
-    <!-- 法人综合库 -->
     <div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:0.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
         <span style="color:#a78bfa;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem)">法人综合库</span>
       </div>
       <div style="background:rgba(167,139,250,0.06);border-radius:6px;padding:0.35rem 0.5rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">企业注册与退出</span>
+          <span style="color:#f1f5f9">企业注册与退出</span>
           <span style="color:#94a3b8">800万+条</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：马克数据网</div>
+        <div class="src">来源：马克数据网</div>
       </div>
     </div>
-    <!-- 宏观经济库 -->
     <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:0.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
         <span style="color:#f59e0b;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem)">宏观经济库</span>
-        <span style="color:#f59e0b;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
+        <span style="color:#fbbf24;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
       </div>
       <div style="background:rgba(245,158,11,0.06);border-radius:6px;padding:0.35rem 0.5rem;margin-bottom:0.3rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">宏观统计面板</span>
+          <span style="color:#f1f5f9">宏观统计面板</span>
           <span style="color:#94a3b8">省市县三层面板</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：马克数据网</div>
+        <div class="src">来源：马克数据网</div>
       </div>
       <div style="background:rgba(245,158,11,0.06);border-radius:6px;padding:0.35rem 0.5rem">
         <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-          <span style="color:#e2e8f0">上市公司MD&A</span>
+          <span style="color:#f1f5f9">上市公司MD&A</span>
           <span style="color:#94a3b8">2001-2024年报</span>
         </div>
-        <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">来源：马克数据网</div>
+        <div class="src">来源：马克数据网</div>
       </div>
     </div>
-    <!-- 公共信用库 -->
     <div style="grid-column:1/-1;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:0.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
         <span style="color:#ef4444;font-weight:700;font-size:clamp(0.76rem,0.88vw,0.84rem)">公共信用库</span>
-        <span style="color:#f59e0b;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
+        <span style="color:#fbbf24;font-weight:600;font-size:clamp(0.65rem,0.78vw,0.74rem)">★ 核心</span>
       </div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
         <div style="flex:1;min-width:200px;background:rgba(239,68,68,0.06);border-radius:6px;padding:0.35rem 0.5rem">
           <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-            <span style="color:#e2e8f0">司法裁判文书</span>
+            <span style="color:#f1f5f9">司法裁判文书</span>
             <span style="color:#94a3b8">千万级</span>
           </div>
-          <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">MongoDB · 历史存量</div>
+          <div class="src">MongoDB 历史存量</div>
         </div>
         <div style="flex:1;min-width:200px;background:rgba(239,68,68,0.06);border-radius:6px;padding:0.35rem 0.5rem">
           <div style="display:flex;justify-content:space-between;font-size:clamp(0.65rem,0.78vw,0.74rem)">
-            <span style="color:#e2e8f0">核心法律法规</span>
+            <span style="color:#f1f5f9">核心法律法规</span>
             <span style="color:#94a3b8">十万级</span>
           </div>
-          <div style="font-size:clamp(0.58rem,0.7vw,0.66rem);color:#64748b">Elasticsearch · 现有法条库</div>
+          <div class="src">Elasticsearch 现有法条库</div>
         </div>
       </div>
     </div>
   </div>
 </div>`);
 
-// === Slide 3: 将获取数据 ===
+// === Slide 3: 待获取数据规划 ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
   <div class="w tc"><h2>待获取数据规划</h2></div>
   <p class="lead tc">四条渠道扩充，补齐县域·政务·企业全维度</p>
@@ -270,41 +252,41 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;max-width:860px;margin:0 auto;width:100%">
     <div style="background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#06b6d4;font-weight:700;font-size:clamp(0.72rem,0.85vw,0.8rem);margin-bottom:0.2rem">马克数据网 · 商业采购</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.5">
-        县域政府工作报告 1998-2025 <span style="color:#f59e0b">★</span><br>
-        县域数字经济政策 1998-2025</div>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.5">
+        县域政府工作报告 <span style="color:#fbbf24">★</span><span class="dim" style="margin-left:0.3rem">1998-2025</span><br>
+        县域数字经济政策 <span class="dim">1998-2025</span></div>
     </div>
     <div style="background:rgba(167,139,250,0.05);border:1px solid rgba(167,139,250,0.15);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#a78bfa;font-weight:700;font-size:clamp(0.72rem,0.85vw,0.8rem);margin-bottom:0.2rem">EPS 微观数据库 · 采购</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.5">
-        互联网招聘 · 微观工商主体及年报 <span style="color:#f59e0b">★</span><br>
-        行业微观综合矩阵 · 裁判文书补充</div>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.5">
+        互联网招聘 · 微观工商主体 <span style="color:#fbbf24">★</span><br>
+        行业矩阵 · 裁判文书补充</div>
     </div>
     <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:0.5rem 0.6rem">
       <div style="color:#f59e0b;font-weight:700;font-size:clamp(0.72rem,0.85vw,0.8rem);margin-bottom:0.2rem">IRS 政务数据 · 省级共享</div>
-      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#94a3b8;line-height:1.5">
-        人口基础与动态信息 <span style="color:#f59e0b">★</span><br>
-        法人注册与变更登记 <span style="color:#f59e0b">★</span><br>
-        法人资产与准入资质 <span style="color:#f59e0b">★</span><br>
-        政务信用与司法执行 <span style="color:#f59e0b">★</span></div>
+      <div style="font-size:clamp(0.62rem,0.74vw,0.7rem);color:#cbd5e1;line-height:1.5">
+        人口基础与动态信息 <span style="color:#fbbf24">★</span><br>
+        法人注册与变更登记 <span style="color:#fbbf24">★</span><br>
+        法人资产与准入资质 <span style="color:#fbbf24">★</span><br>
+        政务信用与司法执行 <span style="color:#fbbf24">★</span></div>
     </div>
     <div style="display:flex;flex-direction:column;gap:0.3rem">
       <div style="flex:1;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:0.4rem 0.5rem">
-        <div style="color:#ef4444;font-weight:600;font-size:clamp(0.62rem,0.74vw,0.7rem)">企查查/天眼查 <span style="color:#f59e0b">★</span></div>
-        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#94a3b8">亿级企业主体工商数据</div>
+        <div style="color:#ef4444;font-weight:600;font-size:clamp(0.62rem,0.74vw,0.7rem)">企查查/天眼查 <span style="color:#fbbf24">★</span></div>
+        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#cbd5e1">亿级企业主体工商数据</div>
       </div>
       <div style="flex:1;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:0.4rem 0.5rem">
-        <div style="color:#10b981;font-weight:600;font-size:clamp(0.62rem,0.74vw,0.7rem)">国家地理信息 <span style="color:#f59e0b">★</span></div>
-        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#94a3b8">行政边界 · 道路/POI/DEM</div>
+        <div style="color:#10b981;font-weight:600;font-size:clamp(0.62rem,0.74vw,0.7rem)">国家地理信息 <span style="color:#fbbf24">★</span></div>
+        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#cbd5e1">行政边界 · 道路/POI/DEM</div>
       </div>
       <div style="flex:1;background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15);border-radius:8px;padding:0.4rem 0.5rem">
         <div style="color:#38bdf8;font-weight:600;font-size:clamp(0.62rem,0.74vw,0.7rem)">OpenAlex</div>
-        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#94a3b8">百万级学术论文 API</div>
+        <div style="font-size:clamp(0.6rem,0.72vw,0.68rem);color:#cbd5e1">百万级学术论文 API</div>
       </div>
     </div>
   </div>
 
-  <div class="q"><strong>★ 核心重要</strong>：平台五端应用（G/B/C/R/A）不可或缺的核心底座资产。<br>已有数据直接对接 KG 构建；待获取数据补齐后将形成国内首个覆盖政策全链条的图数据资产。</div>
+  <div class="q"><strong>★ 核心重要</strong>：平台五端应用（G/B/C/R/A）不可或缺的核心底座资产。<br>已有数据直接对接 KG 构建；待获取数据补齐后将形成完整的政策图数据资产。</div>
 </div>`);
 
 // === Slide Manager ===
