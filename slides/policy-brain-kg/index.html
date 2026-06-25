@@ -150,18 +150,6 @@
   strong{color:#e2e8f0}
 
   /* GPU resource grid */
-  .resource-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:0.4rem auto;max-width:800px;text-align:left}
-  .resource-item{background:rgba(30,41,59,0.4);border:1px solid rgba(45,58,80,0.4);border-radius:8px;padding:0.5rem 0.7rem;display:flex;justify-content:space-between;align-items:center}
-  .res-name{color:#e2e8f0;font-weight:600;font-size:clamp(0.75rem,0.88vw,0.84rem)}
-  .res-desc{color:#64748b;font-size:clamp(0.68rem,0.8vw,0.76rem)}
-  .res-gpu{color:#10b981;font-weight:600;font-size:clamp(0.72rem,0.85vw,0.8rem)}
-  @media(max-width:700px){.resource-grid{grid-template-columns:1fr}}
-
-  /* GLake data display */
-  .lake-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin:0.4rem auto;max-width:880px;text-align:left}
-  .lake-item{background:rgba(6,182,212,0.04);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:0.55rem 0.7rem;display:flex;flex-direction:column}
-  .lake-name{color:#06b6d4;font-weight:600;font-size:clamp(0.72rem,0.85vw,0.8rem)}
-  .lake-detail{color:#64748b;font-size:clamp(0.65rem,0.78vw,0.74rem);margin-top:0.1rem}
 </style>
 </head>
 <body>
@@ -291,7 +279,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 { <span class="hl-key">"entities"</span>: [{ <span class="hl-str">"type"</span>: <span class="hl-str">"政策"</span>, <span class="hl-str">"id"</span>: <span class="hl-str">"财税[2023]1号"</span>, <span class="hl-str">"发文机关"</span>: <span class="hl-str">"财政部"</span> }],<br>
 &nbsp;&nbsp;<span class="hl-key">"relations"</span>: [{ source: <span class="hl-str">"财税[2023]1号"</span>, type: <span class="hl-str">"废止"</span>, target: <span class="hl-str">"财税[1999]5号"</span> }] }
   </div>
-  <div class="g2">
+  <div style="display:flex;flex-direction:column;gap:0.4rem">
     <div class="card"><h4>批量管线</h4>
       <p>本地模型批量处理 1.3M 政策，每条经 prompt 拼接 → 结构化输出 → schema 合规校验 → 入库。</p>
       <div class="hl-box" style="margin-top:0.3rem;font-size:clamp(0.66rem,0.76vw,0.72rem)">
@@ -301,23 +289,25 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 &nbsp;&nbsp;kg.bulk_load(json)
       </div>
     </div>
-    <div class="card"><h4>质量校验 · 实现与资源</h4>
-      <ul>
-        <li><b>Schema 合规门</b>：JSON schema 程序化校验，零 GPU 成本，单条 &lt;1ms</li>
-        <li><b>一致性校验</b>：同实体跨文档属性一致性检查，embedding 聚类后批量比对</li>
-        <li><b>冲突检测</b>：逻辑规则引擎（A废止B vs B修订A），规则可扩展</li>
-        <li><b>抽样评估</b>：每千条抽 1 条人工审，统计精度阈值，低于 90% 触发重抽</li>
-        <li><b>资源</b>：约占整体管线 5-8% 时间，无需额外 GPU</li>
-      </ul>
-    </div>
-    <div class="card"><h4>实体对齐 · 实现与资源</h4>
-      <p><b>核心逻辑</b>：新节点进入 KG → 比对已有节点 → 相同则合并/别名化，不同则新增。</p>
-      <ul>
-        <li><b>Step 1 字符串匹配</b>："财政部" vs "中华人民共和国财政部" → 编辑距离 + Jaro-Winkler</li>
-        <li><b>Step 2 embedding 比对</b>：Harrier 270m (:8900) 编码后 cosine 相似度，阈值判定</li>
-        <li><b>Step 3 LLM 消歧</b>：模糊 case 交由 LLM 决策（同名不同实体？异名同实体？）</li>
-        <li><b>资源</b>：1.3M 实体全量编码约 1-2 GPU·h，ANN 索引后单次查询 &lt;10ms</li>
-      </ul>
+    <div class="g2">
+      <div class="card"><h4>质量校验 · 实现与资源</h4>
+        <ul>
+          <li><b>Schema 合规门</b>：JSON schema 程序化校验，零 GPU，单条 &lt;1ms</li>
+          <li><b>一致性校验</b>：同实体跨文档属性一致性，embedding 聚类后批量比对</li>
+          <li><b>冲突检测</b>：规则引擎（A废止B vs B修订A）</li>
+          <li><b>抽样评估</b>：千条抽 1 人工审，低于 90% 触发重抽</li>
+          <li><b>资源</b>：占整体管线 5-8%，无额外 GPU</li>
+        </ul>
+      </div>
+      <div class="card"><h4>实体对齐 · 实现与资源</h4>
+        <p style="margin-bottom:0.3rem">新节点 → 比对已有节点 → 相同则合并/别名化</p>
+        <ul>
+          <li><b>Step 1 字符串</b>：编辑距离 + Jaro-Winkler</li>
+          <li><b>Step 2 向量</b>：Harrier 270m cosine 相似度 + ANN 索引</li>
+          <li><b>Step 3 LLM</b>：模糊 case LLM 消歧决策</li>
+          <li><b>资源</b>：1.3M 实体编码约 1-2 GPU·h，单次查询 &lt;10ms</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>`);
@@ -326,25 +316,17 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
   <div class="w tc"><h2>本地部署方案：Qwen3.6-27B</h2></div>
   <p class="lead tc">数据安全 + 零 API 增量成本，全程内网执行</p>
-  <div class="resource-grid">
-    <div class="resource-item">
-      <div><span class="res-name">8×H20</span><br><span class="res-desc">高算力节点</span></div>
-      <span class="res-gpu">可用</span>
-    </div>
-    <div class="resource-item">
-      <div><span class="res-name">2×H100</span><br><span class="res-desc">GLake 部署中</span></div>
-      <span class="res-gpu">可用</span>
-    </div>
-    <div class="resource-item">
-      <div><span class="res-name">4×A800 × 2台</span><br><span class="res-desc">学生主力实验机，基本满载</span></div>
-      <span class="res-gpu">满载</span>
-    </div>
-    <div class="resource-item">
-      <div><span class="res-name">RTX 6000 24G × 4台</span><br><span class="res-desc">单卡节点</span></div>
-      <span class="res-gpu">可用</span>
-    </div>
+
+  <!-- GPU resources as compact inline badges -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin:0.3rem auto 0.5rem">
+    <span style="color:#64748b;font-size:clamp(0.72rem,0.84vw,0.8rem)">集群资源：</span>
+    <span style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:0.2rem 0.6rem;color:#10b981;font-weight:600;font-size:clamp(0.72rem,0.84vw,0.8rem)">8×H20 ✓</span>
+    <span style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:0.2rem 0.6rem;color:#10b981;font-weight:600;font-size:clamp(0.72rem,0.84vw,0.8rem)">2×H100 ✓</span>
+    <span style="border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:0.2rem 0.6rem;color:#ef4444;font-size:clamp(0.72rem,0.84vw,0.8rem)">4×A800×2 满载</span>
+    <span style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:0.2rem 0.6rem;color:#10b981;font-weight:600;font-size:clamp(0.72rem,0.84vw,0.8rem)">RTX 6000×4 ✓</span>
   </div>
-  <div class="g2" style="margin-top:0.4rem">
+
+  <div class="g2">
     <div class="card"><h4>模型部署</h4>
       <ul>
         <li>vLLM / Ollama 部署 Qwen3.6-27B（4-bit 量化后约 16GB）</li>
@@ -463,13 +445,13 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
       <p style="margin-top:0.3rem">vLLM/Ollama 部署于 GPU 集群，4-bit 量化单卡可跑。零数据出内网。</p>
     </div>
     <div class="card"><h4>🗄️ 图存储</h4><span class="tag tp">NeuG（阿里开源）</span>
-      <p style="margin-top:0.3rem"><code>pip install neug</code>，Cypher 查询 + HTAP 双模式。GraphScope 同团队出品。</p>
+      <p style="margin-top:0.3rem">HTAP 图数据库，<code>pip install neug</code>，支持 Cypher 查询。<b>存数据、做在线查询</b>。</p>
     </div>
     <div class="card"><h4>⚡ 图计算</h4><span class="tag tt">GraphScope</span>
-      <p style="margin-top:0.3rem">阿里开源分布式图引擎，支持千亿级图分析与 GNN（内置 GraphLearn）。</p>
+      <p style="margin-top:0.3rem">阿里开源分布式图引擎，支持千亿级图分析与 GNN（内置 GraphLearn）。<b>做离线图计算、跑 GNN</b>。<br>NeuG 与 GraphScope 同团队出品：数据存 NeuG → GraphScope 拉去做计算，二者互补。</p>
     </div>
-    <div class="card"><h4>🔗 实体对齐</h4><span class="tag tg">Harrier 270m</span>
-      <p style="margin-top:0.3rem">已有本地 embedding 服务（:8900），用于跨库实体归一化与链接。</p>
+    <div class="card"><h4>🔗 实体对齐</h4><span class="tag tt">Harrier 270m + ANN</span>
+      <p style="margin-top:0.3rem">本地 Harrier 270m embedding 服务（:8900）做向量编码，FAISS/HNSW ANN 索引加速最近邻检索。辅以字符串编辑距离 + LLM 消歧。</p>
     </div>
     <div class="card"><h4>🏠 基础设施</h4><span class="tag tgg">GPU 集群</span>
       <p style="margin-top:0.3rem">8×H20 + 2×H100 + 2×4×A800 + 4×RTX 6000，覆盖实验与生产。</p>
@@ -505,7 +487,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <p class="lead tc">在依法规/政策这一大垂类上，LLM 能否做得比通用领域更好？</p>
   <div class="g2">
     <div class="pg"><div class="l">Stage 1 · HITL（可落地）</div>
-      <p>LLM 产候选本体 → 人工审核 → 确认。1-2 周出第一版。</p>
+      <p>LLM 产候选本体 → 人工审核 → 确认。</p>
       <p style="margin-top:0.3rem"><b>论文角度</b>：政策领域 HITL 本体设计方法论，LLM vs HITL 质量对比实验。</p>
     </div>
     <div class="py"><div class="l">Stage 2 · 半自动（学术创新）</div>
