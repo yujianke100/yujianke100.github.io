@@ -137,13 +137,6 @@
   }
   .hl-gray{color:#475569}.hl-key{color:#f59e0b}.hl-str{color:#10b981}.hl-op{color:#38bdf8}
 
-  .arch-box{
-    background:#0d1117;border-radius:10px;padding:0.9rem;margin:0.4rem auto;max-width:880px;
-    border:1px solid rgba(45,58,80,0.3);
-    font-family:'SF Mono','Fira Code','Consolas',monospace;
-    font-size:clamp(0.72rem,0.84vw,0.8rem);line-height:1.5;overflow-x:auto;text-align:left
-  }
-
   .tw{overflow-x:auto;margin:0.5rem auto;max-width:880px}
   table{width:100%;border-collapse:collapse;font-size:clamp(0.68rem,0.84vw,0.78rem)}
   th,td{padding:0.4rem 0.5rem;text-align:center;border-bottom:1px solid rgba(45,58,80,0.4)}
@@ -163,18 +156,6 @@
   .res-desc{color:#64748b;font-size:clamp(0.68rem,0.8vw,0.76rem)}
   .res-gpu{color:#10b981;font-weight:600;font-size:clamp(0.72rem,0.85vw,0.8rem)}
   @media(max-width:700px){.resource-grid{grid-template-columns:1fr}}
-
-  /* Phase flow */
-  .phase-flow{margin:0.5rem auto;max-width:880px}
-  .phase-row{display:flex;align-items:stretch;gap:0}
-  .phase-step{flex:1;padding:0.55rem 0.5rem;text-align:center;font-size:clamp(0.72rem,0.85vw,0.8rem);font-weight:600;position:relative;border-right:0}
-  .phase-step:first-child{border-radius:8px 0 0 8px}
-  .phase-step:last-child{border-radius:0 8px 8px 0;border-right:1.5px solid}
-  .phase-step.green{background:rgba(16,185,129,0.1);border-top:1.5px solid #10b981;border-bottom:1.5px solid #10b981;border-left:1.5px solid #10b981;border-right:0;color:#10b981}
-  .phase-step.blue{background:rgba(56,189,248,0.1);border-top:1.5px solid #38bdf8;border-bottom:1.5px solid #38bdf8;border-left:1.5px solid #38bdf8;border-right:0;color:#38bdf8}
-  .phase-step.purple{background:rgba(167,139,250,0.1);border-top:1.5px solid #a78bfa;border-bottom:1.5px solid #a78bfa;border-left:1.5px solid #a78bfa;border-right:0;color:#a78bfa}
-  .phase-step.red{background:rgba(239,68,68,0.1);border-top:1.5px solid #ef4444;border-bottom:1.5px solid #ef4444;border-left:1.5px solid #ef4444;border-right:1.5px solid #ef4444;border-radius:0 8px 8px 0;color:#ef4444}
-  .phase-step .sub{display:block;font-weight:400;font-size:clamp(0.62rem,0.75vw,0.7rem);color:#64748b;margin-top:0.15rem}
 
   /* GLake data display */
   .lake-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin:0.4rem auto;max-width:880px;text-align:left}
@@ -375,22 +356,88 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
   <div class="w tc"><h2>全流程概览</h2></div>
   <p class="lead tc">四阶段递进：从 GLake 数据到 GNN 下游</p>
-  <div class="arch-box">
-<span style="color:#06b6d4">┌─ GLake 数据中台 ──────────────────────────────────────────┐</span><br>
-<span style="color:#64748b">　政策主题仓 · 法人综合库 · 人口综合库 · 宏观经济库 · 公共信用库</span><br>
-<span style="color:#06b6d4">└──────────────────────────────────────────────────── v ──┘</span><br><br>
-<span style="color:#10b981">　◆ Phase 1: HITL 本体设计</span><span style="color:#475569"> — LLM 产候选 → WebProtégé 审 → OWL schema</span><br>
-<span style="color:#38bdf8">　◆ Phase 2: LLM 实例填充</span><span style="color:#475569"> — 本地 Qwen3 按 schema 全量抽取</span><br>
-<span style="color:#a78bfa">　◆ Phase 3: KG 存储与链接</span><span style="color:#475569"> — NeuG/GraphScope 入库 + 跨域 Entity Linking</span><br>
-<span style="color:#ef4444">　◆ Phase 4: GNN 下游</span><span style="color:#475569"> — 政策匹配 · 冲突检测 · 企业红利传导</span>
+
+  <!-- GLake Data Source Banner -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin:0.5rem auto 0.6rem;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);border-radius:10px;padding:0.5rem 1rem;max-width:860px">
+    <span style="color:#06b6d4;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">GLake 数据中台</span>
+    <span style="color:#475569;font-size:clamp(0.72rem,0.84vw,0.8rem)">|</span>
+    <span style="color:#94a3b8;font-size:clamp(0.68rem,0.8vw,0.76rem)">政策主题仓</span>
+    <span style="color:#475569;font-size:clamp(0.68rem,0.8vw,0.76rem)">·</span>
+    <span style="color:#94a3b8;font-size:clamp(0.68rem,0.8vw,0.76rem)">法人综合库</span>
+    <span style="color:#475569;font-size:clamp(0.68rem,0.8vw,0.76rem)">·</span>
+    <span style="color:#94a3b8;font-size:clamp(0.68rem,0.8vw,0.76rem)">人口综合库</span>
+    <span style="color:#475569;font-size:clamp(0.68rem,0.8vw,0.76rem)">·</span>
+    <span style="color:#94a3b8;font-size:clamp(0.68rem,0.8vw,0.76rem)">宏观经济库</span>
+    <span style="color:#475569;font-size:clamp(0.68rem,0.8vw,0.76rem)">·</span>
+    <span style="color:#94a3b8;font-size:clamp(0.68rem,0.8vw,0.76rem)">公共信用库</span>
   </div>
-  <div class="phase-flow">
-    <div class="phase-row">
-      <div class="phase-step green">Phase 1<span class="sub">本体设计</span></div>
-      <div class="phase-step blue">Phase 2<span class="sub">实例填充</span></div>
-      <div class="phase-step purple">Phase 3<span class="sub">KG 入库</span></div>
-      <div class="phase-step red">Phase 4<span class="sub">GNN 下游</span></div>
+
+  <!-- Phase Timeline -->
+  <div style="display:flex;flex-direction:column;gap:0.5rem;margin:0.2rem auto;max-width:860px;width:100%">
+
+    <div style="display:flex;align-items:stretch;gap:0;background:rgba(16,185,129,0.06);border-radius:8px;border-left:4px solid #10b981;padding:0.6rem 0.8rem">
+      <div style="min-width:100px;display:flex;align-items:center">
+        <span style="color:#10b981;font-weight:700;font-size:clamp(0.8rem,0.95vw,0.88rem)">Phase 1</span>
+      </div>
+      <div style="flex:1">
+        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">HITL 本体设计</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">LLM 产候选本体 → WebProtégé 审核确认 → OWL schema</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="color:#10b981;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:4px">HITL</span>
+      </div>
     </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;background:rgba(56,189,248,0.06);border-radius:8px;border-left:4px solid #38bdf8;padding:0.6rem 0.8rem">
+      <div style="min-width:100px;display:flex;align-items:center">
+        <span style="color:#38bdf8;font-weight:700;font-size:clamp(0.8rem,0.95vw,0.88rem)">Phase 2</span>
+      </div>
+      <div style="flex:1">
+        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">LLM 实例填充</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">本地 Qwen3 按 schema 批量抽取 1.3M 政策 → 质量校验 → 实体对齐</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="color:#38bdf8;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(56,189,248,0.1);padding:0.15rem 0.5rem;border-radius:4px">LLM</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;background:rgba(167,139,250,0.06);border-radius:8px;border-left:4px solid #a78bfa;padding:0.6rem 0.8rem">
+      <div style="min-width:100px;display:flex;align-items:center">
+        <span style="color:#a78bfa;font-weight:700;font-size:clamp(0.8rem,0.95vw,0.88rem)">Phase 3</span>
+      </div>
+      <div style="flex:1">
+        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">KG 存储与链接</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">NeuG/GraphScope 入库 + 千万级裁判文书跨域 Entity Linking</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="color:#a78bfa;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(167,139,250,0.1);padding:0.15rem 0.5rem;border-radius:4px">KG</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;background:rgba(239,68,68,0.06);border-radius:8px;border-left:4px solid #ef4444;padding:0.6rem 0.8rem">
+      <div style="min-width:100px;display:flex;align-items:center">
+        <span style="color:#ef4444;font-weight:700;font-size:clamp(0.8rem,0.95vw,0.88rem)">Phase 4</span>
+      </div>
+      <div style="flex:1">
+        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">GNN 下游</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">政策匹配 · 冲突检测 · 企业红利传导 · 时序分析</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="color:#ef4444;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(239,68,68,0.1);padding:0.15rem 0.5rem;border-radius:4px">GNN</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Arrow flow -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:0.3rem;margin:0.5rem auto 0;flex-wrap:wrap">
+    <span style="color:#10b981;font-weight:600;font-size:clamp(0.7rem,0.82vw,0.78rem)">数据</span>
+    <span style="color:#475569;font-size:clamp(0.7rem,0.82vw,0.78rem)">→</span>
+    <span style="color:#38bdf8;font-weight:600;font-size:clamp(0.7rem,0.82vw,0.78rem)">结构</span>
+    <span style="color:#475569;font-size:clamp(0.7rem,0.82vw,0.78rem)">→</span>
+    <span style="color:#a78bfa;font-weight:600;font-size:clamp(0.7rem,0.82vw,0.78rem)">图</span>
+    <span style="color:#475569;font-size:clamp(0.7rem,0.82vw,0.78rem)">→</span>
+    <span style="color:#ef4444;font-weight:600;font-size:clamp(0.7rem,0.82vw,0.78rem)">推理</span>
   </div>
 </div>`);
 
