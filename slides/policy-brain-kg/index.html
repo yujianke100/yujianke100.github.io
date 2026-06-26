@@ -224,7 +224,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:0.5rem">
       <div style="flex:1;min-width:120px;text-align:center;background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem 0.4rem">
         <div style="color:#10b981;font-weight:600;font-size:clamp(0.85rem,1vw,0.95rem)">1. 画框</div>
-        <div style="font-size:clamp(0.7rem,0.82vw,0.78rem);color:#64748b">Human+LLM 定本体<br>类·关系·约束</div>
+        <div style="font-size:clamp(0.7rem,0.82vw,0.78rem);color:#64748b">LLM 定本体（自上而下）<br>类·关系·约束</div>
       </div>
       <div style="color:#475569;font-size:1.2rem">→</div>
       <div style="flex:1;min-width:120px;text-align:center;background:rgba(56,189,248,0.1);border-radius:8px;padding:0.6rem 0.4rem">
@@ -241,26 +241,30 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <div class="q" style="margin-top:0.5rem"><strong>核心区别</strong>：不是"LLM 随便抽→拼成图"；而是"先画好框→LLM 往里填→填完检查"。</div>
 </div>`);
 
-// === Slide 5: Phase 1 HITL ===
+// === Slide 5: Phase 1 全自动本体构建 ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <div class="w tc"><h2>Phase 1 · HITL 本体设计</h2></div>
-  <p class="lead tc"><span class="tag tgg">Human-In-The-Loop</span> AI 提出候选，人工审核修正</p>
+  <div class="w tc"><h2>Phase 1 · LLM 全自动本体构建（自上而下）</h2></div>
+  <p class="lead tc">利用 LLM 对政策法律体系的既有知识，从顶层分类框架逐步细化到底层属性</p>
   <div class="g2">
     <div class="card">
-      <h4>Step 1 · LLM 产候选</h4>
-      <p>输入 500-1000 条代表性政策文本。LLM 归纳候选类（政策/法规/企业/行业/地区）、候选关系（废止/依据/适用于/补充）、候选属性。</p>
+      <h4>Step 1 · 顶层框架注入</h4>
+      <p>LLM 本身已掌握法律位阶（宪法/法律/行政法规/地方性法规）、发文机关分类、国民经济行业分类（GB/T 4754）等成熟体系。以此为基础，生成政策领域的顶层类层次。</p>
       <div class="hl-box" style="margin-top:0.35rem">
-        Classes: 政策, 发文机构, 行业, 地区, 企业<br>
-        Relations: 废止, 修订, 依据, 适用于, 补充
+        Top-down: 法律位阶 → 发文机关 → 政策类型 → 适用范围<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;行业代码 → 受益主体分类 → 政策属性
       </div>
     </div>
     <div class="card">
-      <h4>Step 2 · WebProtégé 审核确认</h4>
-      <p>WebProtégé（Stanford Web 版本体编辑器）中：<br>审核类层次 · 修正关系定义 · 添加约束 → 导出 OWL schema</p>
-      <p style="margin-top:0.4rem"><span class="tag tt">webprotege.stanford.edu</span> 免费协作式本体编辑</p>
+      <h4>Step 2 · LLM 样本验证与补全</h4>
+      <p>读 500 条代表性政策文本，校验顶层框架是否覆盖实际文本中的概念。发现遗漏则自动扩展——新增类、关系或约束。迭代 2-3 轮后确认。</p>
+      <div style="font-size:clamp(0.72rem,0.85vw,0.8rem);color:#cbd5e1;margin-top:0.3rem">
+        <span class="tag tgg">验证</span> 顶层类是否覆盖政策文本中 95%+ 的实体类型<br>
+        <span class="tag tt">补全</span> 未覆盖的关系和属性自动添加<br>
+        <span class="tag tg">迭代</span> 2-3 轮后趋稳
+      </div>
     </div>
   </div>
-  <div class="q"><strong>为什么先 HITL？</strong> 政策领域无现成本体，纯 LLM 错误率 15-25%。500 条样本的人工审核只需半天，噪声降到 &lt;3%。</div>
+  <div class="q"><strong>为什么自上而下比自底向上快？</strong> 自底向上需要从 1.3M 文本中聚类归纳，再人工提炼抽象结构。自上而下利用 LLM 已有领域知识直接构建框架，再用 500 条样本验证——不需要大量人工，又快又稳。</div>
 </div>`);
 
 // === Slide 6: Phase 2 ===
@@ -336,7 +340,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
     </div>
     <div class="card"><h4>策略</h4>
       <ul>
-        <li>Phase 1 HITL 用 API（500 条，成本 &lt;$1，无敏感数据）</li>
+        <li>Phase 1 本体构建用 API 快速产框架（成本极低，仅 500 条样本验证）</li>
         <li>Phase 2 全量抽取切到本地模型</li>
         <li>Qwen3 精度足够，与 top API 模型的精度差距 &lt;1%</li>
       </ul>
@@ -372,11 +376,11 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
         <span style="color:#10b981;font-weight:700;font-size:clamp(0.8rem,0.95vw,0.88rem)">Phase 1</span>
       </div>
       <div style="flex:1">
-        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">HITL 本体设计</div>
-        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">LLM 产候选本体 → WebProtégé 审核确认 → OWL schema</div>
+        <div style="color:#e2e8f0;font-weight:600;font-size:clamp(0.78rem,0.9vw,0.85rem)">LLM 全自动本体构建</div>
+        <div style="color:#94a3b8;font-size:clamp(0.7rem,0.82vw,0.78rem);margin-top:0.15rem">LLM 利用已有法律知识自上而下构建本体 → 500 条样本验证 → 迭代补全</div>
       </div>
       <div style="display:flex;align-items:center">
-        <span style="color:#10b981;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:4px">HITL</span>
+        <span style="color:#10b981;font-size:clamp(0.7rem,0.82vw,0.78rem);background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:4px">Auto</span>
       </div>
     </div>
 
@@ -438,8 +442,8 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <div class="w tc"><h2>技术选型</h2></div>
   <p class="lead tc">开源优先 · 本地优先 · 学术友好</p>
   <div class="g3">
-    <div class="card"><h4>📐 本体设计</h4><span class="tag tt">WebProtégé</span>
-      <p style="margin-top:0.3rem">Stanford Web 版本体编辑器，免费，支持团队协作编辑 OWL/RDF schema。</p>
+    <div class="card"><h4>📐 本体设计</h4><span class="tag tgg">LLM 全自动</span>
+      <p style="margin-top:0.3rem">LLM 利用法律体系已有知识，自上而下全自动构建 OWL schema。无需人工介入，500 条样本验证后自动迭代。</p>
     </div>
     <div class="card"><h4>🧠 LLM 抽取</h4><span class="tag tgg">Qwen3.6-27B 本地</span>
       <p style="margin-top:0.3rem">vLLM/Ollama 部署于 GPU 集群，4-bit 量化单卡可跑。零数据出内网。</p>
@@ -466,7 +470,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   <div class="tw">
     <table>
       <tr><th>#</th><th>方向</th><th>阶段</th><th>核心问题</th></tr>
-      <tr><td><b style="color:#f59e0b">R1</b></td><td>LLM 辅助政策本体自动生成</td><td><span class="tag tgg">Phase 1</span></td><td>HITL → 半自动 → 全自动的过渡方法论</td></tr>
+      <tr><td><b style="color:#f59e0b">R1</b></td><td>自上而下的 LLM 全自动本体构建</td><td><span class="tag tgg">Phase 1</span></td><td>利用 LLM 已有法律知识，以顶层分类驱动本体生成</td></tr>
       <tr><td><b style="color:#f59e0b">R2</b></td><td>大规模政策关系抽取噪声控制</td><td><span class="tag tgg">Phase 2</span></td><td>百万级规模下的噪声分布与自纠正机制</td></tr>
       <tr><td><b style="color:#f59e0b">R3</b></td><td>Schema Feedback Loop</td><td><span class="tag tt">Phase 1→2</span></td><td>抽取发现边界 case → 自动建议本体修正</td></tr>
       <tr><td><b style="color:#f59e0b">R4</b></td><td>跨数据源实体对齐与知识融合</td><td><span class="tag tt">Phase 3</span></td><td>政策·法规·企业·文书多源异构实体统一</td></tr>
@@ -475,7 +479,7 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
     </table>
   </div>
   <div class="g3" style="margin-top:0.5rem">
-    <div class="py tc"><b style="color:#f59e0b">R1+R2</b><br><span style="color:#64748b;font-size:0.76rem">方法论 + 系统方向<br>KDD / WWW</span></div>
+    <div class="py tc"><b style="color:#f59e0b">R1+R2</b><br><span style="color:#64748b;font-size:0.76rem">全自动本体+质量<br>KDD / WWW / ISWC</span></div>
     <div class="py tc"><b style="color:#f59e0b">R4+R5</b><br><span style="color:#64748b;font-size:0.76rem">数据管理与知识融合<br>VLDB / SIGMOD / ISWC</span></div>
     <div class="py tc"><b style="color:#f59e0b">R6</b><br><span style="color:#64748b;font-size:0.76rem">图学习方向<br>NeurIPS / KDD</span></div>
   </div>
@@ -483,31 +487,42 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 
 // === Slide 11: Ontology Auto-Generation ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <div class="w tc"><h2>LLM 辅助本体自动生成的实现路线设想</h2></div>
-  <p class="lead tc">在依法规/政策这一大垂类上，LLM 能否做得比通用领域更好？</p>
+  <div class="w tc"><h2>LLM 全自动本体构建的自上而下路线</h2></div>
+  <p class="lead tc">利用 LLM 对法律体系的先验知识，顶层注入 + 底层验证，一步到位</p>
   <div class="g2">
-    <div class="pg"><div class="l">Stage 1 · HITL（可落地）</div>
-      <p>LLM 产候选本体 → 人工审核 → 确认。</p>
-      <p style="margin-top:0.3rem"><b>论文角度</b>：政策领域 HITL 本体设计方法论，LLM vs HITL 质量对比实验。</p>
+    <div class="pg"><div class="l">优势：为什么自上而下更快</div>
+      <ul>
+        <li>法律/政策领域已有成熟的顶层分类体系（法律位阶、行业代码、发文机关分级）</li>
+        <li>LLM 训练数据中已蕴含这些知识，不需要从零聚类归纳</li>
+        <li>从顶层往下细化是"演绎"过程，比"归纳"更符合 LLM 的生成范式</li>
+        <li><b>论文角度</b>：在法律法规这一大垂类上，LLM 的先验知识足够丰富，全自动构建的精度可能超过通用领域的半自动方法</li>
+      </ul>
     </div>
-    <div class="py"><div class="l">Stage 2 · 半自动（学术创新）</div>
-      <p>不确定性采样 + active learning → 只审"高置信度错误"样本，大幅减少人工量。</p>
-      <p style="margin-top:0.3rem"><b>论文角度</b>："How few edits can achieve expert-quality policy ontology?"</p>
+    <div class="py"><div class="l">实现方案</div>
+      <ul>
+        <li><b>Step 1</b>：LLM 根据已有法律知识生成顶层本体框架</li>
+        <li><b>Step 2</b>：500 条政策样本验证覆盖率，LLM 自动识别遗漏并补全</li>
+        <li><b>Step 3</b>：迭代 2-3 轮后输出稳定的 OWL schema</li>
+        <li><b>质量自检</b>：LLM 自带一致性检查、冲突检测、覆盖率报告</li>
+        <li><b>论文角度</b>："Can LLMs construct domain ontology top-down without human annotation?"</li>
+      </ul>
     </div>
-    <div class="py" style="grid-column:1/-1"><div class="l">Stage 3 · 全自动 + 微调（前沿）</div>
-      <p>从全量政策文本自底向上归纳本体：文本聚类 → 候选类 → 关系归纳 → 层次化。</p>
-      <p style="margin-top:0.3rem"><b>论文角度</b>："Automatic Ontology Induction from 1.3M Policy Documents"——此规模尚无同类工作。</p>
+    <div class="py" style="grid-column:1/-1"><div class="l">与自底向上的对比</div>
+      <div style="font-size:clamp(0.72rem,0.85vw,0.8rem);color:#94a3b8;margin-top:0.2rem">
+        <b style="color:#e2e8f0">自底向上</b>：文本聚类 → 概念归纳 → 层次抽象 → 人工提炼。慢，但能发现新概念。<br>
+        <b style="color:#e2e8f0">自上而下（推荐）</b>：顶层框架 → 样本验证 → 迭代补全。快，适合已有成熟分类体系的领域。
+      </div>
     </div>
   </div>
-  <div class="q"><strong>亮点</strong>：1.3M 政策规模比现有 ontology learning 实验大 2-3 个数量级。</div>
+  <div class="q"><strong>为什么在法律政策领域可行？</strong> 法律体系的分类结构（宪法→法律→行政法规→地方性法规，以及《立法法》规定的位阶关系）是 LLM 训练数据中的高频知识，LLM 对"政策 A 废止政策 B"这类关系的理解远超通用领域。这是垂直 LLM 本体构建的核心优势。</div>
 </div>`);
 
-// === Slide 12: WebProtégé ===
+// === Slide 12: 附录 · 工具备选 ===
 slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;justify-content:center;flex:1">
-  <div class="w tc"><h2>附录 · WebProtégé</h2></div>
-  <p class="lead tc">本体设计的可视化协作工具（替代已退役的 gra.fo）</p>
+  <div class="w tc"><h2>附录 · 本体设计工具备选</h2></div>
+  <p class="lead tc">全自动为主，如需人工审校时可用的工具</p>
   <div class="g2">
-    <div class="card"><h4>基本信息</h4>
+    <div class="card"><h4>WebProtégé</h4>
       <ul>
         <li><b>项目</b>：webprotege.stanford.edu</li>
         <li><b>定位</b>：Stanford 开发的 Web 版本体编辑器，OWL/RDF schema 设计</li>
@@ -515,16 +530,16 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
         <li><b>输出</b>：OWL / RDF / TTL 标准格式</li>
       </ul>
     </div>
-    <div class="card"><h4>选型原因</h4>
+    <div class="card"><h4>选型背景</h4>
       <ul>
         <li>gra.fo 已于 2026-03-13 退役关服</li>
         <li>WebProtégé 是学术界本体工程的 gold standard（20 年持续维护）</li>
+        <li>全自动构建产出 OWL schema 后，若需人工二次审校，可直接导入 WebProtégé</li>
         <li>也可使用桌面版 Protégé Desktop（功能更全，需本地安装）</li>
-        <li>政策本体规模约 5-8 类、10-15 关系，Web 端完全胜任</li>
       </ul>
     </div>
   </div>
-  <div class="q">工作流闭环：LLM 产候选 → WebProtégé 审 → 导出 OWL → 本地 Qwen3 填充实例 → NeuG/GraphScope 入库。</div>
+  <div class="q" style="margin-top:0.4rem">全自动管线：LLM（顶层框架→样本验证→迭代）→ OWL schema → 本地 Qwen3 填充实例 → NeuG/GraphScope 入库。</div>
 </div>`);
 
 // === Slide Manager ===
