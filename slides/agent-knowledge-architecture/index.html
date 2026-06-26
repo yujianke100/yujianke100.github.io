@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent 记忆架构 — 培训材料</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;font-family:'Inter','Segoe UI',sans-serif;overflow:hidden;height:100vh}
+.stage{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;padding:3rem 4rem}
+.slide.active{opacity:1}
+.w{width:100%;max-width:1100px;margin:0 auto}
+h1{font-size:clamp(1.8rem,3.2vw,3rem);color:#f1f5f9;font-weight:700;margin-bottom:0.5rem}
+h2{font-size:clamp(1.2rem,2vw,1.8rem);color:#f59e0b;font-weight:600;margin-bottom:0.3rem}
+h3{font-size:clamp(0.9rem,1.2vw,1.1rem);color:#e2e8f0;font-weight:600;margin-bottom:0.3rem}
+p,li{font-size:clamp(0.78rem,1vw,0.9rem);color:#cbd5e1;line-height:1.6}
+.sub{color:#94a3b8;font-size:clamp(0.68rem,0.85vw,0.78rem);margin-top:0.2rem}
+.ac{color:#f59e0b}
+.ac2{color:#38bdf8}
+.ac3{color:#34d399}
+.card{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:0.7rem 0.9rem}
+.card.accent{border-color:rgba(245,158,11,0.3)}
+.grid{display:grid;gap:0.5rem}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+code{background:#0d1117;padding:0.1rem 0.3rem;border-radius:4px;font-size:clamp(0.7rem,0.85vw,0.82rem);color:#e2e8f0}
+pre{background:#0d1117;padding:0.6rem 0.8rem;border-radius:8px;font-size:clamp(0.65rem,0.78vw,0.75rem);color:#e2e8f0;overflow-x:auto;line-height:1.5;border:1px solid #1e293b}
+.tag{display:inline-block;padding:0.08rem 0.35rem;border-radius:4px;font-size:clamp(0.6rem,0.7vw,0.68rem);font-weight:600}
+.tgg{background:rgba(16,185,129,0.15);color:#34d399}
+.ty{background:rgba(245,158,11,0.15);color:#fbbf24}
+.tr{background:rgba(239,68,68,0.15);color:#ef4444}
+ul,ol{padding-left:1.2rem}
+li{margin-bottom:0.2rem}
+table{width:100%;border-collapse:collapse;font-size:clamp(0.7rem,0.85vw,0.8rem)}
+th,td{padding:0.3rem 0.5rem;border:1px solid #1e293b;text-align:left;color:#cbd5e1}
+th{background:#1e293b;color:#f1f5f9;font-weight:600}
+.flow{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin:0.5rem 0}
+.flow-item{background:#1e293b;border:1px solid rgba(56,189,248,0.3);border-radius:8px;padding:0.4rem 0.7rem;text-align:center;flex:1}
+.flow-item .label{color:#38bdf8;font-size:clamp(0.65rem,0.75vw,0.72rem);font-weight:600}
+.flow-item .desc{color:#cbd5e1;font-size:clamp(0.6rem,0.7vw,0.68rem)}
+.arrow{color:#64748b;font-size:1.2rem}
+.slogan{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:0.6rem 1rem;margin:0.5rem 0;text-align:center}
+.slogan p{color:#fbbf24;font-size:clamp(0.75rem,0.9vw,0.85rem)}
+.num{font-size:clamp(1.2rem,2vw,1.8rem);font-weight:700;color:#f59e0b}
+.num-label{font-size:clamp(0.6rem,0.7vw,0.68rem);color:#94a3b8}
+.progress{position:fixed;top:0;left:0;height:3px;background:#f59e0b;transition:width .3s;z-index:100}
+.sn{position:fixed;bottom:0.8rem;right:1.2rem;color:#64748b;font-size:clamp(0.6rem,0.7vw,0.68rem);z-index:100}
+.na{position:fixed;top:50%;transform:translateY(-50%);width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid #1e293b;background:#111827;color:#cbd5e1;font-size:1.2rem;cursor:pointer;z-index:100;opacity:0.7;transition:opacity .2s}
+.na:hover{opacity:1}
+.na:disabled{opacity:0.2;cursor:default}
+.pl{left:0.5rem}
+.nx{right:0.5rem}
+</style>
+</head>
+<body>
+<div class="stage" id="app"></div>
+<div class="progress" id="progress"></div>
+<div class="sn" id="sn"></div>
+<button class="na pl" id="prev">&lsaquo;</button>
+<button class="na nx" id="next">&rsaquo;</button>
+<script>
+const slides = [];
+
+// P1 — 封面
+slides.push(() => `<div class="w" style="text-align:center">
+  <h1 style="font-size:clamp(2rem,3.8vw,3.5rem);margin-bottom:0.3rem">团队级 Agent 记忆架构</h1>
+  <p style="color:#38bdf8;font-size:clamp(1rem,1.5vw,1.3rem);margin-bottom:1rem">Hermes Agent + Knowledge Graph + Obsidian</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:2rem;margin:1.5rem 0">
+    <span style="color:#10b981;font-weight:600;font-size:1.1rem">人写文档</span>
+    <span style="color:#64748b;font-size:1.5rem">→</span>
+    <span style="color:#f59e0b;font-weight:600;font-size:1.1rem">Agent 索引</span>
+    <span style="color:#64748b;font-size:1.5rem">→</span>
+    <span style="color:#38bdf8;font-weight:600;font-size:1.1rem">知识查询</span>
+  </div>
+  <p class="sub">302lab · 2026</p>
+</div>`);
+
+// P2 — 为什么需要
+slides.push(() => `<div class="w">
+  <h2>🤔 为什么需要这套架构？</h2>
+  <div class="grid g2" style="margin-top:0.8rem">
+    <div class="card"><h3>😵 知识分散</h3><p>多个同学、多个项目、共享服务器——知识散落在各人笔记里，想找找不到</p></div>
+    <div class="card"><h3>😤 个人 vs 团队</h3><p>个人研究笔记和团队基础设施混在一起，新同学不知道哪些是共享的</p></div>
+    <div class="card"><h3>😰 新同学上手慢</h3><p>来了不知道服务器在哪、用什么数据库、项目有哪些——全靠口口相传</p></div>
+    <div class="card"><h3>🔒 权限难管</h3><p>A 项目的同学不该看到 B 项目的内部知识——但没有细粒度控制</p></div>
+  </div>
+  <p style="margin-top:0.5rem;color:#fbbf24">目标：一套体系，所有人按权限查到该知道的知识</p>
+</div>`);
+
+// P3 — 整体架构
+slides.push(() => `<div class="w">
+  <h2>📐 整体架构</h2>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin:0.8rem 0">
+    <div class="card" style="border-color:rgba(16,185,129,0.4);width:60%;text-align:center">
+      <div style="color:#10b981;font-weight:700;font-size:1rem">📝 Obsidian / Markdown</div>
+      <p style="color:#94a3b8;font-size:0.75rem">人写文档 · frontmatter 定义节点 · git push</p>
+    </div>
+    <div style="color:#64748b;font-size:1rem">↓ 自动扫描 frontmatter</div>
+    <div class="card" style="border-color:rgba(245,158,11,0.4);width:60%;text-align:center">
+      <div style="color:#f59e0b;font-weight:700;font-size:1rem">🔗 知识图谱 (NeuG)</div>
+      <p style="color:#94a3b8;font-size:0.75rem">实体节点 + 关系边 · Cypher 查询 · scope 权限过滤</p>
+    </div>
+    <div style="color:#64748b;font-size:1rem">↑ 模糊搜索入口</div>
+    <div class="card" style="border-color:rgba(56,189,248,0.4);width:60%;text-align:center">
+      <div style="color:#38bdf8;font-weight:700;font-size:1rem">🧠 向量记忆 (Honcho)</div>
+      <p style="color:#94a3b8;font-size:0.75rem">个人偏好 · 对话上下文 · 按 Profile 隔离</p>
+    </div>
+  </div>
+  <p class="sub" style="text-align:center">三層各司其職，不重複造輪子</p>
+</div>`);
+
+// P4 — Obsidian 文档层
+slides.push(() => `<div class="w">
+  <h2>📝 组件一：Obsidian 文档层</h2>
+  <div class="grid g2" style="margin-top:0.5rem">
+    <div>
+      <h3>人维护的主力界面</h3>
+      <ul>
+        <li>写 markdown，加 frontmatter 定义节点</li>
+        <li><code>git push</code> → GitHub → 服务器自动同步</li>
+        <li>GitHub App / 手机也能浏览</li>
+        <li>不加 frontmatter → 文档不入图，保持私有</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Frontmatter 示例</h3>
+      <pre>---
+title: 一仓五库 - 数据资产全景
+scope: policy-brain
+nodes:
+  - id: db-cpws
+    label: 裁判文书库
+    type: Database
+    records: 1.637亿
+edges:
+  - source: db-cpws
+    target: warehouse-5k
+    relation: belongs_to
+---</pre>
+    </div>
+  </div>
+  <p class="sub">个人笔记 → 加 frontmatter → push → 自动变成团队知识</p>
+</div>`);
+
+// P5 — NeuG 知识图谱
+slides.push(() => `<div class="w">
+  <h2>🔗 组件二：知识图谱 (NeuG)</h2>
+  <div class="grid g2" style="margin-top:0.5rem">
+    <div>
+      <h3>节点类型</h3>
+      <table>
+        <tr><th>类型</th><th>存什么</th></tr>
+        <tr><td>Person</td><td>团队成员</td></tr>
+        <tr><td>Project</td><td>项目</td></tr>
+        <tr><td>Server</td><td>服务器</td></tr>
+        <tr><td>Database_</td><td>数据库资产</td></tr>
+        <tr><td>DataSource</td><td>数据来源</td></tr>
+        <tr><td>Warehouse</td><td>数据仓库（一仓五库）</td></tr>
+        <tr><td>Tool</td><td>工具</td></tr>
+        <tr><td>Document</td><td>markdown 文档</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>查询示例</h3>
+      <pre># 各仓包含什么数据库？
+MATCH (w:Warehouse)-[:contains]->(d:Database_)
+RETURN w.name, d.name, d.type
+
+# 政策大脑用到的工具
+MATCH (pr:Project {name:'policy-brain'})-[:uses]->(t:Tool)
+RETURN t.name
+
+# 描述某数据库的文档
+MATCH (db:Database_)-[:described_by]->(d:Document)
+RETURN d.title</pre>
+    </div>
+  </div>
+</div>`);
+
+// P6 — Honcho 向量层
+slides.push(() => `<div class="w">
+  <h2>🧠 组件三：Honcho 个人记忆</h2>
+  <div class="g2 grid" style="margin-top:0.5rem">
+    <div class="card">
+      <h3>存什么</h3>
+      <ul>
+        <li>个人偏好（"我喜欢用中文回复"）</li>
+        <li>对话上下文（"上次讨论到...")</li>
+        <li>Agent 使用习惯</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>怎么隔离</h3>
+      <ul>
+        <li>按 Hermes Studio Profile 隔离</li>
+        <li>stuA 的 Honcho ≠ stuB 的 Honcho</li>
+        <li>不会变成团队知识——要进 KG 需要明确入图</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slogan" style="margin-top:0.5rem">
+    <p>Honcho 存个人记忆，NeuG 存团队知识。两套系统从一开始就不混在一起。</p>
+  </div>
+</div>`);
+
+// P7 — 权限模型
+slides.push(() => `<div class="w">
+  <h2>🔐 权限模型</h2>
+  <div class="grid g2" style="margin-top:0.5rem">
+    <div>
+      <h3>permissions.yaml</h3>
+      <pre>name: stuA
+roles:
+  - policy-brain
+  - global
+neuG_host: "http://302lab-hermes:10000"</pre>
+      <p style="margin-top:0.3rem">每个 Profile 一份，agent 启动时自动读取</p>
+    </div>
+    <div>
+      <h3>自动 scope 过滤</h3>
+      <pre># 你输入的：
+MATCH (n:Person) RETURN n.name
+
+# kg_ask 实际执行的：
+MATCH (n:Person)
+WHERE n.scope IN ['policy-brain', 'global']
+RETURN n.name</pre>
+      <p style="margin-top:0.3rem">无权节点完全不可见——不是拒绝，是不存在</p>
+    </div>
+  </div>
+</div>`);
+
+// P8 — 个人 vs 团队
+slides.push(() => `<div class="w">
+  <h2>📂 个人知识 vs 团队知识</h2>
+  <table style="margin-top:0.5rem">
+    <tr><th>类型</th><th>存哪</th><th>谁可见</th><th>怎么维护</th></tr>
+    <tr><td>个人偏好/习惯</td><td>Honcho（Profile 内）</td><td>仅本人</td><td>Agent 自动</td></tr>
+    <tr><td>个人笔记/草稿</td><td>本地 Obsidian，无 frontmatter</td><td>仅本人</td><td>人写，不入图</td></tr>
+    <tr><td>团队项目知识</td><td>NeuG（有 scope 标签）</td><td>同 scope 成员</td><td>frontmatter → kg_scanner</td></tr>
+    <tr><td>团队共享记忆</td><td>服务器 Honcho</td><td>同 scope 成员</td><td>Agent 自动</td></tr>
+  </table>
+  <div class="flow" style="margin-top:0.5rem">
+    <div class="flow-item"><div class="label">个人笔记</div><div class="desc">无 frontmatter</div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">加 frontmatter</div><div class="desc">scope + nodes</div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">git push</div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">入 NeuG</div><div class="desc">团队可见</div></div>
+  </div>
+</div>`);
+
+// P9 — 新同学接入
+slides.push(() => `<div class="w">
+  <h2>🚀 新同学接入流程</h2>
+  <div class="flow" style="margin-top:0.5rem">
+    <div class="flow-item"><div class="label">① 建 Linux 用户</div><div class="desc"><code>sudo useradd</code></div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">② 装 Hermes Studio</div><div class="desc"><code>npm i hermes-web-ui</code></div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">③ 写 permissions.yaml</div><div class="desc">配 scope</div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">④ 加 Person 节点</div><div class="desc"><code>kg_admin.py add person</code></div></div>
+    <div class="arrow">→</div>
+    <div class="flow-item"><div class="label">⑤ 验证</div><div class="desc"><code>kg_ask</code></div></div>
+  </div>
+  <div class="slogan">
+    <p>新建 Linux 用户（无 sudo）+ Hermes Studio Profile → 权限自动隔离</p>
+  </div>
+</div>`);
+
+// P10 — 日常使用
+slides.push(() => `<div class="w">
+  <h2>⚡ 日常使用</h2>
+  <div class="grid g2" style="margin-top:0.5rem">
+    <div>
+      <h3>查询知识</h3>
+      <pre># 查找所有数据库
+kg_ask "MATCH (n:Database_) RETURN n.name"
+
+# 查一仓五库结构
+kg_ask "MATCH (w:Warehouse)-[:contains]->(d:Database_)
+        RETURN w.name, d.name, d.type"
+
+# 查某数据库的相关文档
+kg_ask "MATCH (db:Database_)-[:described_by]->(d:Document)
+        WHERE db.name='JudgmentDocs'
+        RETURN d.title"</pre>
+    </div>
+    <div>
+      <h3>管理员维护</h3>
+      <pre># 加人
+kg_admin.py add person stuA policy-brain
+
+# 加服务器
+kg_admin.py add server new-node 10.11.148.52
+
+# 文档更新后
+python3 kg_scanner.py --clean
+python3 kg_enrich.py
+
+# 路径迁移
+kg_scanner.py --relocate "旧路径" "新路径"</pre>
+    </div>
+  </div>
+</div>`);
+
+// P11 — 从零搭建
+slides.push(() => `<div class="w">
+  <h2>🛠️ 从零搭建（给管理员）</h2>
+  <ol style="margin-top:0.5rem">
+    <li><code>pip install neug</code> — 装图数据库引擎</li>
+    <li>写 <code>kg_server.py</code> — 定义节点类型 + 种子数据（人/服务器/数据库/仓库）</li>
+    <li>配置 <code>systemd</code> 服务 — 开机自启</li>
+    <li>写 <code>kg_scanner.py</code> — 扫描 markdown → Document 节点</li>
+    <li>写 <code>kg_enrich.py</code> — 正文提取 → 实体节点 + described_by 链接</li>
+    <li>写 <code>kg_ask</code> → <code>/usr/local/bin/</code> — 全局查询工具，自动 scope 过滤</li>
+    <li>写 <code>kg_admin.py</code> — 日常管理：加人、加服务器</li>
+    <li>配 <code>permissions.yaml</code> 模板 — 每个 Profile 一份</li>
+  </ol>
+  <p class="sub" style="margin-top:0.3rem">所有代码在 <code>~/agent_dirs/</code>，文档在 <code>~/AI_Worker/hermes/</code></p>
+</div>`);
+
+// P12 — 技术栈
+slides.push(() => `<div class="w">
+  <h2>📋 技术栈一览</h2>
+  <table style="margin-top:0.5rem">
+    <tr><th>层</th><th>工具</th><th>说明</th></tr>
+    <tr><td>图存储</td><td>NeuG (阿里开源)</td><td>Kuzu 内核，支持 Cypher 查询</td></tr>
+    <tr><td>向量记忆</td><td>Honcho + pgvector</td><td>个人偏好 / 对话上下文</td></tr>
+    <tr><td>文档</td><td>Obsidian + GitHub</td><td>人写 markdown，git 同步</td></tr>
+    <tr><td>查询</td><td><code>kg_ask</code> / <code>kg_query</code></td><td>/usr/local/bin，全局可用</td></tr>
+    <tr><td>管理</td><td><code>kg_admin</code></td><td>加人、加服务器、加数据库</td></tr>
+    <tr><td>扫描</td><td><code>kg_scanner</code> / <code>kg_enrich</code></td><td>frontmatter → 节点 / 正文 → 实体</td></tr>
+    <tr><td>服务</td><td>systemd (neug-kg)</td><td>端口 10000，绑定 0.0.0.0</td></tr>
+  </table>
+</div>`);
+
+// P13 — 常见问题
+slides.push(() => `<div class="w">
+  <h2>❓ 常见问题</h2>
+  <div class="grid g2" style="margin-top:0.5rem">
+    <div class="card"><h3>个人知识会被别人看到吗？</h3><p>不会。Honcho 按 Profile 隔离。笔记不加 frontmatter 就不入 NeuG。只有明确标记 scope 的知识才对团队可见。</p></div>
+    <div class="card"><h3>内网其他服务器怎么查？</h3><p><code>KG_HOST=http://302lab-hermes:10000 kg_ask "..."</code>。需先配好 permissions.yaml。</p></div>
+    <div class="card"><h3>文档路径变了怎么办？</h3><p><code>kg_scanner.py --relocate "旧前缀" "新前缀"</code>。</p></div>
+    <div class="card"><h3>新同学来了怎么做？</h3><p>建 Linux 用户 → 装 Hermes Studio → 写 permissions.yaml → <code>kg_admin.py add person</code>。</p></div>
+  </div>
+</div>`);
+
+// P14 — 结语
+slides.push(() => `<div class="w" style="text-align:center">
+  <h2 style="color:#f1f5f9">🎯 核心原则</h2>
+  <div style="margin:1rem auto;max-width:80%">
+    <div class="slogan"><p>人写文档 → 自动入图 → 按权限查询</p></div>
+    <div class="slogan" style="border-color:rgba(56,189,248,0.3)"><p style="color:#38bdf8">个人知识不进图，团队知识不泄漏</p></div>
+    <div class="slogan" style="border-color:rgba(16,185,129,0.3)"><p style="color:#34d399">新同学 5 分钟接入，无需口口相传</p></div>
+  </div>
+  <p class="sub">更多文档：<code>~/AI_Worker/hermes/agent-knowledge-architecture.md</code></p>
+  <p class="sub">GitHub: github.com/ZJGSU-SCIE-302/AI_Worker</p>
+</div>`);
+
+// Navigation engine
+let cur = 0;
+const app = document.getElementById('app');
+const pg = document.getElementById('progress');
+const sn = document.getElementById('sn');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+function render() {
+  app.innerHTML = slides.map((fn, i) => `<div class="slide ${i === cur ? 'active' : ''}">${fn()}</div>`).join('');
+  pg.style.width = `${((cur + 1) / slides.length) * 100}%`;
+  sn.textContent = `${cur + 1} / ${slides.length}`;
+  prev.disabled = cur === 0;
+  next.disabled = cur === slides.length - 1;
+}
+function go(n) { if (n < 0 || n >= slides.length) return; cur = n; render(); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(cur - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+});
+prev.addEventListener('click', () => go(cur - 1));
+next.addEventListener('click', () => go(cur + 1));
+let wt;
+app.addEventListener('wheel', e => {
+  clearTimeout(wt);
+  wt = setTimeout(() => { if (e.deltaY > 0) go(cur + 1); else go(cur - 1); }, 200);
+}, { passive: true });
+let ty = 0;
+app.addEventListener('touchstart', e => { ty = e.touches[0].clientY; });
+app.addEventListener('touchend', e => {
+  const d = ty - e.changedTouches[0].clientY;
+  if (Math.abs(d) > 50) { if (d > 0) go(cur + 1); else go(cur - 1); }
+});
+render();
+</script>
+</body>
+</html>
