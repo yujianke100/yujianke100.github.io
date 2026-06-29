@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent 记忆架构 — ZJGSU DB Group</title>
+<title>Agent 工作效率指南 — ZJGSU DB Group</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0e1a;font-family:'Inter','Segoe UI',sans-serif;overflow:hidden;height:100vh}
@@ -20,10 +20,8 @@ p,li{font-size:clamp(0.78rem,1vw,0.9rem);color:#cbd5e1;line-height:1.6}
 .ac2{color:#38bdf8}
 .ac3{color:#34d399}
 .card{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:0.7rem 0.9rem}
-.card.accent{border-color:rgba(245,158,11,0.3)}
-.grid{display:grid;gap:0.5rem}
-.g2{grid-template-columns:1fr 1fr}
-.g3{grid-template-columns:1fr 1fr 1fr}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem}
 ul,ol{padding-left:1.2rem}
 li{margin-bottom:0.2rem}
 .flow{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin:0.5rem 0}
@@ -40,7 +38,6 @@ li{margin-bottom:0.2rem}
 .na:disabled{opacity:0.2;cursor:default}
 .pl{left:0.5rem}
 .nx{right:0.5rem}
-.st{color:#f1f5f9;font-size:clamp(0.68rem,0.8vw,0.75rem);background:#1e293b;padding:0.15rem 0.4rem;border-radius:4px}
 </style>
 </head>
 <body>
@@ -54,120 +51,119 @@ const slides = [];
 
 // P1 — 封面
 slides.push(() => `<div class="w" style="text-align:center">
-  <h1 style="font-size:clamp(2rem,3.8vw,3.5rem);margin-bottom:0.3rem">🤖 Agent 工作效率指南</h1>
-  <p style="color:#38bdf8;font-size:clamp(1rem,1.5vw,1.3rem);margin-bottom:0.2rem">让 AI Agent 真正成为每个人的趁手工具</p>
+  <h1 style="font-size:clamp(2rem,3.8vw,3.5rem);margin-bottom:0.3rem">🤖 AI Agent 工作效率指南</h1>
+  <p style="color:#38bdf8;font-size:clamp(1rem,1.5vw,1.3rem);margin-bottom:0.2rem">让 Agent 成为你学术和工作的个人助手</p>
   <p class="sub" style="margin-bottom:1.5rem">ZJGSU DB Group · 2026</p>
-  <div class="slogan" style="max-width:70%;margin:0 auto">
-    <p>构建记忆体系 → Agent 懂你、懂项目、懂团队 → 大幅提高工作效率</p>
+  <div class="slogan" style="max-width:75%;margin:0 auto">
+    <p>Agent 能做几乎任何事情——不只是问答，而是直接帮你落地工作</p>
   </div>
 </div>`);
 
-// P2 — Hermes Agent 是什么
+// P2 — 工具定位
 slides.push(() => `<div class="w">
-  <h2>🤖 Hermes Agent 是什么</h2>
-  <p style="margin-bottom:0.5rem">一个开源的 AI Agent 框架，能帮你做研究、写代码、管理知识。与同类工具的对比：</p>
-  <div class="g3 grid" style="margin-top:0.3rem">
+  <h2>🔧 不同 AI Agent 工具定位</h2>
+  <div class="g3 grid" style="margin-top:0.5rem">
+    <div class="card" style="border-color:rgba(245,158,11,0.3)">
+      <h3 style="color:#f59e0b">🧑 个人助理</h3>
+      <ul>
+        <li><b>Hermes Agent</b> — 开源、可定制、记忆+技能体系完善</li>
+        <li><b>OpenClaw</b> — 类似定位</li>
+      </ul>
+      <p class="sub" style="margin-top:0.2rem">适合学术研究、日常工作，长期陪伴</p>
+    </div>
+    <div class="card" style="border-color:rgba(56,189,248,0.3)">
+      <h3 style="color:#38bdf8">💻 代码工程</h3>
+      <ul>
+        <li><b>Claude Code</b> — 偏向代码工程</li>
+        <li><b>OpenCode</b> — 偏向代码工程</li>
+        <li><b>Codex</b> — 偏向代码工程</li>
+      </ul>
+      <p class="sub" style="margin-top:0.2rem">适合写代码、调试、项目构建，用完即走</p>
+    </div>
     <div class="card" style="border-color:rgba(16,185,129,0.3)">
-      <h3 style="color:#10b981">Hermes Agent</h3>
+      <h3 style="color:#10b981">🎯 Hermes 的优势</h3>
       <ul>
-        <li>开源免费</li>
-        <li>全平台支持（CLI + Web + 消息平台）</li>
-        <li>自带记忆系统（Honcho）</li>
-        <li>可扩展技能 + 插件体系</li>
-        <li>支持局域网多设备协作</li>
-      </ul>
-    </div>
-    <div class="card" style="border-color:rgba(239,68,68,0.2)">
-      <h3 style="color:#ef4444">OpenClaw / Claude Code</h3>
-      <ul>
-        <li>闭源 / 有限免费</li>
-        <li>仅终端</li>
-        <li>无持久记忆</li>
-        <li>单会话，每次上下文清零</li>
-        <li>无法团队协作</li>
-      </ul>
-    </div>
-    <div class="card" style="border-color:rgba(239,68,68,0.2)">
-      <h3 style="color:#ef4444">Codex / Cursor</h3>
-      <ul>
-        <li>闭源商业产品</li>
-        <li>强绑定 IDE</li>
-        <li>记忆有限</li>
-        <li>无法自定义知识库</li>
-        <li>数据隐私存疑</li>
+        <li>Memory 体系：记得你的偏好和项目上下文</li>
+        <li>Skill 体系：可持续维护更新的技能库</li>
+        <li>适合长期使用，越用越懂你</li>
       </ul>
     </div>
   </div>
-  <p class="sub" style="margin-top:0.3rem">Hermes 的核心优势：开源 + 可定制 + 团队记忆共享</p>
+  <p class="sub" style="margin-top:0.3rem">定位不同——根据场景选合适的工具</p>
 </div>`);
 
-// P3 — Agent memory 是核心
+// P3 — Agent 能做什么
 slides.push(() => `<div class="w">
-  <h2>🧠 Agent Memory 为什么最重要</h2>
-  <p style="margin-bottom:0.4rem">没有记忆的 Agent 每次对话都是"陌生人"——不知道你的偏好、不知道项目背景、不记得之前的讨论。</p>
+  <h2>⚡ Agent 不只是问答</h2>
+  <p style="margin-bottom:0.4rem">如果 Agent 只能聊天，那和 ChatGPT 有什么区别？Hermes Agent 能做几乎任何事情：</p>
   <div class="g2 grid" style="margin-top:0.3rem">
+    <div class="card"><h3>📂 文件操作</h3><p>读、写、搜索、整理文件。帮你做笔记、整理数据、生成报告。</p></div>
+    <div class="card"><h3>💻 代码开发</h3><p>写脚本、搭服务、改配置、调试错误。从需求到落地。</p></div>
+    <div class="card"><h3>🌐 网络请求</h3><p>调 API、爬数据、部署服务、监控状态。</p></div>
+    <div class="card"><h3>🔧 系统管理</h3><p>装软件、配环境、管理服务、排查故障。</p></div>
+    <div class="card"><h3>📊 数据分析</h3><p>跑 SQL、做可视化、写分析报告。</p></div>
+    <div class="card"><h3>🧠 研究辅助</h3><p>查文献、写综述、整理思路、辅助写作。</p></div>
+  </div>
+  <p class="sub" style="margin-top:0.3rem">关键是——它记得你的偏好、你的项目、你的团队知识，所以做事又快又准</p>
+</div>`);
+
+// P4 — 记忆为什么关键
+slides.push(() => `<div class="w">
+  <h2>🧠 记忆是 Agent 的灵魂</h2>
+  <p style="margin-bottom:0.4rem">没有记忆的 Agent 每次都是"陌生人"——不知道你的偏好、不记得项目背景、搜过的资料下次还得再搜。</p>
+  <div class="g2 grid">
     <div class="card">
-      <h3>没有记忆的 Agent</h3>
+      <h3>没有记忆</h3>
       <ul>
-        <li>每次都要重新介绍自己和项目</li>
+        <li>每次要重新介绍自己</li>
         <li>不知道你的写作风格</li>
-        <li>搜过的资料下次还得再搜</li>
-        <li>换台电脑一切归零</li>
+        <li>不记得之前的讨论</li>
+        <li>每次上下文清零</li>
       </ul>
     </div>
-    <div class="card accent">
-      <h3 style="color:#f59e0b">有记忆的 Agent</h3>
+    <div class="card" style="border-color:rgba(245,158,11,0.3)">
+      <h3 style="color:#f59e0b">有完整的记忆体系</h3>
       <ul>
-        <li style="color:#fbbf24">记得你的偏好和习惯</li>
-        <li style="color:#fbbf24">知道项目背景和进展</li>
-        <li style="color:#fbbf24">能模糊搜索之前的知识</li>
-        <li style="color:#fbbf24">换设备也不丢失</li>
+        <li>记得你的偏好和习惯</li>
+        <li>知道项目背景和进展</li>
+        <li>能模糊搜索之前的知识</li>
+        <li>能直接落地执行任务</li>
       </ul>
     </div>
   </div>
-  <p class="sub" style="margin-top:0.3rem">最终目标：Agent 成为你最趁手的工具，大幅提高你的工作效率</p>
 </div>`);
 
-// P4 — 我们如何搭建
+// P5 — 记忆体系架构
 slides.push(() => `<div class="w">
-  <h2>🛠️ 我们如何搭建</h2>
+  <h2>📐 记忆体系架构</h2>
   <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin:0.5rem 0">
-    <div class="card" style="border-color:rgba(16,185,129,0.4);width:75%;text-align:center">
-      <div style="color:#10b981;font-weight:700;font-size:1rem">📝 写文档</div>
-      <p style="color:#cbd5e1;font-size:0.8rem">和 Agent 一起工作，文档自然产生；Obsidian 本地查看微调</p>
+    <div class="card" style="border-color:rgba(16,185,129,0.3);width:75%;text-align:center">
+      <div style="color:#10b981;font-weight:700;font-size:1rem">📝 文档 + 知识库</div>
+      <p style="color:#cbd5e1;font-size:0.8rem">团队项目文档 · 个人知识库仓库</p>
     </div>
-    <div style="color:#64748b;font-size:1rem">↓</div>
-    <div class="card" style="border-color:rgba(245,158,11,0.4);width:75%;text-align:center">
-      <div style="color:#f59e0b;font-weight:700;font-size:1rem">🧠 两层记忆体系</div>
-      <p style="color:#cbd5e1;font-size:0.8rem;margin-top:0.2rem">
-        <span style="color:#38bdf8">🍃 Honcho</span>（向量数据库：个人记忆 + 项目记忆 + 文档索引） + 
-        <span style="color:#34d399">🔗 NeuG</span>（知识图谱：实体关系索引）
-      </p>
+    <div style="color:#64748b;font-size:1rem">↓ 结构化存储  ↓ 模糊搜索</div>
+    <div class="g2" style="width:75%;gap:0.3rem">
+      <div class="card" style="border-color:rgba(245,158,11,0.3);text-align:center">
+        <div style="color:#f59e0b;font-weight:600;font-size:0.9rem">🔗 知识图谱 (NeuG)</div>
+        <p style="color:#cbd5e1;font-size:0.75rem">结构化知识库<br>实体 + 关系 + 权限</p>
+      </div>
+      <div class="card" style="border-color:rgba(56,189,248,0.3);text-align:center">
+        <div style="color:#38bdf8;font-weight:600;font-size:0.9rem">🍃 向量数据库 (Honcho)</div>
+        <p style="color:#cbd5e1;font-size:0.75rem">模糊搜索增强<br>个人记忆 + 文档索引</p>
+      </div>
     </div>
-    <div style="color:#64748b;font-size:1rem">↓</div>
-    <div class="card" style="border-color:rgba(56,189,248,0.4);width:75%;text-align:center">
-      <div style="color:#38bdf8;font-weight:700;font-size:1rem">🤖 Hermes Agent</div>
-      <p style="color:#cbd5e1;font-size:0.8rem">自动查询两层记忆 → 按权限过滤 → 给你最精准的回答</p>
+    <div style="color:#64748b;font-size:1rem">↓ 自动查询</div>
+    <div class="card" style="border-color:rgba(139,92,246,0.3);width:75%;text-align:center">
+      <div style="color:#a78bfa;font-weight:700;font-size:1rem">🤖 Hermes Agent</div>
+      <p style="color:#cbd5e1;font-size:0.8rem">执行任务 · 操作文件 · 调用工具 · 直接落地工作</p>
     </div>
-  </div>
-  <p class="sub" style="text-align:center;margin-top:0.2rem">文档是和人协作时自然产生，不是刻意写的</p>
-</div>`);
-
-// P5 — Honcho 向量数据库
-slides.push(() => `<div class="w">
-  <h2>🍃 Honcho — 向量数据库</h2>
-  <p style="margin-bottom:0.4rem">Honcho 是 Hermes 自带的记忆系统，负责所有需要"模糊匹配"的记忆：</p>
-  <div class="g3 grid" style="margin-top:0.3rem">
-    <div class="card"><h3>👤 个人记忆</h3><p>你的偏好、习惯、常用设置。Agent 越用越懂你。</p><p class="sub">按 Profile 隔离，别人看不到</p></div>
-    <div class="card"><h3>👥 项目记忆</h3><p>群聊讨论、会议记录、项目进展。团队共享上下文。</p><p class="sub">同项目成员可见</p></div>
-    <div class="card"><h3>📄 文档索引</h3><p>把文档关键词提取入库，实现模糊搜索。"企业传导" → 找到相关文档。</p><p class="sub">支持索引个人知识库</p></div>
   </div>
 </div>`);
 
-// P6 — NeuG 知识图谱
+// P6 — 知识图谱
 slides.push(() => `<div class="w">
-  <h2>🔗 NeuG — 知识图谱</h2>
-  <p style="margin-bottom:0.4rem">存"什么和什么有关系"——服务器部署了什么数据库、项目用了什么工具、数据属于哪个仓库。</p>
+  <h2>🔗 知识图谱 (NeuG) — 结构化知识库</h2>
+  <p style="margin-bottom:0.4rem">存"什么和什么有关系"——服务器、数据库、项目、人员、工具、文档之间的关联。</p>
   <div class="g2 grid" style="margin-top:0.3rem">
     <div>
       <h3>节点类型</h3>
@@ -175,8 +171,8 @@ slides.push(() => `<div class="w">
         <li><b>Project</b> — 项目</li>
         <li><b>Server</b> — 服务器</li>
         <li><b>Database</b> — 数据库资产</li>
-        <li><b>Warehouse</b> — 一仓五库体系</li>
-        <li><b>Tool</b> — 用到的工具</li>
+        <li><b>Warehouse</b> — 一仓五库</li>
+        <li><b>Tool</b> — 工具</li>
         <li><b>Person</b> — 团队成员</li>
         <li><b>Document</b> — 文档</li>
       </ul>
@@ -187,79 +183,57 @@ slides.push(() => `<div class="w">
         <li>政策大脑 <span style="color:#38bdf8">部署于</span> 302lab-hermes</li>
         <li>公共信用库 <span style="color:#38bdf8">包含</span> 裁判文书（MongoDB）</li>
         <li>俞鉴珂 <span style="color:#38bdf8">管理</span> 政策大脑</li>
-        <li>裁判文书库 <span style="color:#38bdf8">描述于</span> 数据资产全景文档</li>
+        <li>裁判文书 <span style="color:#38bdf8">描述于</span> 数据资产全景文档</li>
       </ul>
-      <p class="sub" style="margin-top:0.3rem">这些关系由 Hermes 自动维护，不需要手动操作</p>
+      <p class="sub" style="margin-top:0.3rem">自动维护，无需手动操作</p>
     </div>
   </div>
 </div>`);
 
-// P7 — 权限控制
+// P7 — Honcho 向量数据库
 slides.push(() => `<div class="w">
-  <h2>🔐 权限控制</h2>
+  <h2>🍃 Honcho — 向量数据库</h2>
+  <p style="margin-bottom:0.4rem">Hermes 官方支持良好的向量数据库，本地算力需求小。负责所有需要"模糊匹配"的场景：</p>
+  <div class="g3 grid" style="margin-top:0.3rem">
+    <div class="card"><h3>👤 个人记忆</h3><p>你的偏好、习惯、对话上下文。按 Profile 隔离。</p><p class="sub">越用越懂你</p></div>
+    <div class="card"><h3>👥 项目/群聊记忆</h3><p>团队讨论记录、项目进展。同项目成员共享。</p><p class="sub">互通有无</p></div>
+    <div class="card"><h3>📄 文档索引</h3><p>文档关键词提取入库，实现模糊搜索。</p><p class="sub">搜"企业传导"→ 找到相关文档</p></div>
+  </div>
+</div>`);
+
+// P8 — 权限 + 接入
+slides.push(() => `<div class="w">
+  <h2>🔐 权限 → 新同学 5 分钟接入</h2>
   <div class="g2 grid" style="margin-top:0.5rem">
     <div class="card">
-      <h3>每个同学一份配置</h3>
-      <p>定义你能看哪个项目的内容</p>
-      <p class="sub" style="margin-top:0.2rem">比如：policy-brain 项目成员 → 看到服务器、数据库信息</p>
-      <p class="sub">B站弹幕机器人成员 → 看不到政策大脑的数据</p>
+      <h3>权限控制</h3>
+      <p>每个同学一份配置，定义能看哪个项目的内容</p>
+      <p class="sub">查询时 Agent 自动过滤——无权内容不可见</p>
     </div>
     <div class="card">
-      <h3>Agent 自动遵守权限</h3>
-      <p>查询时自动过滤——无权内容不可见</p>
-      <p class="sub" style="margin-top:0.2rem">不是"拒绝访问"，是"不存在"</p>
+      <h3>接入流程</h3>
+      <p>建账号 → 配权限 → 装 Hermes → 开始用</p>
+      <p class="sub">全过程由 Hermes 自动完成，你只管问问题</p>
+      <p class="sub">参与项目的同学：接入后即可查询项目知识</p>
     </div>
   </div>
 </div>`);
 
-// P8 — 新同学接入
-slides.push(() => `<div class="w">
-  <h2>🚀 新同学 5 分钟接入</h2>
-  <div class="flow" style="margin-top:0.5rem">
-    <div class="flow-item"><div class="label">① 建账号</div><div class="desc">管理员创建 Linux 用户</div></div>
-    <div class="arrow">→</div>
-    <div class="flow-item"><div class="label">② 配权限</div><div class="desc">定义能看的项目</div></div>
-    <div class="arrow">→</div>
-    <div class="flow-item"><div class="label">③ 装 Hermes</div><div class="desc">一行命令安装</div></div>
-    <div class="arrow">→</div>
-    <div class="flow-item"><div class="label">④ 开始用</div><div class="desc">Agent 自动获取权限</div></div>
-  </div>
-  <div class="slogan"><p>全过程由 Hermes 自动完成，你只管问问题</p></div>
-  <p class="sub">参与项目的同学：接入后即可查询项目知识，快速了解项目全貌</p>
-</div>`);
-
-// P9 — 团队协作
-slides.push(() => `<div class="w">
-  <h2>🤝 团队协作</h2>
-  <p style="margin-bottom:0.4rem">构建这套记忆体系的目的：</p>
-  <div class="g2 grid">
-    <div class="card" style="border-color:rgba(245,158,11,0.3)">
-      <h3 style="color:#f59e0b">🎯 让 Agent 成为你的趁手工具</h3>
-      <p>它懂你的偏好、懂项目背景、记得每一次讨论。你只需要关注研究本身，重复性的工作交给 Agent。</p>
-    </div>
-    <div class="card" style="border-color:rgba(56,189,248,0.3)">
-      <h3 style="color:#38bdf8">🔄 互通有无，不重复造轮子</h3>
-      <p>A 同学研究过的课题、写过的脚本，B 同学能搜到——不是翻聊天记录，而是问 Agent。</p>
-    </div>
-  </div>
-  <p class="sub" style="margin-top:0.3rem">最终：每个人一个懂你的 Agent，团队一个共享的知识库</p>
-</div>`);
-
-// P10 — 结语
+// P9 — 结语
 slides.push(() => `<div class="w" style="text-align:center">
-  <h2 style="color:#f1f5f9">🎯 核心目标</h2>
+  <h2 style="color:#f1f5f9">🎯 最终目标</h2>
   <div style="margin:0.8rem auto;max-width:80%">
     <div class="slogan" style="border-color:rgba(245,158,11,0.4)">
       <p style="color:#f59e0b;font-size:clamp(0.9rem,1.1vw,1rem);font-weight:600">让 Agent 成为每个人最趁手的工具</p>
     </div>
     <div class="slogan" style="border-color:rgba(56,189,248,0.3)">
-      <p style="color:#38bdf8">大幅提高工作效率——你不必重复做 Agent 能做的一切</p>
+      <p style="color:#38bdf8">Agent 能做几乎任何事情——不只是问答，直接帮你落地工作</p>
     </div>
     <div class="slogan" style="border-color:rgba(16,185,129,0.3)">
       <p style="color:#34d399">团队互通有无——前人走过的路，后人不必重走</p>
     </div>
   </div>
-  <p class="sub">一般同学：学会用 Agent 提高效率</p>
+  <p class="sub">一般同学：学会用 Agent 提高学术和工作效率</p>
   <p class="sub">项目同学：快速接入项目知识，快速理解全貌</p>
   <p class="sub">GitHub: github.com/ZJGSU-SCIE-302/AI_Worker</p>
 </div>`);
