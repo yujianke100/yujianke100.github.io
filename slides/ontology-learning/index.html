@@ -128,7 +128,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 3 总流程 ── */
 slides.push(() => `<div class="wl">
-  <h2>二、整体流程：九步 + 一段插曲</h2>
+  <h2>二、整体流程：六步 + 一段插曲</h2>
   <p class="lead">从原文出发，先抽出候选类型、拼成<b>树的初版</b>，再合并重复概念得到<b>完整树</b>；随后用一份<b>独立结构</b>与人工抽查来验证。<b>整条流水线是一次性的：固定语料进去，一棵完整树出来。</b></p>
   <div class="g5" style="margin-top:0.55rem">
     <div class="card" style="border-left:3px solid #34d399"><h4>A · 从原文抽出候选</h4>
@@ -139,8 +139,8 @@ slides.push(() => `<div class="wl">
       <p>④ 顶层归类（粗坐标）<br>⑤ 建树与结构自检<br><span class="dim">单连通 · 无环 · 深度 ≤3</span></p></div>
     <div class="card" style="border-left:3px solid #60a5fa"><h4>C · 合并重复概念 → 完整树</h4>
       <p>⑥ 同义拼接与合并<br><span class="dim">固定语料下的完整树</span></p></div>
-    <div class="card" style="border-left:3px solid #f59e0b"><h4>D · 用独立结构验证 + 人工评测</h4>
-      <p>⑦ 独立证据检验（支持率 / 富集）<br>⑧ 两跳验证<br>⑨ 人工分层评测</p></div>
+    <div class="card" style="border-left:3px solid #f59e0b"><h4>D · 结果与现场演示</h4>
+      <p>深链 / 深度分布 / 逐跳质量<br><span class="dim">交互页面当场打开看</span></p></div>
   </div>
   <div class="strip">
     <span class="pill gr"><b>⑥ 同义拼接实测</b>：三域确定性归并 <b>1,797 / 18 / 601</b> 对，合并后结构不变</span>
@@ -261,28 +261,25 @@ slides.push(() => `<div class="wl">
 
 /* ── 8 ⑤ 建树 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑤</span><h2>建树：把三层拼成一棵"干净的树"</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑤</span><h2>同一性链接：让树自己往上长 —— 深度的真正来源</h2></div>
   <div class="g3">
-    <div class="card"><h4>动机</h4><p>三层散着没法用。要拼成一棵树，并满足：每个类型<b>有且只有一个父</b>、从根能走到任何节点、<b>没有环</b>。</p></div>
-    <div class="card"><h4>步骤</h4><p>细类型 → 挂到投票选出的中间层；<br>
-      中间层 → 挂到顶层类；<br>
-      顶层类 → 挂到唯一根。<br>
-      <span class="dim">特殊处理：同名冲突、"既当中间层又当顶层类"的节点。</span></p></div>
-    <div class="card"><h4>例子（真实路径）</h4>
-      <p><code>optimization_algorithm → algorithm → method → root</code><br>
-      <code>data_structure → structure → root</code><br>
-      <code>ablation_study → study → document → root</code></p></div>
+    <div class="card"><h4>动机</h4><p>一条「X 是一种 Y」只给一层。但 Y 本身常常<b>也是另一个三元组里的类型</b> —— 于是可以接着往上走，深度就这么长出来了。<br>
+      <span class="dim">这就是「一个三元组的上位类别 = 另一个三元组的类型」那条链接。</span></p></div>
+    <div class="card"><h4>四件事</h4><p>① <b>定方向</b>：取每个类型的众数上位（只认抽取时声明过的上下位）；<br>
+      ② <b>往上长</b>：若该上位名本身也是被抽取出来的类型，就继续用它的上位；<br>
+      ③ <b>环消解</b>：互相指认成环时，按票数占比砍掉最弱的那条边；<br>
+      ④ <b>顶层类归口</b>：链顶挂到域内自适应顶层类 → 唯一根，这一步把碎片<b>连成一棵树</b>。</p></div>
+    <div class="card"><h4>例子（arXiv 真实链，9 跳）</h4><p><code>root</code> → <code>entity</code> → <code>object</code> → <code>artifact</code> → <code>software</code> → <code>system</code> → <code>framework</code> → <code>formalism</code> → <code>logic</code> → <code>agent_logic</code><br>
+      <span class="dim">每一跳都是抽取时说过的「X 是一种 Y」。</span></p></div>
   </div>
   <div class="strip">
-    <span class="pill">arXiv 树：<b>34,529 个节点</b>（深度 ≤3）</span>
-    <span class="pill gr">单连通 · <b>真环 0</b> · 多父 0</span>
-    <span class="pill am">修掉 675 个多父节点 + 10 个同名自环</span>
+    <span class="pill">链 ≥2 跳的类型：arXiv <b>30,562</b> 个</span>
+    <span class="pill gr">最深：arXiv <b>9 跳</b> ｜ MultiEURLEX <b>10 跳</b> ｜ CFR <b>6 跳</b></span>
+    <span class="pill am">装配后：环 <b>0</b> · 单连通</span>
   </div>
-  <div class="note"><b>三层的意义</b>：<b>L1 细类型</b>是抽取出来的具体类型（如 <code>optimization_algorithm</code>）；<b>L2 中间层</b>是它"是一种什么"的众数投票结果（<code>algorithm</code>）—— 作用是<b>把一万种叫法收进同一批上位名</b>，类型级统计才能跨文档累加、可比；<b>L3 顶层类</b>是给每个 L2 名一个<b>可定位的分区坐标</b>（<code>method</code>），让不同文档、不同批次抽出的类型落进同一套坐标里，便于聚合与对照（域内自适应生成、不写死；只负责分区，不承诺桶内纯度）。</div>
-</div>`);
-
-/* ── 9 步骤⑤续 同义拼接 ── */
-slides.push(() => `<div class="wl">
+  <div class="note"><b>一句话读法</b>：<b>深度来自同一性链接，连通性来自顶层类</b> —— 两者拼在一起才是这棵树。链接本身给出的是一张碎片森林（arXiv 381 个分量、巨分量只占 56.6%），必须靠顶层类归口才连成一棵。<br>
+  <span class="dim">质量形态是「逐跳成立、传递模糊」：每条边都是抽取声明的上下位（逐跳质量见结果页）；跳数一多，最上面的祖先会变很泛 —— 这是深分类体系的常态，不是错误。</span></div>
+</div>`);slides.push(() => `<div class="wl">
   <div class="shead"><span class="sbadge">步骤 ⑥</span><h2>同义拼接与合并：让"同一概念的多种写法"只留一个节点</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>抽取端已要求"一个概念只有一个名字"，但仍残留写法变体（<code>re-ranking_method</code> vs <code>re_ranking_method</code>、<code>legal_process</code> vs <code>legal_procedure</code>）。重复节点会让类型级统计虚高，也会让上一层出现假兄弟。</p></div>
@@ -305,112 +302,63 @@ slides.push(() => `<div class="wl">
 
 /* ── 10 ⑥ 同义拼接 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">总览</span><h2>最终这棵树是怎么拼起来的：四步装配</h2></div>
+  <div class="shead"><span class="sbadge">总览</span><h2>最终这棵树是怎么拼起来的：四步装配 + 自检</h2></div>
   <div class="g3">
-    <div class="card"><h4>为什么分开做</h4><p>树不是"一步长出来"的：<b>方向</b>、<b>坐标</b>、<b>去重</b>、<b>自检</b>四件事各自独立完成，每一步都能单独验证、单独替换方法。</p></div>
-    <div class="card"><h4>装配四步</h4><p>① <b>定方向</b>：每个细类型用它"是一种什么"的<b>众数投票</b>选唯一父（L1 → L2）；<br>
-      ② <b>定坐标</b>：L2 名挂到<b>域内自适应顶层类</b>（L2 → L3），顶层类挂到唯一根；<br>
-      ③ <b>去重</b>：同名 / 同义概念合并（步骤 ⑥），一个概念只留一个节点；<br>
-      ④ <b>自检</b>：单连通 / 环 0 / 多父 0 / 深度 3。</p></div>
-    <div class="card"><h4>真实例子</h4><p>装配：<code>optimization_algorithm → algorithm → method → root</code><br>
-      去重：<code>re_ranking_method</code> 并入 <code>re-ranking_method</code><br>
-      <span class="dim">共修掉 675 个多父节点 + 10 个同名自环</span></p></div>
+    <div class="card"><h4>四步</h4><p>① <b>定方向</b>：众数投票给出每个细类型的上位（L1 → L2）；<br>
+      ② <b>往上长</b>：同一性链接（步骤 ⑤），一层层接着往上；<br>
+      ③ <b>环消解</b>：按票数占比砍掉最弱的环边；<br>
+      ④ <b>顶层类归口</b>：链顶 → 域内自适应顶层类 → 唯一根。</p></div>
+    <div class="card"><h4>自检（装配后）</h4><p><b>环 0</b> · <b>单连通</b> · 深度 3 → 9 / 10 跳<br>
+      节点：arXiv <b>34,530</b> ｜ CFR <b>2,840</b> ｜ MultiEURLEX <b>40,545</b><br>
+      <span class="dim">结构干净是「能当树用」的最低要求，不是质量分。</span></p></div>
+    <div class="card"><h4>这棵树里没有什么</h4><p>没有任何一条边来自前面那段插曲（star）：<br>
+      <b>方向</b> = 抽取层的众数投票<br><b>长高</b> = 同一性链接<br><b>连通</b> = 顶层类归口<br>
+      <span class="dim">三者互相独立，都能单独验证、单独替换。</span></p></div>
   </div>
   <div class="strip">
-    <span class="pill">arXiv 树：<b>34,529 个节点</b>（深度 3）</span>
-    <span class="pill gr">单连通 · <b>真环 0</b> · 多父 0</span>
-    <span class="pill am">合并后细类型数：arXiv <b>34,152 → 31,550</b> ｜ CFR <b>2,562 → 2,459</b> ｜ MultiEURLEX <b>39,998 → 38,772</b></span>
+    <span class="pill">同义拼接后细类型：arXiv <b>34,152 → 31,550</b></span>
+    <span class="pill">CFR <b>2,562 → 2,459</b> ｜ MultiEURLEX <b>39,998 → 38,772</b></span>
+    <span class="pill gr">三域合并后结构均不变（环 0 · 单连通）</span>
   </div>
-  <div class="note">这棵树里<b>没有任何一条边来自前面那段插曲</b>：<b>方向</b>来自抽取层的众数投票、<b>坐标</b>来自域内自适应顶层类、<b>去重</b>来自名字规则 + LLM —— 三者互相独立，都能单独验证、单独替换。<br>
-  <span class="dim">装配后的自检：单连通 · 真环 0 · 多父 0 · 深度 3。</span></div>
-</div>`);
-
-/* ── 11 ⑧ 对齐 + 冻结指标 ── */
-slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑦</span><h2>独立证据检验：树边在语料里站得住吗？</h2></div>
-  <div class="g3">
-    <div class="card"><h4>动机</h4><p>结构自洽 ≠ 正确。要用一条与树<b>无关的路径</b>给每条树边找证据；而且指标必须在<b>看数据之前</b>定死（预注册）。</p></div>
-    <div class="card"><h4>步骤</h4><p>① 用<b>插曲里那份独立结构（骨架）</b>当"独立证据库"（节点对 + 共现权重）；<br>
-      ② 取树里的「细类型 → 中间层」边；<br>
-      ③ 看这一对在骨架里有没有共现、权重多大；<br>
-      ④ 与"随机取两个节点恰好有共现"的基线比。</p></div>
-    <div class="card"><h4>例子</h4>
-      <p>树里这条边：<code>data_structure → component</code>；<br>
-      骨架里恰好也有这两个类型的共现：<b>权重 381</b>（即 381 次共现）→ 这条边被"独立支持"。</p></div>
-  </div>
+  <div class="note">下一步就是把这棵树<b>现场打开看</b>：可拖拽、可缩放、可点选任意节点看它的路径与子树（见「现场演示」页）。</div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 一</span><h2>深链长什么样（arXiv）：9 跳的真实链路</h2></div>
+  <img class="fig" src="fig_deep/subtree_arxiv.png" alt="深链长什么样（arXiv）：9 跳的真实链路" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
-    <span class="pill">严格可比 is-a 率 <b>5.0%</b>（能进入检验的边 = 分母口径）</span>
-    <span class="pill gr">严格支持率 <b>35.7%</b></span>
-    <span class="pill">随机基线 1.52% → 富集 <b>23.5×</b></span>
+    <span class="pill">链路：<b>root → entity → object → artifact → software → system → framework → formalism → logic → agent_logic</b></span>
+    <span class="pill gr">arXiv 链 ≥2 跳的类型 <b>30,562</b> 个</span>
+    <span class="pill am">最深 <b>9 跳</b></span>
   </div>
-  <div class="note">这里<b>不做层级对齐</b>：骨架只回答"哪两个类型一起出现过、有多强"，<b>不看层级、也不比深度</b> —— 所以两边层级结构不同不影响这个检验。（早前的"中间层映射率 100%"只说明两边共用同一批节点名，不是质量分，已从指标里剔除。）<br><b>注意</b>：这是<b>外部一致性检查</b>，不是质量分 —— 分母只覆盖"严格可比"的那 <b>5.0%</b> 的边。</div>
-</div>`);
-
-/* ── 12 ⑨ 两跳 ── */
-slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑧</span><h2>两跳验证：没直接证据的边，能不能"绕一跳"找到支持？</h2></div>
-  <div class="g3">
-    <div class="card"><h4>动机</h4><p>上面只有 35.7% 的边有直接证据。剩下 64% 能不能通过"中间搭一个桥"（A—M—B）找到支持？</p></div>
-    <div class="card"><h4>步骤</h4><p><b>候选怎么来</b>：把两端在<b>骨架里的一跳邻居取交集</b>，共同邻居 M 就是那座"桥"（A—M—B）—— 骨架本身只有一跳边，两跳是<b>在它上面再走一步</b>。<br>
-      然后逐级加严判据：<br>
-      ① 存在路径 → ② 两跳各自文档数 ≥3 → ③ <b>排除泛类 / 高频节点中转</b> → ④ 两端叶子重合 → ⑤ 关系方向。</p></div>
-    <div class="card"><h4>例子</h4>
-      <p>✓ <code>database_query → query</code> 经 <code>subquery</code>（两跳文档数 3/5）<br>
-      ✗ <code>hardware_component → component</code> 经 <code>data_structure</code>（40/<b>1</b>，一端只出现在 1 篇里）</p></div>
-  </div>
+  <div class="note">读法：粗线是主链（同一性链接），灰点是该层的旁支兄弟，左端数字是「距根多少跳」。每一条边都是抽取时声明的「X 是一种 Y」；链在末端停住，是因为该类型的上位名不再是一个被抽取出来的类型。</div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 二</span><h2>深链长什么样（MultiEURLEX）</h2></div>
+  <img class="fig" src="fig_deep/subtree_me.png" alt="深链长什么样（MultiEURLEX）" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
-    <span class="pill">64.52% → 6.41%</span>
-    <span class="pill am">排除泛类中转：6.41% → <b>0.29%</b>（掉 95%）</span>
-    <span class="pill">终审 <b>0.01%（3 条）</b> → 证伪</span>
+    <span class="pill">MultiEURLEX 最深 <b>10 跳</b></span>
+    <span class="pill">CFR 最深 <b>6 跳</b></span>
+    <span class="pill gr">三域装配后均为 <b>环 0 · 单连通</b></span>
   </div>
-  <div class="note">结论是一条<b>负结果</b>：具体类型之间的两跳关联几乎全靠泛类撑着，是"伪路径"。我们把它写进论文，而不是藏起来。</div>
-</div>`);
-
-/* ── 13 ⑩ 人工评测 ── */
-slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑨</span><h2>人工分层评测：请人看一眼"这些边到底对不对"</h2></div>
-  <div class="g3">
-    <div class="card"><h4>动机</h4><p>结构指标再漂亮，也只是内部自洽。必须有人来判断"这条上下位关系是否成立"。</p></div>
-    <div class="card"><h4>步骤</h4><p>按<b>证据状态分四层各抽 100 条</b>：随机 / 有直接证据 / 两跳候选 / 无任何证据；<br>
-      四级判据：严格上下位 / 宽松 / 相关但非上下位 / 错误；<br>
-      <b>盲标、只看名字、不给句子上下文。</b></p></div>
-    <div class="card"><h4>例子</h4>
-      <p><code>image_block → data_structure</code>（有直接证据）→ 判"宽松"<br>
-      <code>research_toolkit → tool</code>（<b>无任何证据</b>）→ 判"严格"</p></div>
-  </div>
+  <div class="note">同一套规则在法规域同样长出长链：MultiEURLEX 最深 <b>10 跳</b>、CFR <b>6 跳</b>。<br><span class="dim">CFR 的链路图见交付包 <code>subtree_cfr.png</code>，或直接在交互页面里展开看。</span></div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 三</span><h2>规模与深度分布：多出来的层级在哪</h2></div>
+  <img class="fig" src="fig_deep/depth_dist.png" alt="规模与深度分布：多出来的层级在哪" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
-    <span class="pill gr">可接受率 <b>99.5%</b></span>
-    <span class="pill">严格率 <b>80–89%</b>（三个独立标注者）</span>
-    <span class="pill am">四层 88/88/87/92 → <b>证据状态与对错无关（p=1.000）</b></span>
+    <span class="pill">arXiv 节点 <b>34,530</b></span>
+    <span class="pill">MultiEURLEX 节点 <b>40,545</b></span>
+    <span class="pill gr">三域环 0 · 单连通</span>
   </div>
-  <div class="note">这条正是我们最想讲的负结果：<b>共现支持不能预测一条上下位关系是否正确</b>。它同时也是局限（无人工 κ 门槛）。</div>
-</div>`);
-
-/* ── 14-16 三域饼图 ── */
-slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（一）：arXiv（计算机论文）的类型树</h2>
-  <img class="fig" src="fig/tree_arxiv.png" alt="arXiv 类型树" style="max-height:64vh;width:auto;max-width:100%">
-  <div class="note">读法：<b>根 → 顶层类（L3，全部画出来）→ 中间层类型（L2）</b>；每个类右边是它的 L2 / L1 数量，下方列出它最大的 6 个中间层（括号 = 该中间层下挂多少个细类型），
-  其余合并成「+N 个中间层」。<b>细类型（L1）数量太大，用数字表示不逐个画。</b><br>同义拼接合并后：L1 34,152 → <b>31,550</b>（-7.6%）、L2 1,051 → <b>1,042</b>，结构不变（环 0 · 单连通 · 深度 3）<br>
-  <span class="dim">一眼能看出的结构特征：<code>method</code> 类只有 15 个中间层却挂了 2,990 个细类型（集中），<code>attribute</code> / <code>process</code> 则是"中间层多、每个不太大"（分散）。</span></div>
-</div>`);
-
-slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
-  <img class="fig" src="fig/tree_cfr.png" alt="CFR 类型树" style="max-height:64vh;width:auto;max-width:100%">
-  <div class="note">法规域的结构更"扁"：<b>21 个顶层类、354 个中间层、2,562 个细类型</b>。突出的是 <code>document</code>（50 个中间层 / 556 个细类型）与
-  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。<br>同义拼接合并后：L1 <b>2,562 → 2,459</b>（-4.0%）、L2 354 → <b>352</b>，结构不变（环 0 · 单连通 · 深度 3）。</div>
-</div>`);
-
-slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（三）：MultiEURLEX（欧盟法规）的类型树</h2>
-  <img class="fig" src="fig/tree_me.png" alt="MultiEURLEX 类型树" style="max-height:64vh;width:auto;max-width:100%">
-  <div class="note">规模最大（<b>39,998 个细类型 / 1,354 个中间层</b>），而且长出了自己的类：<code>obligation</code>、<code>regulatory_instrument</code>、
-  <code>market_domain</code>、<code>biological_agent</code> —— <b>这些不是我们给定的，是它自己长出来的</b>，这就是"域内自适应"。<br>同义拼接合并后：L1 39,998 → <b>38,772</b>（-3.1%）、L2 1,354 → <b>1,338</b>，结构不变（环 0 · 单连通 · 深度 3）</div>
-</div>`);
-
-slides.push(() => `<div class="wl">
-  <h2>三、结果（四）：三域三层结构对照</h2>
+  <div class="note">灰柱 = 原来三层结构覆盖的范围，彩色柱 = 同一性链接多长出来的层级。<br><span class="dim">arXiv：5 跳 <b>10,013</b> 个节点、6 跳 5,764、7 跳 1,436、8 跳 427、9 跳 47；MultiEURLEX 同量级。</span></div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 四</span><h2>逐跳质量：每一条边「X 是一种 Y」成不成立</h2></div>
+  <img class="fig" src="fig_deep/depth_quality.png" alt="逐跳质量：每一条边「X 是一种 Y」成不成立" style="max-height:60vh;width:auto;max-width:100%">
+  <div class="strip">
+    <span class="pill">第 1–7 跳严格 <b>80–95%</b></span>
+    <span class="pill gr">严格+宽松 <b>≥96.7%</b></span>
+    <span class="pill am">第 8 跳：严格 25% / 宽松 72.5% / 错误 <b>0</b></span>
+  </div>
+  <div class="note">每层抽 60 条边，本地 27B 判四级。<b>第 1–7 跳严格率 80–95%、严格+宽松 ≥96.7%</b>；第 8 跳严格降到 25%、但宽松 72.5%、<b>没有一条判错</b> —— 顶端收敛到很泛的词（entity / object / logic 这类）。<br><span class="dim">口径：这里量的是「第 d 层那一条边」（单跳）；若量「X 与其第 d 级祖先」（多跳传递）会随深度下降 —— 逐跳成立、传递模糊。</span></div>
+</div>`);slides.push(() => `<div class="wl">
+  <h2>结果 五：三层坐标（中间件）—— 三域对照</h2>
   <table>
     <tr><th>域</th><th>L1 细类型</th><th>L2 中间层</th><th>L3 顶层类</th><th>最大类占比</th><th>未归类 L2</th><th>树结构</th></tr>
     <tr><td>arXiv（计算机论文）</td><td>34,152</td><td>1,051</td><td>24</td><td>12.7%（attribute）</td><td>9（0.86%）</td><td>单连通 · 环 0 · 深度 ≤3</td></tr>
@@ -427,71 +375,63 @@ slides.push(() => `<div class="wl">
 
 /* ── 17 指标结果 ── */
 slides.push(() => `<div class="wl">
-  <h2>四、评价指标一览</h2>
-  <table>
-    <tr><th>指标</th><th>arXiv</th><th>CFR</th><th>MultiEURLEX</th><th>它想说明什么</th></tr>
-    <tr><td>树规模（节点 / 细类型）</td><td>34,529 / 34,152</td><td>2,840 / 2,562</td><td>40,544 / 39,998</td><td>长了多大</td></tr>
-    <tr><td><b>树规模（同义合并后）</b></td><td><b>31,927 / 31,550</b></td><td><b>2,737 / 2,459</b></td><td><b>39,317 / 38,772</b></td><td>同义拼接后的规模</td></tr>
-    <tr><td>结构健康：单连通 / 环 / 深度</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>树是否自洽</td></tr>
-    <tr><td>严格可比 is-a 率</td><td>5.0%</td><td>8.3%</td><td>6.1%</td><td>有多少边有资格被外部验证</td></tr>
-    <tr><td><b>严格支持率</b></td><td><b>35.7%</b></td><td><b>19.7%</b></td><td><b>24.5%</b></td><td>多少边在独立结构里找得到</td></tr>
-    <tr><td><b>富集（vs 随机）</b></td><td><b>23.5×</b></td><td><b>10.6×</b></td><td><b>26.9×</b></td><td>比瞎猜强多少倍</td></tr>
-    <tr><td>支持权重中位 / ≥2 占比</td><td>3.0 / 69.5%</td><td>2.0 / 61.9%</td><td>3.0 / 66.9%</td><td>证据有多"硬"</td></tr>
-    <tr><td>顶层类未归类率（兜底）</td><td>0.86%</td><td>0.28%</td><td>0.15%</td><td>粗坐标覆盖率</td></tr>
-    <tr><td>人工：可接受率 / 严格率</td><td colspan="3" style="text-align:center">99.5% / 80–89%（三个独立标注者）</td><td>人看这些边是否成立</td></tr>
-  </table>
-  <div class="note">高亮的两个数是我们主张进论文正表的：<b>支持率（覆盖）+ 富集（信度）</b>，必须成对报，只看任一个都会被误读。</div>
-</div>`);
-
-/* ── 18 指标大白话 ── */
-slides.push(() => `<div class="wl">
-  <h2>五、这些指标用人话怎么说</h2>
+  <div class="shead"><span class="sbadge">现场演示</span><h2>交互浏览这棵树：拖拽 · 缩放 · 点选 · 搜索</h2></div>
   <div class="g2">
-    <div class="card"><h4>严格可比 is-a 率（5–8%）</h4><p>在所有"细类型→中间层"的边里，只有这么多条的两端都出现在骨架的节点表里。<b>只有这些边才有资格谈外部证据</b>，其余是"两边不在同一张表上"，谈不上验证。</p></div>
-    <div class="card"><h4>严格支持率（19.7–35.7%）</h4><p>上面这些"有资格"的边里，多少条能在骨架里找到对应共现。<b>这是覆盖率</b>：一共盖住了多少。</p></div>
-    <div class="card"><h4>随机基线（0.9–1.9%）</h4><p>在骨架里<b>随便挑两个类型</b>、恰好有共现的概率。它不是结果，是<b>分母参照</b> —— 没有它，支持率没法解读。</p></div>
-    <div class="card"><h4>富集（10.6–26.9×）</h4><p>支持率 ÷ 随机基线 = <b>比瞎猜强多少倍</b>。10 倍以上才算有信号，我们三域都过了线。<br><span class="dim">提醒：这两个数属<b>外部一致性检查</b>（分母只覆盖 5% 的边），不能当质量分用。</span></p></div>
-    <div class="card"><h4>支持权重中位（2–3）/ ≥2 占比（62–70%）</h4><p>被支持的边有多"硬"：中位 3 表示"典型情况下这两类一起出现过 3 次"；≥2 占比高说明<b>不是一次性偶遇</b>。</p></div>
-    <div class="card"><h4>兜底率（0.15–0.86%）</h4><p>多少个中间层类型<b>没能归入任何顶层类</b>。低是好事，但它可以靠"多设类"刷低 —— 必须和"类数 + 人工抽检"一起看。</p></div>
-    <div class="card"><h4>人工可接受率 99.5% / 严格率 80–89%</h4><p>请人看这些边：<b>99.5% 至少"大致成立"</b>；严格成立的比例在 80–89% 之间（三个标注者给出的区间，不给点值）。</p></div>
-    <div class="card"><h4>结构健康（单连通 / 环 0 / 深度 ≤3）</h4><p>所有节点连成一张网、没有循环、从根到叶子最多 3 跳。<b>这是"树能当树用"的最低要求</b>，不是质量分。</p></div>
+    <div class="card"><h4>打开这个网址</h4><p style="font-size:1.3rem;margin:0.3rem 0"><code>https://yujianke100.github.io/tree/</code></p>
+      <p>离线也能用：交付包里的 <code>tree-site.tar.gz</code> 解压后直接双击 <code>index.html</code>（不依赖任何外网资源）。</p></div>
+    <div class="card"><h4>能做什么</h4><p>· <b>切换</b>：三个域（arXiv / CFR / MultiEURLEX）× 两个族（<b>深树（交付物）</b> / 三层中间件（对照））<br>
+      · <b>拖拽平移 · 滚轮缩放 · 重置视图</b><br>
+      · <b>点节点</b>：右侧显示全名、距根跳数、从根到它的完整路径、子节点数与后代总数<br>
+      · <b>展开 / 折叠</b>：点节点上的 +/− 徽标，按需往下钻<br>
+      · <b>搜索</b>：输入名字片段，点结果直接跳过去并高亮</p></div>
   </div>
-</div>`);
-
-
-
-
-
-/* ── 21 结论 ── */
-slides.push(() => `<div class="wl">
-  <h2>六、结论与边界</h2>
+  <div class="strip">
+    <span class="pill">初始只展开到第 3 层，其余按需展开</span>
+    <span class="pill gr">单节点子节点 &gt;200 时只画前 200 个并标注「还有 N 个」</span>
+  </div>
+  <div class="note">演示建议动线：① 先看初始的三层轮廓 → ② 搜一个熟悉的类型（例如 <code>algorithm</code>）跳过去 → ③ 顺着路径一路往上点到根，看它究竟经过几跳 → ④ 切到「三层中间件」对照：同一批节点、深度完全不同。</div>
+</div>`);slides.push(() => `<div class="wl">
+  <h2>四、本轮不主张的部分（诚实边界）</h2>
+  <div class="g2">
+    <div class="card" style="border-color:rgba(239,68,68,.35)"><h4 style="color:#f87171">不作为结论引用</h4>
+      <ul>
+        <li><b>共现类指标</b>（支持率 19.7–35.7% / 富集 10.6–26.9×）：只是<b>外部一致性检查</b>，分母仅覆盖「严格可比」的 <b>5%</b> 的边；它说明「树边与共现相关」，<b>不等于</b>「上下位正确」。</li>
+        <li><b>人工分层评测</b>（400 条、可接受 99.5%、严格 80–89%）：<b>无人工复核</b>，三方两两 κ 仅 0.43–0.54（&lt;0.70）；严格率只报区间、不报点值。</li>
+        <li><b>两跳验证</b>：<b>已证伪</b>（0.01%），只作负结果写。</li>
+        <li><b>映射率 / 对齐</b>（100%）：只说明两边共用同一批节点名，<b>不是质量分</b>，已剔除。</li>
+      </ul></div>
+    <div class="card"><h4>本轮正表只放这些</h4>
+      <ul>
+        <li><b>结构事实</b>：节点数、环 0、单连通、深度分布（可复现、可核对）。</li>
+        <li><b>逐跳质量</b>：每条边「X 是一种 Y」的判定分布（注明抽样量与口径）。</li>
+        <li><b>收敛统计</b>：14 万个说法 → 3.4 万个概念；同义拼接前后的规模变化。</li>
+        <li><b>现场可验证</b>：交互页面里任意节点、任意路径都能当场点开看。</li>
+      </ul>
+      <p style="margin-top:0.4rem"><span class="dim">理由：能被当场复核的东西才进结论；不能复核的一律降级为「边界说明」。</span></p></div>
+  </div>
+  <div class="note">这几条会在论文里写成 <b>Limitations</b> 而不是藏起来 —— 尤其是「共现不预测正确性」，是本轮最扎实的负结论。</div>
+</div>`);slides.push(() => `<div class="wl">
+  <h2>五、结论与边界</h2>
   <div class="g2">
     <div class="card-hl"><h4 style="color:#34d399;font-weight:600;margin-bottom:0.35rem">可以说</h4>
       <ul>
-        <li><b>一次性</b>端到端可跑：同一套脚本在三个数据集上复现，树全部<b>单连通、无环、深度 3</b>。</li>
-        <li>类型层确实<b>统计收敛</b>：14 万个说法 → 3.4 万个概念，投票众数中位 0.94–1.00。</li>
-        <li><b>同义拼接落地</b>：同一概念的多种写法收成一个节点 —— 三域确定性归并 <b>1,797 / 18 / 601</b> 对；判定后细类型 arXiv <b>34,152 → 31,550（-7.6%）</b>、CFR <b>2,562 → 2,459（-4.0%）</b>，结构不变（环 0 · 单连通 · 深度 3）；MultiEURLEX <b>39,998 → 38,772（-3.1%）</b>。</li>
-        <li>与独立结构对照<b>有富集 10.6–26.9×</b>：树边与真实共现显著相关，不是随机。（属外部一致性检查，<b>不当质量分</b>。）</li>
-        <li>人工抽查：树边 <b>99.5% 可接受</b>，且跨三个独立标注者结论一致。</li>
-        <li>顶层类实现<b>域内自适应</b>：三个域各自长出需要的类，兜底率 &lt;1%。</li>
+        <li><b>同一性链接真的能把树长深</b>：arXiv 最深 <b>9 跳</b>、MultiEURLEX <b>10 跳</b>、CFR 6 跳；装配后 <b>环 0 · 单连通</b>。</li>
+        <li><b>逐跳成立</b>：1–7 跳严格率 <b>80–95%</b>、严格+宽松 ≥96.7%；第 8 跳严格 25% / 宽松 72.5% / 错误 <b>0</b>。</li>
+        <li><b>类型层统计收敛</b>：14 万个说法 → 3.4 万个概念。</li>
+        <li><b>同义拼接有效</b>：arXiv 34,152 → 31,550 ｜ CFR 2,562 → 2,459 ｜ MultiEURLEX 39,998 → 38,772，结构不变。</li>
+        <li><b>三层坐标域内自适应</b>（兜底 &lt;1%），而且是连通性的来源：链接本身只是碎片森林。</li>
       </ul></div>
     <div class="card" style="border-color:rgba(239,68,68,.35)"><h4 style="color:#f87171">不能吹</h4>
       <ul>
-        <li>不能说"共现验证了上下位"：支持率只有 20–36%，且四层严格率无差异（p=1.000）。</li>
-        <li>不能只报一个严格率点值（三个标注者给的是 80–89%）。</li>
-        <li>顶层类不是"分类准确率"（抽检合理率 70–80%），它只是<b>分区坐标</b>。</li>
-        <li>没有人工 κ：三个 AI 标注者两两 κ 只有 0.43–0.54，分歧全在"严格 vs 宽松"边界。</li>
-        <li>两跳支持<b>已证伪</b>（0.01%），只能作为负结果写。</li>
-        <li><b>插曲（把关系都当 star）的边界要写清</b>：它<b>不产生树的任何一条边</b> —— 不能定方向（0.22%）、不能判同义（0.0–0.7%）、不能补两跳证据（0.01%）；正结论只有"折叠关系维提升跨半语料复现性 0.453 → 0.594"。"中间层映射率 100%" 不是质量分，已剔除。</li>
+        <li><b>深度是「逐跳成立、传递模糊」</b>：不能宣称「每一级祖先都严格成立」（第 8 跳严格仅 25%）。</li>
+        <li><b>不能拿共现指标当质量</b>：支持率 / 富集只是外部一致性检查（分母仅 5%），且四层严格率无差异（p=1.000）。</li>
+        <li><b>没有人工 κ</b>：三方两两 0.43–0.54；严格率只报区间、不给点值。</li>
+        <li><b>两跳已证伪</b>（0.01%），只能作负结果写。</li>
+        <li><b>插曲（star）不产生树的任何一条边</b>：三条筛选（同义 / 泛词 / 环裁决）全部失效（本轮实测）。</li>
       </ul></div>
   </div>
-  <div class="note"><b>关于深度</b>：<b>三层是设计出来的坐标</b>（细类型 / 上位类型 / 顶层类 = "归纳压缩层 / 分区坐标"），不是"想深而深不动"；硬把 supertype 串联确实能到 9 层，但那只是把类型聚合反复做 —— 66% 的节点互相指认成环、逐层精度 76.7%→31.7%→3.3%，所以不做，9 层实验只作边界证据。<br>
-  下一步：① 请一位真人标 60–80 条做校准子集（补 κ）；② 把"共现不预测正确性"写成论文主结论之一；③ 三域最终树已定稿（arXiv / CFR / MultiEURLEX 均含合并后的规模与结构）；④ 增量更新作为扩展方向（覆盖率 100%、父边一致 92.8%、结构与全量重建等价），见附录。</div>
-</div>`);
-
-/* ── 20 附录 ── */
-/* ── 附：增量更新（扩展方向）── */
-slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="note">下一步：① 请一位真人标 60–80 条做校准子集（补 κ）；② 把「共现不预测正确性」与「插曲三条筛选均失效」写进 Limitations；③ 交互页面已可用（见前一页），现场可任意展开核对。</div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">附：增量更新（扩展方向，不是本轮主线）</h2>
   <img class="fig" src="fig/incr_curve.png" alt="增量生长曲线" style="max-height:46vh;width:auto;max-width:100%">
   <div class="strip">
