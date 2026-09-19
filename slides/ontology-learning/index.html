@@ -439,7 +439,23 @@ slides.push(() => `<div class="wl">
   <div class="note"><b>落地清单（预计半天）</b>：① 新文档照常抽取，新类型的父用自身的 supertype 投票；② 文档支持门槛改为跨批累计；③ 端点聚合只做合并/消歧候选，判定交 LLM + 人工终审。</div>
 </div>`);
 
-/* ── 20 结论 ── */
+/* ── 20 增量 pipeline 已落地 ── */
+slides.push(() => `<div class="wl" style="max-width:1480px">
+  <h2 style="margin-bottom:0.4rem">六（续）：增量拼接已经跑起来了 — 本体是这么「长」起来的</h2>
+  <img class="fig" src="fig/incr_curve.png" alt="增量生长曲线" style="max-height:52vh;width:auto;max-width:100%">
+  <div class="strip">
+    <span class="pill gr">覆盖率 <b>25.9% → 100%</b>（分 6 批喂入，最后追平全量）</span>
+    <span class="pill">父边与全量一致率 <b>92.8%</b></span>
+    <span class="pill am">累计门槛把缺口 <b>7,795 → 5</b></span>
+    <span class="pill">结构：<b>单连通 · 环 0 · 深度 3</b>（与全量重建等价）</span>
+  </div>
+  <div class="note">落地的三件事：① 新类型用<b>累计文档支持</b>晋级（P13 发现的 7,795 缺口归零）；② 新类型的父由<b>它自己的 supertype 投票</b>给出；
+  ③ 邻域重叠 ≥0.7 才判同义合并（本次只合并 5 个，与实测 0.35% 误合并量级相符）。<br>
+  <span class="dim">规模对照：L1 34,147 vs 全量 34,152（差 5 = 被同义合并的）；L2 1,065 vs 1,051（多 14 个，分块顺序导致的 L2 集合差异）；
+  新增的 74 个 L2 名字由类表闭集判定，69 个入类、5 个留 concept。</span></div>
+</div>`);
+
+/* ── 21 结论 ── */
 slides.push(() => `<div class="wl">
   <h2>七、结论与边界</h2>
   <div class="g2">
@@ -460,7 +476,7 @@ slides.push(() => `<div class="wl">
         <li>两跳支持<b>已证伪</b>（0.01%），只能作为负结果写。</li>
       </ul></div>
   </div>
-  <div class="note">下一步：① 请一位真人标 60–80 条做校准子集；② 把"共现不预测正确性"写成论文主结论之一；③ 三域类表与判定已冻结，可随时重算全部指标。</div>
+  <div class="note">下一步：① 请一位真人标 60–80 条做校准子集；② 把"共现不预测正确性"写成论文主结论之一；③ <b>增量拼接已实现</b>（覆盖率 100%、父边一致 92.8%、结构与全量重建等价），下一步把它接到 CFR / ME 两个域上。</div>
 </div>`);
 
 /* ── 20 附录 ── */
