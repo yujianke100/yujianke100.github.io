@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幻灯片目录 — Slides</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:#0a0e1a;min-height:100vh;color:#cbd5e1;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+    padding:6vh 6vw 8vh;line-height:1.6;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  header{text-align:center;margin-bottom:3rem}
+  h1{
+    font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;letter-spacing:-0.01em;
+    background:linear-gradient(135deg,#06b6d4 0%,#f59e0b 55%,#10b981 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:0.7rem;
+  }
+  .sub{color:#e2e8f0;font-size:clamp(0.95rem,1.25vw,1.1rem)}
+  .meta-top{color:#cbd5e1;font-size:0.86rem;margin-top:0.55rem}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.1rem}
+
+  .card{
+    display:flex;flex-direction:column;position:relative;
+    background:linear-gradient(135deg,rgba(30,41,59,0.72),rgba(30,41,59,0.34));
+    border:1px solid rgba(45,58,80,0.55);border-radius:14px;
+    padding:1.15rem 1.25rem;overflow:hidden;
+    transition:border-color .22s,transform .22s,background .22s;
+  }
+  .card::before{
+    content:'';position:absolute;left:0;top:0;width:4px;height:100%;
+    background:var(--c,#f59e0b);opacity:0.85;
+  }
+  .card:hover{
+    border-color:var(--c,#f59e0b);transform:translateY(-3px);
+    background:linear-gradient(135deg,rgba(38,52,74,0.88),rgba(30,41,59,0.45));
+  }
+  /* 整卡可点：标题里的链接拉伸铺满卡片 */
+  .t{color:#f1f5f9;font-weight:700;font-size:clamp(1rem,1.25vw,1.18rem);margin-bottom:0.35rem;padding-left:0.35rem}
+  .t a{color:inherit;text-decoration:none}
+  .t a::after{content:'';position:absolute;inset:0;z-index:1}
+  .card:hover .t a{color:var(--c,#f59e0b)}
+  .d{color:#cbd5e1;font-size:clamp(0.84rem,1vw,0.94rem);flex:1;padding-left:0.35rem}
+  .row{display:flex;align-items:center;gap:0.5rem;margin-top:0.85rem;padding-left:0.35rem;flex-wrap:wrap}
+  .tag{
+    display:inline-block;padding:0.16rem 0.5rem;border-radius:6px;
+    font-size:0.75rem;font-weight:600;background:rgba(148,163,184,0.15);color:#e2e8f0;
+  }
+  .tag.c{background:rgba(6,182,212,0.16);color:#38bdf8}
+  .tag.g{background:rgba(16,185,129,0.16);color:#34d399}
+  .tag.a{background:rgba(245,158,11,0.16);color:#fbbf24}
+  .tag.p{background:rgba(167,139,250,0.16);color:#a78bfa}
+  .tag.new{background:rgba(245,158,11,0.22);color:#fbbf24;font-weight:700}
+  .date{color:#cbd5e1;font-size:0.78rem;margin-left:auto}
+
+  .sub-links{margin-top:0.6rem;display:flex;gap:0.5rem;flex-wrap:wrap;padding-left:0.35rem;position:relative;z-index:2}
+  .sub-links a{
+    text-decoration:none;font-size:0.78rem;color:#38bdf8;
+    border:1px solid rgba(56,189,248,0.34);border-radius:6px;padding:0.14rem 0.5rem;
+    transition:background .2s;
+  }
+  .sub-links a:hover{background:rgba(56,189,248,0.14)}
+
+  h2.sec{
+    color:#f59e0b;font-size:clamp(1.05rem,1.35vw,1.22rem);font-weight:700;
+    margin:2.6rem 0 1rem;padding-left:0.7rem;border-left:3px solid rgba(245,158,11,0.7);
+  }
+  h2.sec:first-of-type{margin-top:0}
+  footer{
+    margin-top:3rem;padding-top:1.4rem;border-top:1px solid rgba(45,58,80,0.5);
+    text-align:center;color:#cbd5e1;font-size:0.84rem
+  }
+  footer a{color:#38bdf8;text-decoration:none}
+  footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>幻灯片目录</h1>
+    <p class="sub">汇报与方案演示 · 点击任意卡片进入</p>
+    <p class="meta-top">共 7 套 · 按最近更新排序 · 键盘 &larr; &rarr; 或点击两侧箭头翻页</p>
+  </header>
+
+  <h2 class="sec">研究进展</h2>
+  <div class="grid">
+    <div class="card" style="--c:#10b981">
+      <div class="t"><a href="./ontology-learning/">类型级本体构建 · 进度汇报</a></div>
+      <div class="d">从大规模文本中学习 Schema：LLM 抽取 → 统计收敛 → 增量拼接。三域实证（法律 / 欧盟法 / 计算机科学），含建树结果、规模实验与同义合并进展。</div>
+      <div class="row">
+        <span class="tag c">本体学习</span><span class="tag g">15 页</span><span class="tag new">最新</span>
+        <span class="date">2026-09-19</span>
+      </div>
+    </div>
+
+    <div class="card" style="--c:#f59e0b">
+      <div class="t"><a href="./policy-brain-kg/">Policy Brain KG 构建工作流</a></div>
+      <div class="d">Ontology-Driven KG Construction：从 Human-in-the-loop 到自动构建的知识图谱工作流。本体驱动 · 本地大模型 · 大规模政策数据 · GNN 下游。</div>
+      <div class="row">
+        <span class="tag a">知识图谱</span><span class="tag g">12 页</span>
+        <span class="date">2026-06-26</span>
+      </div>
+    </div>
+
+    <div class="card" style="--c:#a78bfa">
+      <div class="t"><a href="./policy-brain/">政策大脑 Policy Brain</a></div>
+      <div class="d">从数据到决策 —— 社会运作系统的数字孪生。AI 驱动的政策决策操作系统，整体架构与功能规划总览。</div>
+      <div class="row">
+        <span class="tag p">项目总览</span><span class="tag g">10 页</span>
+        <span class="date">2026-06-10</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">平台与数据</h2>
+  <div class="grid">
+    <div class="card" style="--c:#38bdf8">
+      <div class="t"><a href="./glake/">GLake · 轻量级 AI 原生数据湖平台</a></div>
+      <div class="d">所有数据在一个网页，按项目分门别类、AI 全程辅助。散落的 CSV / PDF / API 数据统一管理 —— AI 帮你导、查、用。</div>
+      <div class="row">
+        <span class="tag c">数据平台</span><span class="tag g">11 页</span>
+        <span class="date">2026-08-31</span>
+      </div>
+      <div class="sub-links">
+        <a href="./glake/1page.html">1 页速览</a>
+        <a href="./glake/3page.html">3 页速览</a>
+      </div>
+    </div>
+
+    <div class="card" style="--c:#06b6d4">
+      <div class="t"><a href="./data-overview/">数据资产全景 · 一仓五库</a></div>
+      <div class="d">政策溯源与智能合规平台的数据底座：已有已接入系统与规划中数据集的完整清单，含治理架构与获取状态。</div>
+      <div class="row">
+        <span class="tag c">数据资产</span><span class="tag g">3 页</span>
+        <span class="date">2026-06-25</span>
+      </div>
+    </div>
+
+    <div class="card" style="--c:#34d399">
+      <div class="t"><a href="./storage-procurement/">存储平台搭建方案</a></div>
+      <div class="d">存储选型、容量测算与采购配置方案的单页总览。</div>
+      <div class="row">
+        <span class="tag g">采购方案</span><span class="tag">单页</span>
+        <span class="date">2026-06-16</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">团队效率</h2>
+  <div class="grid">
+    <div class="card" style="--c:#f472b6">
+      <div class="t"><a href="./agent-knowledge-architecture/">AI Agent 工作效率指南</a></div>
+      <div class="d">让 Agent 成为学术与工作的个人助手：Agent 能做几乎任何事情 —— 不只是问答，而是直接帮你落地工作。</div>
+      <div class="row">
+        <span class="tag">使用指南</span><span class="tag g">8 页</span>
+        <span class="date">2026-06-30</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    幻灯片均为单文件 HTML，无外部依赖，可离线打开 ｜
+    <a href="https://github.com/yujianke100/yujianke100.github.io">GitHub 仓库</a>
+  </footer>
+</div>
+</body>
+</html>
