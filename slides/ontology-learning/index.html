@@ -385,21 +385,24 @@ slides.push(() => `<div class="wl">
 
 /* ── 17 指标结果 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">现场演示</span><h2>交互浏览这棵树：拖拽 · 缩放 · 点选 · 搜索</h2></div>
+  <div class="shead"><span class="sbadge">现场演示</span><h2>交互浏览这棵树：白底 · 自上而下 · 点节点就展开</h2></div>
   <div class="g2">
-    <div class="card"><h4>打开这个网址</h4><p style="font-size:1.3rem;margin:0.3rem 0"><code>https://yujianke100.github.io/tree/</code></p>
+    <div class="card"><h4>打开这个网址</h4>
+      <p style="font-size:1.34rem;margin:0.35rem 0"><code>https://yujianke100.github.io/tree/</code></p>
       <p>离线也能用：交付包里的 <code>tree-site.tar.gz</code> 解压后直接双击 <code>index.html</code>（不依赖任何外网资源）。</p></div>
-    <div class="card"><h4>能做什么</h4><p>· <b>切换</b>：三个域（arXiv / CFR / MultiEURLEX）× 两个族（<b>深树（交付物）</b> / 三层中间件（对照））<br>
-      · <b>拖拽平移 · 滚轮缩放 · 重置视图</b><br>
-      · <b>点节点</b>：右侧显示全名、距根跳数、从根到它的完整路径、子节点数与后代总数<br>
-      · <b>展开 / 折叠</b>：点节点上的 +/− 徽标，按需往下钻<br>
-      · <b>搜索</b>：输入名字片段，点结果直接跳过去并高亮</p></div>
+    <div class="card"><h4>能做什么</h4>
+      <p>· <b>初始是收拢的</b>：只展开最深的一条主链，一路竖直往下散开，一眼看到<b>第 10 层（arXiv）/ 第 11 层（欧盟）</b><br>
+      · <b>点节点＝展开，再点＝收拢</b>；节点右侧虚线 <b>+N</b> 一次多显示 12 个子节点<br>
+      · <b>左侧每一行是一层</b>：本层共多少个 / 已显示多少个<br>
+      · <b>拖拽平移 · 滚轮缩放 · 适配窗口</b><br>
+      · <b>点节点看细节</b>：全名、距根跳数、从根到它的完整路径（可点）、子节点数与后代总数<br>
+      · <b>搜索</b>：输入名字片段，点结果自动展开路径并定位高亮</p></div>
   </div>
   <div class="strip">
-    <span class="pill">初始只展开到第 3 层，其余按需展开</span>
-    <span class="pill gr">单节点子节点 &gt;200 时只画前 200 个并标注「还有 N 个」</span>
+    <span class="pill">三域 × 两族：<b>深树（交付物）</b> / 三层中间件（对照）</span>
+    <span class="pill gr">白底、自上而下，投影仪上也看得清</span>
   </div>
-  <div class="note">演示建议动线：① 先看初始的三层轮廓 → ② 搜一个熟悉的类型（例如 <code>algorithm</code>）跳过去 → ③ 顺着路径一路往上点到根，看它究竟经过几跳 → ④ 切到「三层中间件」对照：同一批节点、深度完全不同。</div>
+  <div class="note">演示动线：① 打开先看那条竖直主链，左侧标尺从第 1 层一直到第 10 层 → ② 点根节点展开，看它往下散开 → ③ 搜一个熟悉的类型（例如 <code>algorithm</code>）定位过去 → ④ 切到「三层中间件」对照：同一批节点、深度只有 3。</div>
 </div>`);slides.push(() => `<div class="wl">
   <h2>四、本轮不主张的部分（诚实边界）</h2>
   <div class="g2">
