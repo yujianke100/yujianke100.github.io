@@ -283,11 +283,12 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
 
 // === 7b 当前本体树 · 总览 ===
 slides.push(() => `<div class="wl" style="max-width:1480px;display:flex;flex-direction:column;justify-content:center;flex:1">
-  <div class="w" style="max-width:1480px;text-align:center"><h2>当前本体树（总览）</h2></div>
-  <p class="lead tc">CFR 域的实际形状：3,220 个类型全部接入单一根，深度封顶 3 层，无环、无多父冲突</p>
-  <img class="fig" src="./tree_overview.png" alt="当前本体树总览：根 → 21 个粗类 → 真实层级链路">
-  <div class="q" style="margin-top:0.5rem"><strong>怎么读</strong>：上排是树的顶层骨架（1 个根 → 21 个粗类，框内为子类数 / 类型总数）；
-    下排是从当前树里取出的真实链路，逐跳可核（绿色 = 最细类型，蓝色 = 中间类，紫色 = 粗类，黄色 = 根）。</div>
+  <div class="w" style="max-width:1480px;text-align:center"><h2>当前本体树的组成（饼图）</h2></div>
+  <p class="lead tc">CFR 域 3,220 个类型：按顶层粗类的占比 · 垂直构成 · 关键指标</p>
+  <img class="fig" src="./tree_pie.png" alt="当前本体树组成饼图：类型按顶层粗类的分布">
+  <div class="q" style="margin-top:0.5rem"><strong>两个要点</strong>：① 粗类规模差异极大（最大的 document 552 个类型，最小的 model 3 个）——
+    这是"域内自适应顶层"的直接体现，粗类不是均分的；② 树的<b>主体是叶子类型</b>（L1 占 71.8%），
+    中间类 27.5%，粗类只有 21 个 —— 粗层的职责是<b>分区坐标</b>，不是承载知识。</div>
 </div>`);
 
 // === 7c 真实子树展开 ===
