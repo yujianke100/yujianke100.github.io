@@ -275,10 +275,10 @@ slides.push(() => `<div class="wl">
   <div class="strip">
     <span class="pill">确定性核心词归一即合并 <b>1,797 / 18 / 601</b> 对（arXiv/CFR/ME，抽查精度 ~95%）</span>
     <span class="pill gr">LLM 抽样判定：SAME <b>1.7%</b>｜SUB 10.3%｜DIFF 88.0%</span>
-    <span class="pill am">全量判定后的合并压缩：CFR <b>2,562 → 2,458</b>（-4.06%，结构不变）｜ arXiv <b>—</b> ｜ MultiEURLEX <b>—</b></span>
+    <span class="pill am">判定后的合并压缩：arXiv <b>34,152 → 31,550</b>（-7.6%）｜ CFR <b>2,562 → 2,459</b>（-4.0%）｜ MultiEURLEX <b>—</b>（判定中）；三域合并后结构均不变（环 0 · 单连通 · 深度 3）</span>
   </div>
   <div class="note">诚实标注：LLM 的 <b>SAME 边界两判官 κ 只有 0.613</b>（换模型会变），所以流程设成"只有 SAME 才合并 + 抽样人工复核"；<br>
-  <span class="dim">CFR 是候选池全量判定（9,754 对 / 100%）；arXiv 与 MultiEURLEX 的候选池各约 26 万对，取<b>信号最强的前 3 万对</b>（约 12%）判定，尾部不参与合并 —— 上面 arXiv / MultiEURLEX 的压缩量留空，判定跑完补上。</span></div>
+  <span class="dim">判定覆盖：CFR <b>9,550 / 9,754 对（98%）</b>；arXiv <b>59,800 对</b>（候选池 25.9 万，约 23%）；MultiEURLEX <b>4.9 万对</b>（仍在判）。尾部未判的候选不参与合并。</span></div>
 </div>`);
 
 /* ── 10 ⑥ star 化 ── */
@@ -338,7 +338,7 @@ slides.push(() => `<div class="wl">
   <div class="strip">
     <span class="pill">arXiv 树：<b>34,529 个节点</b>（深度 3）</span>
     <span class="pill gr">单连通 · <b>真环 0</b> · 多父 0</span>
-    <span class="pill am">合并后细类型数：CFR <b>2,562 → 2,458</b> ｜ arXiv <b>—</b> ｜ MultiEURLEX <b>—</b></span>
+    <span class="pill am">合并后细类型数：arXiv <b>34,152 → 31,550</b> ｜ CFR <b>2,562 → 2,459</b> ｜ MultiEURLEX <b>—</b></span>
   </div>
   <div class="note"><b>star 在这件事里做什么（据实说明）</b>：star 产出的是<b>骨架</b>，不是这棵树的边 —— 把关系折叠成 <code>*</code>、按<b>端点聚合</b>把碎片拼成 L2 主干、把 L1 作为叶子挂上、再按阈值切尾；这套动作就是设计里"拼接"的形态，产物用于给树边做<b>独立证据检验</b>（支持率 / 富集）；⑩ 的两跳验证也是拿它的<b>一跳边</b>当原料（两端一跳邻域取交集 → 共同中转）。<br>
   <span class="dim"><b>边界</b>：树的<b>父子方向不由它决定</b> —— 改用共现（端点聚合）定方向，与投票一致率只有 <b>0.22%</b>、还会连出 1,732 个环，所以方向一律来自抽取层的众数投票。最终树的形态 = ①方向 + ②坐标 + ③去重。</span></div>
@@ -410,7 +410,7 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（一）：arXiv（计算机论文）的类型树</h2>
   <img class="fig" src="fig/tree_arxiv.png" alt="arXiv 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">读法：<b>根 → 顶层类（L3，全部画出来）→ 中间层类型（L2）</b>；每个类右边是它的 L2 / L1 数量，下方列出它最大的 6 个中间层（括号 = 该中间层下挂多少个细类型），
-  其余合并成「+N 个中间层」。<b>细类型（L1）数量太大，用数字表示不逐个画。</b><br>同义拼接合并后：L1 34,152 → <b>—</b>　L2 1,051 → <b>—</b><br>
+  其余合并成「+N 个中间层」。<b>细类型（L1）数量太大，用数字表示不逐个画。</b><br>同义拼接合并后：L1 34,152 → <b>31,550</b>（-7.6%）、L2 1,051 → <b>1,042</b>，结构不变（环 0 · 单连通 · 深度 3）<br>
   <span class="dim">一眼能看出的结构特征：<code>method</code> 类只有 15 个中间层却挂了 2,990 个细类型（集中），<code>attribute</code> / <code>process</code> 则是"中间层多、每个不太大"（分散）。</span></div>
 </div>`);
 
@@ -418,7 +418,7 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
   <img class="fig" src="fig/tree_cfr.png" alt="CFR 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">法规域的结构更"扁"：<b>21 个顶层类、354 个中间层、2,562 个细类型</b>。突出的是 <code>document</code>（50 个中间层 / 556 个细类型）与
-  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。<br>同义拼接合并后：L1 <b>2,562 → 2,458</b>（-4.06%）、L2 354 → <b>351</b>，结构不变（环 0 · 单连通 · 深度 3）。</div>
+  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。<br>同义拼接合并后：L1 <b>2,562 → 2,459</b>（-4.0%）、L2 354 → <b>352</b>，结构不变（环 0 · 单连通 · 深度 3）。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
@@ -441,7 +441,7 @@ slides.push(() => `<div class="wl">
     <span class="pill gr">法规域集中（document 类占 1/5），论文域分散（最大类 12.7%）</span>
   </div>
   <div class="note">"最大类占比" 是判断顶层分得匀不匀的直观指标：占比越低说明这个域的顶层结构越均衡。<br>
-  <span class="dim">注：CFR / MultiEURLEX 的顶层类是各自域内自适应的结果，三域类表并不相同 —— 这正是"域内自适应"的体现。</span><br><span class="dim">同义拼接合并后（细类型 / 中间层）：CFR <b>2,562 → 2,458</b> / <b>354 → 351</b>；arXiv <b>—</b>；MultiEURLEX <b>—</b>。</span></div>
+  <span class="dim">注：CFR / MultiEURLEX 的顶层类是各自域内自适应的结果，三域类表并不相同 —— 这正是"域内自适应"的体现。</span><br><span class="dim">同义拼接合并后（细类型 / 中间层）：arXiv <b>34,152 → 31,550</b> / <b>1,051 → 1,042</b>；CFR <b>2,562 → 2,459</b> / <b>354 → 352</b>；MultiEURLEX <b>—</b>（判定中）。</span></div>
 </div>`);
 
 /* ── 17 指标结果 ── */
@@ -450,7 +450,7 @@ slides.push(() => `<div class="wl">
   <table>
     <tr><th>指标</th><th>arXiv</th><th>CFR</th><th>MultiEURLEX</th><th>它想说明什么</th></tr>
     <tr><td>树规模（节点 / 细类型）</td><td>34,529 / 34,152</td><td>2,840 / 2,562</td><td>40,544 / 39,998</td><td>长了多大</td></tr>
-    <tr><td><b>树规模（同义合并后）</b></td><td>— / —</td><td><b>2,736 / 2,458</b></td><td>— / —</td><td>同义拼接后的规模</td></tr>
+    <tr><td><b>树规模（同义合并后）</b></td><td><b>31,927 / 31,550</b></td><td><b>2,737 / 2,459</b></td><td>— / —</td><td>同义拼接后的规模</td></tr>
     <tr><td>结构健康：单连通 / 环 / 深度</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>树是否自洽</td></tr>
     <tr><td>严格可比 is-a 率</td><td>5.0%</td><td>8.3%</td><td>6.1%</td><td>有多少边有资格被外部验证</td></tr>
     <tr><td><b>严格支持率</b></td><td><b>35.7%</b></td><td><b>19.7%</b></td><td><b>24.5%</b></td><td>多少边在独立结构里找得到</td></tr>
@@ -489,7 +489,7 @@ slides.push(() => `<div class="wl">
       <ul>
         <li><b>一次性</b>端到端可跑：同一套脚本在三个数据集上复现，树全部<b>单连通、无环、深度 3</b>。</li>
         <li>类型层确实<b>统计收敛</b>：14 万个说法 → 3.4 万个概念，投票众数中位 0.94–1.00。</li>
-        <li><b>同义拼接落地</b>：同一概念的多种写法收成一个节点 —— 三域确定性归并 <b>1,797 / 18 / 601</b> 对；CFR 全量判定后细类型 <b>2,562 → 2,458（-4.06%）</b>，结构不变。</li>
+        <li><b>同义拼接落地</b>：同一概念的多种写法收成一个节点 —— 三域确定性归并 <b>1,797 / 18 / 601</b> 对；判定后细类型 arXiv <b>34,152 → 31,550（-7.6%）</b>、CFR <b>2,562 → 2,459（-4.0%）</b>，结构不变（环 0 · 单连通 · 深度 3）；MultiEURLEX 判定中。</li>
         <li>与独立结构对照<b>有富集 10.6–26.9×</b>：树边与真实共现显著相关，不是随机。</li>
         <li>人工抽查：树边 <b>99.5% 可接受</b>，且跨三个独立标注者结论一致。</li>
         <li>顶层类实现<b>域内自适应</b>：三个域各自长出需要的类，兜底率 &lt;1%。</li>
@@ -505,7 +505,7 @@ slides.push(() => `<div class="wl">
       </ul></div>
   </div>
   <div class="note"><b>关于深度</b>：<b>三层是设计出来的坐标</b>（细类型 / 上位类型 / 顶层类 = "归纳压缩层 / 分区坐标"），不是"想深而深不动"；硬把 supertype 串联确实能到 9 层，但那只是把类型聚合反复做 —— 66% 的节点互相指认成环、逐层精度 76.7%→31.7%→3.3%，所以不做，9 层实验只作边界证据。<br>
-  下一步：① 请一位真人标 60–80 条做校准子集（补 κ）；② 把"共现不预测正确性"写成论文主结论之一；③ arXiv / MultiEURLEX 的同义判定跑完 → 三域最终树数字定稿；④ 增量更新作为扩展方向（覆盖率 100%、父边一致 92.8%、结构与全量重建等价），见附录。</div>
+  下一步：① 请一位真人标 60–80 条做校准子集（补 κ）；② 把"共现不预测正确性"写成论文主结论之一；③ 三域最终树（arXiv / CFR 已定稿，MultiEURLEX 判定中）；④ 增量更新作为扩展方向（覆盖率 100%、父边一致 92.8%、结构与全量重建等价），见附录。</div>
 </div>`);
 
 /* ── 20 附录 ── */
