@@ -98,7 +98,7 @@ slides.push(() => `<div class="w">
   <div class="ht">从文本到本体<br>让机器自己长出一棵类型树</div>
   <div class="hs">读一堆文本 → 自动长出「分类体系（Schema）」，并且每一步都可核验。<br>
   10 个步骤 ｜ 3 个数据集（计算机论文 / 美国法规 / 欧盟法规）｜ 一套预注册的评价口径</div>
-  <div class="htg">韩老师指出：<b>学语言 = 学 Schema</b>　｜　两层次归一化：先构建唯一 Schema，让散乱结构映射上去</div>
+  <div class="htg">出发点：<b>学语言 = 学 Schema</b>　｜　两层次归一化：先构建唯一 Schema，让散乱结构映射上去</div>
   <div class="note" style="text-align:center">Agentic Data Lab ｜ 2026-09-20 ｜ 全程脚本可复现（git 可查逐次提交）</div>
 </div>`);
 
@@ -140,7 +140,7 @@ slides.push(() => `<div class="wl">
     <div class="card" style="border-left:3px solid #a78bfa"><h4>D · 压成可统计的骨架</h4>
       <p>⑦ star 化（折叠关系维）<br>⑧ 端点聚合 + 阈值切尾</p></div>
     <div class="card" style="border-left:3px solid #f59e0b"><h4>E · 用独立证据验证</h4>
-      <p>⑨ 与骨架对齐（冻结指标）<br>⑩ 两跳验证<br>⑪ 人工分层评测</p></div>
+      <p>⑨ 独立证据检验（支持率 / 富集）<br>⑩ 两跳验证<br>⑪ 人工分层评测</p></div>
   </div>
   <div class="strip">
     <span class="pill gr"><b>⑥ 同义拼接实测</b>：三域确定性归并 <b>1,797 / 18 / 601</b> 对，合并后结构不变</span>
@@ -287,8 +287,7 @@ slides.push(() => `<div class="wl">
   <div class="g3">
     <div class="card"><h4>动机</h4><p>"关系"太碎：同一对类型之间有几百种动词，同一件事被拆成几百份，统计就稳不住。</p></div>
     <div class="card"><h4>步骤</h4><p>把关系维统一成一个符号 <code>*</code>，只保留「<b>类型对 + 权重</b>」；<br>
-      权重按<b>文档数</b>去重（一篇文档里说十次只算一次）。<br>
-      <span class="dim">韩老师指出："把所有的关系都当成 star" —— 等于去掉一个变量。</span></p></div>
+      权重按<b>文档数</b>去重（一篇文档里说十次只算一次）。<br></p></div>
     <div class="card"><h4>例子（arXiv 真实折叠）</h4>
       <p><code>model —*→ dataset</code>：<b>479 种关系名</b><br>
       evaluate×3015 ｜ train×2063 ｜ use×1066 ｜ fine-tune×251 …<br>
@@ -299,7 +298,7 @@ slides.push(() => `<div class="wl">
     <span class="pill gr">权重=1 的长尾 <b>64% → 42%</b></span>
     <span class="pill am">两半语料复现性 <b>0.453 → 0.594</b></span>
   </div>
-  <div class="note"><b>定位说明（重要）</b>：star 化 + 端点聚合 + 叶子挂载 + 阈值切尾，<b>都是在固定语料上一次性完成的</b>：碎片 =（上位类型 A <code>—*→</code> 上位类型 B），按<b>端点聚合</b>把碎片拼成 L2 主干，再把 L1 作为叶子挂到 L2 上 —— 这正是这套设计里的<b>"拼接"</b>。它的产物用于<b>独立对照</b>（与主树对齐、冻结指标、两跳支持）。<br>
+  <div class="note"><b>定位说明（重要）</b>：star 化 + 端点聚合 + 叶子挂载 + 阈值切尾，<b>都是在固定语料上一次性完成的</b>：碎片 =（上位类型 A <code>—*→</code> 上位类型 B），按<b>端点聚合</b>把碎片拼成 L2 主干，再把 L1 作为叶子挂到 L2 上 —— 这正是这套设计里的<b>"拼接"</b>。它的产物用于<b>独立证据检验</b>（支持率 / 富集）与<b>两跳候选</b>。<br>
   但<b>父子边不来自它</b>：树的方向来自抽取时"X 是一种 Y"的众数投票。<b>实测</b>：若改用共现（端点聚合）定父子方向，与投票一致率仅 <b>0.22%</b>，还会连出 1,732 个环、深度 11 —— 共现只给"关联"，不给"方向"。<br>
   <span class="dim">（"复现性" = 把语料随机切成两半各自独立跑一遍，看两半算出的边有多少重合。）</span></div>
 </div>`);
@@ -323,24 +322,47 @@ slides.push(() => `<div class="wl">
   <div class="note">这一步是"工程旋钮"：门槛高 = 更可信但覆盖更窄。论文里两个口径都报，让读者自己选。</div>
 </div>`);
 
+/* ── 总览：最终这棵树是怎么拼起来的 ── */
+slides.push(() => `<div class="wl">
+  <div class="shead"><span class="sbadge">总览</span><h2>最终这棵树是怎么拼起来的：四步装配 + star 的位置</h2></div>
+  <div class="g3">
+    <div class="card"><h4>为什么分开做</h4><p>树不是"一步长出来"的：<b>方向</b>、<b>坐标</b>、<b>去重</b>、<b>自检</b>四件事各自独立完成，每一步都能单独验证、单独替换方法。</p></div>
+    <div class="card"><h4>装配四步</h4><p>① <b>定方向</b>：每个细类型用它"是一种什么"的<b>众数投票</b>选唯一父（L1 → L2）；<br>
+      ② <b>定坐标</b>：L2 名挂到<b>域内自适应顶层类</b>（L2 → L3），顶层类挂到唯一根；<br>
+      ③ <b>去重</b>：同名 / 同义概念合并（步骤 ⑥），一个概念只留一个节点；<br>
+      ④ <b>自检</b>：单连通 / 环 0 / 多父 0 / 深度 3。</p></div>
+    <div class="card"><h4>真实例子</h4><p>装配：<code>optimization_algorithm → algorithm → method → root</code><br>
+      去重：<code>re_ranking_method</code> 并入 <code>re-ranking_method</code><br>
+      <span class="dim">共修掉 675 个多父节点 + 10 个同名自环</span></p></div>
+  </div>
+  <div class="strip">
+    <span class="pill">arXiv 树：<b>34,529 个节点</b>（深度 3）</span>
+    <span class="pill gr">单连通 · <b>真环 0</b> · 多父 0</span>
+    <span class="pill am">合并后细类型数：CFR <b>2,562 → 2,458</b> ｜ arXiv <b>—</b> ｜ MultiEURLEX <b>—</b></span>
+  </div>
+  <div class="note"><b>star 在这件事里做什么（据实说明）</b>：star 产出的是<b>骨架</b>，不是这棵树的边 —— 把关系折叠成 <code>*</code>、按<b>端点聚合</b>把碎片拼成 L2 主干、把 L1 作为叶子挂上、再按阈值切尾；这套动作就是设计里"拼接"的形态，产物用于给树边做<b>独立证据检验</b>（支持率 / 富集）与<b>两跳候选</b>。<br>
+  <span class="dim"><b>边界</b>：树的<b>父子方向不由它决定</b> —— 改用共现（端点聚合）定方向，与投票一致率只有 <b>0.22%</b>、还会连出 1,732 个环，所以方向一律来自抽取层的众数投票。最终树的形态 = ①方向 + ②坐标 + ③去重。</span></div>
+</div>`);
+
 /* ── 11 ⑧ 对齐 + 冻结指标 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑨</span><h2>对齐与冻结指标：用另一条独立路径给树"照镜子"</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑨</span><h2>独立证据检验：树边在语料里站得住吗？</h2></div>
   <div class="g3">
-    <div class="card"><h4>动机</h4><p>得证明这棵树不是凭空长出来的。方法：同一份语料、<b>另一条独立路径</b>再建一个结构，两边对照。</p></div>
-    <div class="card"><h4>步骤</h4><p>把 star 边聚成"骨架"（类型对共现）；<br>
-      把树与骨架放在<b>同一批节点</b>上比对；<br>
-      指标在<b>看数据之前就定死</b>（预注册），避免事后挑好看的数。</p></div>
+    <div class="card"><h4>动机</h4><p>结构自洽 ≠ 正确。要用一条与树<b>无关的路径</b>给每条树边找证据；而且指标必须在<b>看数据之前</b>定死（预注册）。</p></div>
+    <div class="card"><h4>步骤</h4><p>① 用 star 边聚成的<b>骨架</b>当"独立证据库"（节点对 + 共现权重）；<br>
+      ② 取树里的「细类型 → 中间层」边；<br>
+      ③ 看这一对在骨架里有没有共现、权重多大；<br>
+      ④ 与"随机取两个节点恰好有共现"的基线比。</p></div>
     <div class="card"><h4>例子</h4>
       <p>树里这条边：<code>data_structure → component</code>；<br>
       骨架里恰好也有这两个类型的共现：<b>权重 381</b>（即 381 次共现）→ 这条边被"独立支持"。</p></div>
   </div>
   <div class="strip">
-    <span class="pill">中间层映射率 <b>100%</b>（1,051 个全部对得上）</span>
+    <span class="pill">严格可比 is-a 率 <b>5.0%</b>（能进入检验的边 = 分母口径）</span>
     <span class="pill gr">严格支持率 <b>35.7%</b></span>
     <span class="pill">随机基线 1.52% → 富集 <b>23.5×</b></span>
   </div>
-  <div class="note">注意："映射率 100%" 只说明两边用的是<b>同一套节点</b>，不是质量分数 —— 这一条已从论文指标里剔除。</div>
+  <div class="note">这里<b>不做层级对齐</b>：骨架只回答"哪两个类型一起出现过、有多强"，<b>不看层级、也不比深度</b> —— 所以两边层级结构不同不影响这个检验。（早前的"中间层映射率 100%"只说明两边共用同一批节点名，不是质量分，已从指标里剔除。）</div>
 </div>`);
 
 /* ── 12 ⑨ 两跳 ── */
@@ -429,7 +451,6 @@ slides.push(() => `<div class="wl">
     <tr><td>树规模（节点 / 细类型）</td><td>34,529 / 34,152</td><td>2,840 / 2,562</td><td>40,544 / 39,998</td><td>长了多大</td></tr>
     <tr><td><b>树规模（同义合并后）</b></td><td>— / —</td><td><b>2,736 / 2,458</b></td><td>— / —</td><td>同义拼接后的规模</td></tr>
     <tr><td>结构健康：单连通 / 环 / 深度</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>树是否自洽</td></tr>
-    <tr><td>中间层映射率</td><td>100%</td><td>100%</td><td>100%</td><td>两边用的是同一套节点</td></tr>
     <tr><td>严格可比 is-a 率</td><td>5.0%</td><td>8.3%</td><td>6.1%</td><td>有多少边有资格被外部验证</td></tr>
     <tr><td><b>严格支持率</b></td><td><b>35.7%</b></td><td><b>19.7%</b></td><td><b>24.5%</b></td><td>多少边在独立结构里找得到</td></tr>
     <tr><td><b>富集（vs 随机）</b></td><td><b>23.5×</b></td><td><b>10.6×</b></td><td><b>26.9×</b></td><td>比瞎猜强多少倍</td></tr>
@@ -506,7 +527,7 @@ slides.push(() => `<div class="wl">
       每域一份树（v6，含顶层类）+ 一份类判定表 + 一份骨架</p></div>
     <div class="card"><h4>一键复现</h4>
       <p><code>run_star_pipeline.sh &lt;域&gt; &lt;语料&gt; &lt;骨架&gt; &lt;输出&gt;</code><br>
-      六步：L1 骨架 → 同代建树+对齐 → 冻结指标 → 两跳 → 评测集 → 汇总（每步独立日志）</p></div>
+      六步：L1 骨架 → 同代建树 → 冻结指标 → 两跳 → 评测集 → 汇总（每步独立日志）</p></div>
     <div class="card"><h4>本页数字来自哪</h4>
       <p>冻结指标：<code>frozen_metrics_3domain.json</code><br>
       类表与判定：<code>adaptive_*/&lt;域&gt;_class_table_final.json</code>、<code>*_coarse_final.json</code><br>
