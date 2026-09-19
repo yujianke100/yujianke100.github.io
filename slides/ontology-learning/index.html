@@ -374,25 +374,25 @@ slides.push(() => `<div class="wl">
 
 /* ── 14-16 三域饼图 ── */
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.4rem">三、结果（一）：三个数据集最后长出来的树 — arXiv（计算机论文）</h2>
-  <img class="fig" src="fig/layers_arxiv.png" alt="arXiv 三层结构" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">读法：<b>外环 = 细类型（L1，34,152 个）</b>、<b>内环 = 中间层类型（L2，1,051 个）</b>，同色 = 同一个顶层类。
-  内外环宽度不一致的类正是"层级穿透"的差异：例如 <code>method</code> 占叶子 8.8% 但只占中间层 1.4%（平均每个 L2 带 199 个叶子）；
-  <code>attribute</code> 两头都大（12.7% / 130 个 L2）。最大一类只占 12.7%，分布相当均衡。</div>
+  <h2 style="margin-bottom:0.35rem">三、结果（一）：arXiv（计算机论文）的类型树</h2>
+  <img class="fig" src="fig/tree_arxiv.png" alt="arXiv 类型树" style="max-height:64vh;width:auto;max-width:100%">
+  <div class="note">读法：<b>根 → 顶层类（L3，全部画出来）→ 中间层类型（L2）</b>；每个类右边是它的 L2 / L1 数量，下方列出它最大的 6 个中间层（括号 = 该中间层下挂多少个细类型），
+  其余合并成「+N 个中间层」。<b>细类型（L1，34,152 个）数量太大，用数字表示不逐个画。</b><br>
+  <span class="dim">一眼能看出的结构特征：<code>method</code> 类只有 15 个中间层却挂了 2,990 个细类型（集中），<code>attribute</code> / <code>process</code> 则是"中间层多、每个不太大"（分散）。</span></div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.4rem">三、结果（二）：CFR（美国联邦法规）</h2>
-  <img class="fig" src="fig/layers_cfr.png" alt="CFR 三层结构" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">法规文本高度集中：<b>document 21.7% + process 16.2% + resource 13.5%</b> 三类就占了过半。
-  注意 <code>obligation</code>（义务，149 个叶子 / 8 个 L2，平均每个 L2 带 18.6 个叶子）—— 这是法律领域特有的顶层类。</div>
+  <h2 style="margin-bottom:0.35rem">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
+  <img class="fig" src="fig/tree_cfr.png" alt="CFR 类型树" style="max-height:64vh;width:auto;max-width:100%">
+  <div class="note">法规域的结构更"扁"：<b>21 个顶层类、354 个中间层、2,562 个细类型</b>。突出的是 <code>document</code>（50 个中间层 / 556 个细类型）与
+  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.4rem">三、结果（三）：MultiEURLEX（欧盟法规）</h2>
-  <img class="fig" src="fig/layers_me.png" alt="MultiEURLEX 三层结构" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">与前两域明显不同：欧盟法规里 <b>obligation（义务）</b> 一类挤进前十，且 <code>organization</code> 平均每个 L2 带 43 个叶子 ——
-  这是"域内自适应"的直接证据：<b>类表不是我们给的，是它自己长出来的</b>。</div>
+  <h2 style="margin-bottom:0.35rem">三、结果（三）：MultiEURLEX（欧盟法规）的类型树</h2>
+  <img class="fig" src="fig/tree_me.png" alt="MultiEURLEX 类型树" style="max-height:64vh;width:auto;max-width:100%">
+  <div class="note">规模最大（<b>39,998 个细类型 / 1,354 个中间层</b>），而且长出了自己的类：<code>obligation</code>、<code>regulatory_instrument</code>、
+  <code>market_domain</code>、<code>biological_agent</code> —— <b>这些不是我们给定的，是它自己长出来的</b>，这就是"域内自适应"。</div>
 </div>`);
 
 slides.push(() => `<div class="wl">
