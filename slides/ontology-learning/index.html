@@ -65,7 +65,7 @@
   th,td{padding:0.34rem 0.5rem;border-bottom:1px solid rgba(45,58,80,.55);text-align:left;color:#cbd5e1}
   th{color:#f1f5f9;font-weight:600;background:rgba(30,41,59,.5)}
   td b{color:#34d399}
-  .fig{width:100%;max-width:1480px;border-radius:10px;border:1px solid rgba(45,58,80,.5)}
+  .fig{width:100%;max-width:1480px;border-radius:10px;border:1px solid rgba(45,58,80,.5);display:block;margin:0 auto}
   .note{margin-top:0.7rem;font-size:clamp(0.82rem,1vw,0.95rem);color:#94a3b8;line-height:1.6}
 </style>
 </head>
@@ -271,29 +271,6 @@ slides.push(() => `<div class="wl">
   <span class="dim">（"复现性" = 把语料随机切成两半各自独立跑一遍，看两半算出的边有多少重合。）</span></div>
 </div>`);
 
-/* ── 10 star 在 pipeline 里的落点 ── */
-slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">小结</span><h2>star 到底影响了 pipeline 的哪几步</h2></div>
-  <table>
-    <tr><th>pipeline 步骤</th><th>star 在其中做什么</th><th>规模 / 效果（arXiv）</th></tr>
-    <tr><td>⑥ star 化</td><td>把 479 种关系名折成 1 条边（去关系维）+ 权重</td><td>碎片 643,853 → <b>88,032</b>（7.3×↓）</td></tr>
-    <tr><td>⑦ 端点聚合 + 切尾</td><td>提供权重门槛；保证砍边不散架</td><td>τ≥1→88,032 条、τ≥1000→341 条，<b>连通块始终 96–99%</b></td></tr>
-    <tr><td>⑧ 对齐与冻结指标</td><td><b>扮演"独立第二条路径"</b>给树照镜子</td><td>严格支持率 <b>35.7%</b>、随机基线 1.52% → 富集 <b>23.5×</b></td></tr>
-    <tr><td>⑨ 两跳验证</td><td>用它的 L1 邻接求交集找"中间桥"</td><td>64.52% → 0.29%（<b>证伪</b>，负结果）</td></tr>
-    <tr><td>⑩ 人工评测集</td><td>C 层样本（两跳候选）来自它</td><td>四层严格率 88/88/87/92 → <b>支持状态与对错无关</b></td></tr>
-    <tr><td><b>⑪ 增量拼接（新）</b></td><td><b>同义合并闸门</b>：新类型的邻域签名与已有类型比对</td><td>34,147 个类型过闸 → 合并 5 个（<b>精确率待复核</b>）</td></tr>
-  </table>
-  <div class="g2" style="margin-top:0.7rem">
-    <div class="card" style="border-color:rgba(239,68,68,.3)"><h4 style="color:#f87171">它<b>不</b>负责（有实测支撑）</h4>
-      <p>· 父子方向：改用共现定父，一致率仅 <b>0.22%</b>、1,732 个环<br>
-      · L1 叶子挂载：目前由 supertype 投票决定；star 的叶子视图与之只重叠 <b>14.7%</b>（此层它的角色是<b>验证</b>：直接支持 2.2%、富集 28.4×）</p></div>
-    <div class="card-hl"><h4 style="color:#34d399;font-weight:600">一句话</h4>
-      <p>star 管「<b>关联侧</b>」：聚合、消歧、合并候选、权重、独立对照；<br>supertype 投票管「<b>方向侧</b>」：谁是父。<br>
-      两者分工有实测数字，不是口头约定。</p></div>
-  </div>
-  <div class="note">对照韩老师原话（9/16）："本体拼接主要以<b>端点聚合</b>来拼接" + "一个端点的语义可以由<b>所连接的端点来消歧</b>" + "需要一个<b>权重</b>" —— 三条中，消歧与权重已完全落地，<b>拼接</b>这一条自本轮增量 pipeline 起也落地（用它做合并与消歧）。</div>
-</div>`);
-
 /* ── 10 ⑦ 端点聚合 + 切尾 ── */
 slides.push(() => `<div class="wl">
   <div class="shead"><span class="sbadge">步骤 ⑦</span><h2>端点聚合与阈值切尾：砍掉不可信的边，但不能砍散</h2></div>
@@ -374,7 +351,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 14-16 三域饼图 ── */
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem">三、结果（一）：arXiv（计算机论文）的类型树</h2>
+  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（一）：arXiv（计算机论文）的类型树</h2>
   <img class="fig" src="fig/tree_arxiv.png" alt="arXiv 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">读法：<b>根 → 顶层类（L3，全部画出来）→ 中间层类型（L2）</b>；每个类右边是它的 L2 / L1 数量，下方列出它最大的 6 个中间层（括号 = 该中间层下挂多少个细类型），
   其余合并成「+N 个中间层」。<b>细类型（L1，34,152 个）数量太大，用数字表示不逐个画。</b><br>
@@ -382,14 +359,14 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
+  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
   <img class="fig" src="fig/tree_cfr.png" alt="CFR 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">法规域的结构更"扁"：<b>21 个顶层类、354 个中间层、2,562 个细类型</b>。突出的是 <code>document</code>（50 个中间层 / 556 个细类型）与
   <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.35rem">三、结果（三）：MultiEURLEX（欧盟法规）的类型树</h2>
+  <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（三）：MultiEURLEX（欧盟法规）的类型树</h2>
   <img class="fig" src="fig/tree_me.png" alt="MultiEURLEX 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">规模最大（<b>39,998 个细类型 / 1,354 个中间层</b>），而且长出了自己的类：<code>obligation</code>、<code>regulatory_instrument</code>、
   <code>market_domain</code>、<code>biological_agent</code> —— <b>这些不是我们给定的，是它自己长出来的</b>，这就是"域内自适应"。</div>
@@ -467,7 +444,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 20 增量 pipeline 已落地 ── */
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.4rem">六（续）：增量拼接已经跑起来了 — 本体是这么「长」起来的</h2>
+  <h2 style="margin-bottom:0.4rem;text-align:center;display:block">六（续）：增量拼接已经跑起来了 — 本体是这么「长」起来的</h2>
   <img class="fig" src="fig/incr_curve.png" alt="增量生长曲线" style="max-height:52vh;width:auto;max-width:100%">
   <div class="strip">
     <span class="pill gr">覆盖率 <b>25.9% → 100%</b>（分 6 批喂入，最后追平全量）</span>
