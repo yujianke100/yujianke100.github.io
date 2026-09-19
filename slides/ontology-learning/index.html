@@ -128,6 +128,7 @@ slides.push(() => `<div class="wl">
   </div>
   <div class="strip">
     <span class="pill am"><b>第十一步（本轮新增）：增量拼接</b> —— 新文档进来时本体继续生长，不必整棵重建；实测覆盖率 <b>25.9% → 100%</b>、父边与全量一致 <b>92.8%</b>、结构与全量重建等价</span>
+    <span class="pill gr"><b>第十二步（本轮新增）：同义拼接</b> —— 名字 + 三层上下文交 LLM 判 SAME/SUB/DIFF，只合并 SAME；三域确定性归并 1,797 / 18 / 601 对，合并后结构不变</span>
   </div>
   <div class="strip">
     <span class="pill">语料：arXiv <b>238.7 万</b> 条</span>
@@ -249,7 +250,29 @@ slides.push(() => `<div class="wl">
   <span class="dim">根因不只在 prompt：v8c 强制"上位词必须是单个单词"（34,152 个类型只能挤进 1,051 个上位词）造成漏斗，但实测<b>放开这条约束后容器词占比不降、边质量不升</b> —— 万能词是 prompt + 模型倾向 + 数据的共同结果。要加深：万能词止步 + 消环 + 逐层验证。</span></div>
 </div>`);
 
-/* ── 9 ⑥ star 化 ── */
+/* ── 9 步骤⑤续 同义拼接 ── */
+slides.push(() => `<div class="wl">
+  <div class="shead"><span class="sbadge">步骤 ⑤·续</span><h2>同义拼接与合并：让"同一概念的多种写法"只留一个节点</h2></div>
+  <div class="g3">
+    <div class="card"><h4>动机</h4><p>抽取端已要求"一个概念只有一个名字"，但仍残留写法变体（<code>re-ranking_method</code> vs <code>re_ranking_method</code>、<code>legal_process</code> vs <code>legal_procedure</code>）。重复节点会让类型级统计虚高，也会让上一层出现假兄弟。</p></div>
+    <div class="card"><h4>步骤</h4><p>① <b>候选召回</b>（同核心词 / 同修饰词+通用核心词 / 包含）把 5.8 亿对压到约 26 万对；<br>
+      ② 每个类型<b>带上它的上位（L2）作上下文</b>交给 LLM，判 <b>SAME</b>（合并）/ <b>SUB</b>（连 is-a 边）/ <b>DIFF</b>（各自独立）；<br>
+      ③ 只有 SAME 才合并，SUB 转成层级边，SAME 抽样人工复核兜底。</p></div>
+    <div class="card"><h4>例子（真实）</h4>
+      <p><code>re-ranking_method ≡ re_ranking_method</code>（连字符变体）<br>
+      <code>legal_process ≡ legal_procedure</code>｜<code>price_indicator ≡ price_metric</code><br>
+      <code>modeling_procedure ≡ modeling_process</code>｜<code>threat_actor ≡ malicious_actor</code></p></div>
+  </div>
+  <div class="strip">
+    <span class="pill">确定性核心词归一即合并 <b>1,797 / 18 / 601</b> 对（arXiv/CFR/ME，抽查精度 ~95%）</span>
+    <span class="pill gr">LLM 抽样判定：SAME <b>1.7%</b>｜SUB 10.3%｜DIFF 88.0%</span>
+    <span class="pill am">CFR 全量判完 → 压缩 <b>104 个类型（4.06%）</b>，合并后结构不变（环 0 · 单连通 · 深度 3）</span>
+  </div>
+  <div class="note">诚实标注：LLM 的 <b>SAME 边界两判官 κ 只有 0.613</b>（换模型会变），所以流程设成"只有 SAME 才合并 + 抽样人工复核"；<br>
+  <span class="dim">arXiv/ME 的候选池各约 26 万对，本轮判的是<b>信号最强的前 6 万对</b>（覆盖 ~23%），尾部未判的部分不参与合并。</span></div>
+</div>`);
+
+/* ── 10 ⑥ star 化 ── */
 slides.push(() => `<div class="wl">
   <div class="shead"><span class="sbadge">步骤 ⑥</span><h2>star 化：把"关系"这一维折叠掉</h2></div>
   <div class="g3">
