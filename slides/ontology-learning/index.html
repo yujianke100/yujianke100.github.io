@@ -349,20 +349,40 @@ slides.push(() => `<div class="wl">
 /* ── 14-16 三域饼图 ── */
 slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.4rem">三、结果（一）：三个数据集最后长出来的树 — arXiv（计算机论文）</h2>
-  <img class="fig" src="fig/pie_arxiv.png" alt="arXiv 顶层类分布" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">读法：环上每一块 = 一个顶层类；旁边列出它下面挂了多少个细类型。<b>最大一类只占 12.7%</b>（attribute），分布相当均衡 —— 这正对应"计算机论文主题分散"。</div>
+  <img class="fig" src="fig/layers_arxiv.png" alt="arXiv 三层结构" style="max-height:62vh;width:auto;max-width:100%">
+  <div class="note">读法：<b>外环 = 细类型（L1，34,152 个）</b>、<b>内环 = 中间层类型（L2，1,051 个）</b>，同色 = 同一个顶层类。
+  内外环宽度不一致的类正是"层级穿透"的差异：例如 <code>method</code> 占叶子 8.8% 但只占中间层 1.4%（平均每个 L2 带 199 个叶子）；
+  <code>attribute</code> 两头都大（12.7% / 130 个 L2）。最大一类只占 12.7%，分布相当均衡。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.4rem">三、结果（二）：CFR（美国联邦法规）</h2>
-  <img class="fig" src="fig/pie_cfr.png" alt="CFR 顶层类分布" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">法规文本高度集中：<b>document 21.7% + process 16.2% + resource 13.5%</b> 三类就占了过半 —— 法律条文本身既"是文书"又"规定流程"，还大量牵涉机构与资源。</div>
+  <img class="fig" src="fig/layers_cfr.png" alt="CFR 三层结构" style="max-height:62vh;width:auto;max-width:100%">
+  <div class="note">法规文本高度集中：<b>document 21.7% + process 16.2% + resource 13.5%</b> 三类就占了过半。
+  注意 <code>obligation</code>（义务，149 个叶子 / 8 个 L2，平均每个 L2 带 18.6 个叶子）—— 这是法律领域特有的顶层类。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.4rem">三、结果（三）：MultiEURLEX（欧盟法规）</h2>
-  <img class="fig" src="fig/pie_me.png" alt="MultiEURLEX 顶层类分布" style="max-height:62vh;width:auto;max-width:100%">
-  <div class="note">与前两域明显不同：欧盟法规里 <b>obligation（义务）</b> 挤进前十 —— 这是"域内自适应"的直接证据：类表不是我们给的，是它自己长出来的。</div>
+  <img class="fig" src="fig/layers_me.png" alt="MultiEURLEX 三层结构" style="max-height:62vh;width:auto;max-width:100%">
+  <div class="note">与前两域明显不同：欧盟法规里 <b>obligation（义务）</b> 一类挤进前十，且 <code>organization</code> 平均每个 L2 带 43 个叶子 ——
+  这是"域内自适应"的直接证据：<b>类表不是我们给的，是它自己长出来的</b>。</div>
+</div>`);
+
+slides.push(() => `<div class="wl">
+  <h2>三、结果（四）：三域三层结构对照</h2>
+  <table>
+    <tr><th>域</th><th>L1 细类型</th><th>L2 中间层</th><th>L3 顶层类</th><th>最大类占比</th><th>未归类 L2</th><th>树结构</th></tr>
+    <tr><td>arXiv（计算机论文）</td><td>34,152</td><td>1,051</td><td>24</td><td>12.7%（attribute）</td><td>9（0.86%）</td><td>单连通 · 环 0 · 深度 ≤3</td></tr>
+    <tr><td>CFR（美国法规）</td><td>2,562</td><td>354</td><td>21</td><td>21.7%（document）</td><td>1（0.28%）</td><td>单连通 · 环 0 · 深度 ≤3</td></tr>
+    <tr><td>MultiEURLEX（欧盟法规）</td><td>39,998</td><td>1,354</td><td>25</td><td>14.4%（document）</td><td>2（0.15%）</td><td>单连通 · 环 0 · 深度 ≤3</td></tr>
+  </table>
+  <div class="strip">
+    <span class="pill">同一个代码库、同一套口径，三个域各自长出<b>不同</b>的顶层类</span>
+    <span class="pill gr">法规域集中（document 类占 1/5），论文域分散（最大类 12.7%）</span>
+  </div>
+  <div class="note">"最大类占比" 是判断顶层分得匀不匀的直观指标：占比越低说明这个域的顶层结构越均衡。<br>
+  <span class="dim">注：CFR / MultiEURLEX 的顶层类是各自域内自适应的结果，三域类表并不相同 —— 这正是"域内自适应"的体现。</span></div>
 </div>`);
 
 /* ── 17 指标结果 ── */
