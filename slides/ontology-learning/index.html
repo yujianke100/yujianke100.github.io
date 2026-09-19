@@ -116,33 +116,32 @@ slides.push(() => `<div class="wl">
 
 /* ── 3 总流程 ── */
 slides.push(() => `<div class="wl">
-  <h2>二、整体流程：十二步，分五段</h2>
-  <p class="lead">从原文出发，先长出候选类型，再长成一棵树，然后压成可统计的骨架，最后用独立证据 + 人工抽查来验证。</p>
-  <div class="g5" style="margin-top:0.55rem">
-    <div class="card" style="border-left:3px solid #34d399"><h4>A · 从原文长出候选</h4>
-      <p>① 抽取三元组<br>② 类型统计收敛<br>③ 众数投票选上位<br>（含自环修复）</p></div>
-    <div class="card" style="border-left:3px solid #38bdf8"><h4>B · 长成一棵树</h4>
-      <p>④ 顶层归类（粗坐标）<br>⑤ 建树与结构自检<br>⑥ 同义拼接与合并</p></div>
-    <div class="card" style="border-left:3px solid #a78bfa"><h4>C · 压成可统计的骨架</h4>
+  <h2>二、整体流程：十二步，分六段</h2>
+  <p class="lead">从原文出发，先抽出候选类型、拼成<b>树的初版</b>，再合并重复概念得到<b>完整树</b>；随后压成可统计的骨架，用独立证据与人工抽查验证；新文档进来时树继续生长。</p>
+  <div class="g3" style="margin-top:0.5rem">
+    <div class="card" style="border-left:3px solid #34d399"><h4>A · 从原文抽出候选</h4>
+      <p>① 抽取三元组<br>② 类型统计收敛<br>③ 众数投票选上位<br><span class="dim">（含自环修复）</span></p></div>
+    <div class="card" style="border-left:3px solid #38bdf8"><h4>B · 拼出树的初版</h4>
+      <p>④ 顶层归类（粗坐标）<br>⑤ 建树与结构自检<br><span class="dim">单连通 · 无环 · 深度 ≤3</span></p></div>
+    <div class="card" style="border-left:3px solid #60a5fa"><h4>C · 合并重复概念 → 完整树</h4>
+      <p>⑥ 同义拼接与合并<br><span class="dim">固定语料下的完整树</span></p></div>
+  </div>
+  <div class="g3" style="margin-top:0.5rem">
+    <div class="card" style="border-left:3px solid #a78bfa"><h4>D · 压成可统计的骨架</h4>
       <p>⑦ star 化（折叠关系维）<br>⑧ 端点聚合 + 阈值切尾</p></div>
-    <div class="card" style="border-left:3px solid #f59e0b"><h4>D · 验证</h4>
+    <div class="card" style="border-left:3px solid #f59e0b"><h4>E · 用独立证据验证</h4>
       <p>⑨ 与骨架对齐（冻结指标）<br>⑩ 两跳验证<br>⑪ 人工分层评测</p></div>
-    <div class="card" style="border-left:3px solid #22d3ee"><h4>E · 拼接</h4>
-      <p>⑫ 增量拼接<br><span class="dim">新文档进来时本体继续生长</span></p></div>
+    <div class="card" style="border-left:3px solid #22d3ee"><h4>F · 树继续生长</h4>
+      <p>⑫ 增量拼接<br><span class="dim">新文档进来时继续长，不必整棵重建</span></p></div>
   </div>
   <div class="strip">
     <span class="pill am"><b>⑫ 增量拼接实测</b>：覆盖率 <b>25.9% → 100%</b>、父边与全量一致 <b>92.8%</b>、结构与全量重建等价</span>
     <span class="pill gr"><b>⑥ 同义拼接实测</b>：三域确定性归并 <b>1,797 / 18 / 601</b> 对，合并后结构不变</span>
-  </div>
-  <div class="strip">
-    <span class="pill">语料：arXiv <b>238.7 万</b> 条</span>
-    <span class="pill">CFR <b>13.6 万</b> 条</span>
-    <span class="pill">MultiEURLEX <b>382.4 万</b> 条</span>
-    <span class="pill gr">合计 <b>634.6 万</b> 条三元组</span>
+    <span class="pill">语料：arXiv <b>238.7 万</b> 条 ｜ CFR <b>13.6 万</b> 条 ｜ MultiEURLEX <b>382.4 万</b> 条，合计 <b>634.6 万</b> 条三元组</span>
     <span class="pill am">一键复现：<b>run_star_pipeline.sh</b></span>
   </div>
-  <div class="note">接下来的每一页都是同一个模板：<b>为什么做（动机） → 怎么做（步骤） → 真实例子</b>。</div>
-</div>`);
+  <div class="note"><b>树只在这三处被改写</b>：⑤ 拼出初版 → ⑥ 合并重复概念（固定语料下即完整树）→ ⑫ 新文档到来时继续生长；<b>⑦⑧ 只产出骨架、⑨⑩⑪ 只做验证，都不动树</b>。<br>
+  <span class="dim">接下来的每一页都是同一个模板：为什么做（动机） → 怎么做（步骤） → 真实例子。</span></div>`);
 
 /* ── 4 ① 抽取 ── */
 slides.push(() => `<div class="wl">
