@@ -398,9 +398,30 @@ slides.push(() => `<div class="wl">
   </div>
 </div>`);
 
-/* ── 19 结论 ── */
+/* ── 19 增量拼接实验 ── */
 slides.push(() => `<div class="wl">
-  <h2>六、结论与边界</h2>
+  <h2>六、增量拼接实验：能不能把"拼接"补上？</h2>
+  <p class="lead">把语料按<b>文档</b>切两半（同一篇只进一半）→ 前一半建本体 v0 → 看后一半出现的<b>新类型</b>该怎么接进来。</p>
+  <div class="g3" style="margin-top:0.4rem">
+    <div class="card" style="border-color:rgba(239,68,68,.3)"><h4 style="color:#f87171">✗ 用共现（端点聚合）定父</h4>
+      <p>新类型归位 top-1 只有 <b>4.2%</b>，而"一律猜最多数类"的基线是 3.3% —— <b>等于瞎猜</b>。<br>
+      原因：共现伙伴里含正确上位类型的比例只有 <b>1.1%</b>，候选召回上限 14.7%。</p></div>
+    <div class="card"><h4>△ 换成 LLM 判定也不行</h4>
+      <p>把邻域+候选交给 LLM：top-1 从 2.0% 提到 <b>8.5%</b>，但它有 <b>80%</b> 的条目回了"NEW" —— 因为候选里常常根本没有正确答案。<b>瓶颈在数据侧，不在模型侧。</b></p></div>
+    <div class="card-hl"><h4 style="color:#34d399;font-weight:600">✓ 父方向其实来自抽取层</h4>
+      <p>新类型用<b>它自己的 supertype 投票</b>定父，与全量重建的一致率 <b>94.0%</b>（已知型 93.4%）。<br>
+      → 增量可行，但要接对地方。</p></div>
+  </div>
+  <div class="strip">
+    <span class="pill am">还差 <b>7,795</b> 个类型卡在"半量门槛"上 → 门槛要改累计支持</span>
+    <span class="pill">端点聚合收窄为<b>高阈值合并候选</b>（≥0.7 时误合并仅 0.35%）</span>
+  </div>
+  <div class="note"><b>落地清单（预计半天）</b>：① 新文档照常抽取，新类型的父用自身的 supertype 投票；② 文档支持门槛改为跨批累计；③ 端点聚合只做合并/消歧候选，判定交 LLM + 人工终审。</div>
+</div>`);
+
+/* ── 20 结论 ── */
+slides.push(() => `<div class="wl">
+  <h2>七、结论与边界</h2>
   <div class="g2">
     <div class="card-hl"><h4 style="color:#34d399;font-weight:600;margin-bottom:0.35rem">可以说</h4>
       <ul>
