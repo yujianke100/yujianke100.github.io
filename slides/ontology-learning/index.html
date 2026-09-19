@@ -119,6 +119,7 @@
   .q strong{color:#f1f5f9}
   .q code{color:#fbbf24;font-family:'SF Mono','Consolas',monospace;font-size:0.94em}
 
+  .fig{width:100%;max-width:1440px;border-radius:10px;border:1px solid rgba(45,58,80,0.6);background:#0d1521;display:block;margin:0.1rem auto}
   .tw{overflow-x:auto;margin:0.5rem auto;max-width:940px;width:100%}
   table{width:100%;border-collapse:collapse;font-size:clamp(0.8rem,1vw,0.95rem)}
   th,td{padding:0.38rem 0.5rem;text-align:center;border-bottom:1px solid rgba(45,58,80,0.45)}
@@ -278,6 +279,24 @@ slides.push(() => `<div class="wl" style="display:flex;flex-direction:column;jus
   </table>
   </div>
   <div class="q"><strong>关键机制发现</strong>：抽取阶段<b>早就输出了</b>上位类型字段（覆盖率 100%），但旧流水线<b>一处都没引用</b>，层级靠"向量召回 + LLM 重猜"重建 —— 这是覆盖率长期被钉在 22–33% 的真正原因。</div>
+</div>`);
+
+// === 7b 当前本体树 · 总览 ===
+slides.push(() => `<div class="wl" style="max-width:1480px;display:flex;flex-direction:column;justify-content:center;flex:1">
+  <div class="w" style="max-width:1480px;text-align:center"><h2>当前本体树（总览）</h2></div>
+  <p class="lead tc">CFR 域的实际形状：3,220 个类型全部接入单一根，深度封顶 3 层，无环、无多父冲突</p>
+  <img class="fig" src="./tree_overview.png" alt="当前本体树总览：根 → 21 个粗类 → 真实层级链路">
+  <div class="q" style="margin-top:0.5rem"><strong>怎么读</strong>：上排是树的顶层骨架（1 个根 → 21 个粗类，框内为子类数 / 类型总数）；
+    下排是从当前树里取出的真实链路，逐跳可核（绿色 = 最细类型，蓝色 = 中间类，紫色 = 粗类，黄色 = 根）。</div>
+</div>`);
+
+// === 7c 真实子树展开 ===
+slides.push(() => `<div class="wl" style="max-width:1480px;display:flex;flex-direction:column;justify-content:center;flex:1">
+  <div class="w" style="max-width:1480px;text-align:center"><h2>真实子树展开：树里到底有什么</h2></div>
+  <p class="lead tc">以 document 粗类（551 个类型）为例，逐层展开到最细类型 —— 每个类型都带语料频次</p>
+  <img class="fig" src="./tree_subtree.png" alt="真实子树展开：root → document → 子类 → 最细类型">
+  <div class="q" style="margin-top:0.5rem"><strong>两点值得看</strong>：① 粗类之间的规模差异很大（最大的 document 551 个类型，最小的 model 仅 2 个）——
+    这是"域内自适应顶层"的直接体现，粗类不是均分的；② 每个类型的频次来自跨文档统计，它既是合并判据，也是结论可复现的来源。</div>
 </div>`);
 
 // === 8 三域一致 + 质量核验 ===
