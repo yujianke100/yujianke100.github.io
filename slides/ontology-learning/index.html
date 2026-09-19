@@ -99,6 +99,7 @@ slides.push(() => `<div class="w">
   <div class="hs">读一堆文本 → 自动长出「分类体系（Schema）」，并且每一步都可核验。<br>
   10 个步骤 ｜ 3 个数据集（计算机论文 / 美国法规 / 欧盟法规）｜ 一套预注册的评价口径</div>
   <div class="htg">出发点：<b>学语言 = 学 Schema</b>　｜　两层次归一化：先构建唯一 Schema，让散乱结构映射上去</div>
+  <div class="note" style="text-align:center">类型树可现场交互查看：<b><a href="https://yujianke100.github.io/tree/" style="color:#38bdf8">https://yujianke100.github.io/tree/</a></b><br><span class="dim">拖拽 · 缩放 · 点选节点看路径 · 搜索 · 可切换「深树 / 三层中间件」</span></div>
   <div class="note" style="text-align:center">Agentic Data Lab ｜ 2026-09-20 ｜ 全程脚本可复现（git 可查逐次提交）</div>
 </div>`);
 
@@ -331,16 +332,25 @@ slides.push(() => `<div class="wl">
   </div>
   <div class="note">读法：粗线是主链（同一性链接），灰点是该层的旁支兄弟，左端数字是「距根多少跳」。每一条边都是抽取时声明的「X 是一种 Y」；链在末端停住，是因为该类型的上位名不再是一个被抽取出来的类型。</div>
 </div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
-  <div class="shead" style="justify-content:center"><span class="sbadge">结果 二</span><h2>深链长什么样（MultiEURLEX）</h2></div>
-  <img class="fig" src="fig_deep/subtree_me.png" alt="深链长什么样（MultiEURLEX）" style="max-height:60vh;width:auto;max-width:100%">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 二</span><h2>深链长什么样（CFR，美国联邦法规）：6 跳</h2></div>
+  <img class="fig" src="fig_deep/subtree_cfr.png" alt="深链长什么样（CFR，美国联邦法规）：6 跳" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
-    <span class="pill">MultiEURLEX 最深 <b>10 跳</b></span>
-    <span class="pill">CFR 最深 <b>6 跳</b></span>
-    <span class="pill gr">三域装配后均为 <b>环 0 · 单连通</b></span>
+    <span class="pill">CFR 节点 <b>2,840</b>（细类型 2,562 → 2,459）</span>
+    <span class="pill">最深 <b>6 跳</b></span>
+    <span class="pill gr">环 0 · 单连通</span>
   </div>
-  <div class="note">同一套规则在法规域同样长出长链：MultiEURLEX 最深 <b>10 跳</b>、CFR <b>6 跳</b>。<br><span class="dim">CFR 的链路图见交付包 <code>subtree_cfr.png</code>，或直接在交互页面里展开看。</span></div>
+  <div class="note">美国法规域的链路更短、但同样干净：<b>最深 6 跳</b>（4 跳 563 个节点、5 跳 144、6 跳 1）。<br><span class="dim">读法同前页：粗线是主链（同一性链接），灰点是该层旁支兄弟，左端数字是「距根多少跳」。</span></div>
 </div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
-  <div class="shead" style="justify-content:center"><span class="sbadge">结果 三</span><h2>规模与深度分布：多出来的层级在哪</h2></div>
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 三</span><h2>深链长什么样（MultiEURLEX，欧盟法规）：10 跳</h2></div>
+  <img class="fig" src="fig_deep/subtree_me.png" alt="深链长什么样（MultiEURLEX，欧盟法规）：10 跳" style="max-height:60vh;width:auto;max-width:100%">
+  <div class="strip">
+    <span class="pill">MultiEURLEX 节点 <b>40,545</b></span>
+    <span class="pill">最深 <b>10 跳</b></span>
+    <span class="pill gr">环 0 · 单连通</span>
+  </div>
+  <div class="note">欧盟法规域最深 <b>10 跳</b>，是三域里最深的 —— 同一套规则、不必按域调参。<br><span class="dim">节点 40,545（细类型 39,998 → 38,772），装配后仍是环 0 · 单连通。</span></div>
+</div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 四</span><h2>规模与深度分布：多出来的层级在哪</h2></div>
   <img class="fig" src="fig_deep/depth_dist.png" alt="规模与深度分布：多出来的层级在哪" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
     <span class="pill">arXiv 节点 <b>34,530</b></span>
@@ -349,7 +359,7 @@ slides.push(() => `<div class="wl">
   </div>
   <div class="note">灰柱 = 原来三层结构覆盖的范围，彩色柱 = 同一性链接多长出来的层级。<br><span class="dim">arXiv：5 跳 <b>10,013</b> 个节点、6 跳 5,764、7 跳 1,436、8 跳 427、9 跳 47；MultiEURLEX 同量级。</span></div>
 </div>`);slides.push(() => `<div class="wl" style="max-width:1480px">
-  <div class="shead" style="justify-content:center"><span class="sbadge">结果 四</span><h2>逐跳质量：每一条边「X 是一种 Y」成不成立</h2></div>
+  <div class="shead" style="justify-content:center"><span class="sbadge">结果 五</span><h2>逐跳质量：每一条边「X 是一种 Y」成不成立</h2></div>
   <img class="fig" src="fig_deep/depth_quality.png" alt="逐跳质量：每一条边「X 是一种 Y」成不成立" style="max-height:60vh;width:auto;max-width:100%">
   <div class="strip">
     <span class="pill">第 1–7 跳严格 <b>80–95%</b></span>
@@ -358,7 +368,7 @@ slides.push(() => `<div class="wl">
   </div>
   <div class="note">每层抽 60 条边，本地 27B 判四级。<b>第 1–7 跳严格率 80–95%、严格+宽松 ≥96.7%</b>；第 8 跳严格降到 25%、但宽松 72.5%、<b>没有一条判错</b> —— 顶端收敛到很泛的词（entity / object / logic 这类）。<br><span class="dim">口径：这里量的是「第 d 层那一条边」（单跳）；若量「X 与其第 d 级祖先」（多跳传递）会随深度下降 —— 逐跳成立、传递模糊。</span></div>
 </div>`);slides.push(() => `<div class="wl">
-  <h2>结果 五：三层坐标（中间件）—— 三域对照</h2>
+  <h2>结果 六：三层坐标（中间件）—— 三域对照</h2>
   <table>
     <tr><th>域</th><th>L1 细类型</th><th>L2 中间层</th><th>L3 顶层类</th><th>最大类占比</th><th>未归类 L2</th><th>树结构</th></tr>
     <tr><td>arXiv（计算机论文）</td><td>34,152</td><td>1,051</td><td>24</td><td>12.7%（attribute）</td><td>9（0.86%）</td><td>单连通 · 环 0 · 深度 ≤3</td></tr>
