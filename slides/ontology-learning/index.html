@@ -39,7 +39,9 @@
   .g2{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;text-align:left}
   .g3{display:grid;grid-template-columns:1fr 1.05fr 1.15fr;gap:0.8rem;text-align:left}
   .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;text-align:left}
-  @media(max-width:980px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:0.55rem;text-align:left}
+  @media(max-width:1180px){.g5{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:980px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
   .card{background:linear-gradient(135deg,rgba(30,41,59,.65),rgba(30,41,59,.3));border:1px solid rgba(45,58,80,.5);
     border-radius:10px;padding:0.7rem 0.85rem}
   .card h4{color:#f59e0b;font-size:clamp(0.95rem,1.15vw,1.08rem);margin-bottom:0.3rem;font-weight:600}
@@ -114,21 +116,23 @@ slides.push(() => `<div class="wl">
 
 /* ── 3 总流程 ── */
 slides.push(() => `<div class="wl">
-  <h2>二、整体流程：十步，分四段</h2>
+  <h2>二、整体流程：十二步，分五段</h2>
   <p class="lead">从原文出发，先长出候选类型，再长成一棵树，然后压成可统计的骨架，最后用独立证据 + 人工抽查来验证。</p>
-  <div class="g4" style="margin-top:0.55rem">
+  <div class="g5" style="margin-top:0.55rem">
     <div class="card" style="border-left:3px solid #34d399"><h4>A · 从原文长出候选</h4>
       <p>① 抽取三元组<br>② 类型统计收敛<br>③ 众数投票选上位<br>（含自环修复）</p></div>
     <div class="card" style="border-left:3px solid #38bdf8"><h4>B · 长成一棵树</h4>
-      <p>④ 顶层归类（粗坐标）<br>⑤ 建树与结构自检</p></div>
+      <p>④ 顶层归类（粗坐标）<br>⑤ 建树与结构自检<br>⑥ 同义拼接与合并</p></div>
     <div class="card" style="border-left:3px solid #a78bfa"><h4>C · 压成可统计的骨架</h4>
-      <p>⑥ star 化（折叠关系维）<br>⑦ 端点聚合 + 阈值切尾</p></div>
+      <p>⑦ star 化（折叠关系维）<br>⑧ 端点聚合 + 阈值切尾</p></div>
     <div class="card" style="border-left:3px solid #f59e0b"><h4>D · 验证</h4>
-      <p>⑧ 与骨架对齐（冻结指标）<br>⑨ 两跳验证<br>⑩ 人工分层评测</p></div>
+      <p>⑨ 与骨架对齐（冻结指标）<br>⑩ 两跳验证<br>⑪ 人工分层评测</p></div>
+    <div class="card" style="border-left:3px solid #22d3ee"><h4>E · 拼接</h4>
+      <p>⑫ 增量拼接<br><span class="dim">新文档进来时本体继续生长</span></p></div>
   </div>
   <div class="strip">
-    <span class="pill am"><b>第十一步（本轮新增）：增量拼接</b> —— 新文档进来时本体继续生长，不必整棵重建；实测覆盖率 <b>25.9% → 100%</b>、父边与全量一致 <b>92.8%</b>、结构与全量重建等价</span>
-    <span class="pill gr"><b>第十二步（本轮新增）：同义拼接</b> —— 名字 + 三层上下文交 LLM 判 SAME/SUB/DIFF，只合并 SAME；三域确定性归并 1,797 / 18 / 601 对，合并后结构不变</span>
+    <span class="pill am"><b>⑫ 增量拼接实测</b>：覆盖率 <b>25.9% → 100%</b>、父边与全量一致 <b>92.8%</b>、结构与全量重建等价</span>
+    <span class="pill gr"><b>⑥ 同义拼接实测</b>：三域确定性归并 <b>1,797 / 18 / 601</b> 对，合并后结构不变</span>
   </div>
   <div class="strip">
     <span class="pill">语料：arXiv <b>238.7 万</b> 条</span>
@@ -252,7 +256,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 9 步骤⑤续 同义拼接 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑤·续</span><h2>同义拼接与合并：让"同一概念的多种写法"只留一个节点</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑥</span><h2>同义拼接与合并：让"同一概念的多种写法"只留一个节点</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>抽取端已要求"一个概念只有一个名字"，但仍残留写法变体（<code>re-ranking_method</code> vs <code>re_ranking_method</code>、<code>legal_process</code> vs <code>legal_procedure</code>）。重复节点会让类型级统计虚高，也会让上一层出现假兄弟。</p></div>
     <div class="card"><h4>步骤</h4><p>① <b>候选召回</b>（同核心词 / 同修饰词+通用核心词 / 包含）把 5.8 亿对压到约 26 万对；<br>
@@ -266,15 +270,15 @@ slides.push(() => `<div class="wl">
   <div class="strip">
     <span class="pill">确定性核心词归一即合并 <b>1,797 / 18 / 601</b> 对（arXiv/CFR/ME，抽查精度 ~95%）</span>
     <span class="pill gr">LLM 抽样判定：SAME <b>1.7%</b>｜SUB 10.3%｜DIFF 88.0%</span>
-    <span class="pill am">CFR 全量判完 → 压缩 <b>104 个类型（4.06%）</b>，合并后结构不变（环 0 · 单连通 · 深度 3）</span>
+    <span class="pill am">全量判定后的合并压缩：CFR <b>2,562 → 2,458</b>（-4.06%，结构不变）｜ arXiv <b>—</b> ｜ MultiEURLEX <b>—</b></span>
   </div>
   <div class="note">诚实标注：LLM 的 <b>SAME 边界两判官 κ 只有 0.613</b>（换模型会变），所以流程设成"只有 SAME 才合并 + 抽样人工复核"；<br>
-  <span class="dim">arXiv/ME 的候选池各约 26 万对，本轮判的是<b>信号最强的前 6 万对</b>（覆盖 ~23%），尾部未判的部分不参与合并。</span></div>
+  <span class="dim">CFR 是候选池全量判定（9,754 对 / 100%）；arXiv 与 MultiEURLEX 的候选池各约 26 万对，取<b>信号最强的前 3 万对</b>（约 12%）判定，尾部不参与合并 —— 上面 arXiv / MultiEURLEX 的压缩量留空，判定跑完补上。</span></div>
 </div>`);
 
 /* ── 10 ⑥ star 化 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑥</span><h2>star 化：把"关系"这一维折叠掉</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑦</span><h2>star 化：把"关系"这一维折叠掉</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>"关系"太碎：同一对类型之间有几百种动词，同一件事被拆成几百份，统计就稳不住。</p></div>
     <div class="card"><h4>步骤</h4><p>把关系维统一成一个符号 <code>*</code>，只保留「<b>类型对 + 权重</b>」；<br>
@@ -290,14 +294,14 @@ slides.push(() => `<div class="wl">
     <span class="pill gr">权重=1 的长尾 <b>64% → 42%</b></span>
     <span class="pill am">两半语料复现性 <b>0.453 → 0.594</b></span>
   </div>
-  <div class="note"><b>定位说明（重要）</b>：star 化产出的是<b>骨架</b> —— 它承担「聚合 / 消歧 / 切尾 / 独立验证」，<b>本轮起也正式进入拼接层</b>（增量拼接里的"同义合并闸门"用的就是它的邻域签名）。<br>
+  <div class="note"><b>定位说明（重要）</b>：star 化产出的是<b>骨架</b> —— 它承担「聚合 / 消歧 / 切尾 / 独立验证」，<b>拼接层里也有它的角色</b>（增量拼接里的"同义合并闸门"用的就是它的邻域签名）。<br>
   但<b>父子边不来自它</b>：树的方向来自抽取时"X 是一种 Y"的众数投票。<b>实测</b>：若改用共现（端点聚合）定父子方向，与投票一致率仅 <b>0.22%</b>，还会连出 1,732 个环、深度 11 —— 共现只给"关联"，不给"方向"。<br>
   <span class="dim">（"复现性" = 把语料随机切成两半各自独立跑一遍，看两半算出的边有多少重合。）</span></div>
 </div>`);
 
 /* ── 10 ⑦ 端点聚合 + 切尾 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑦</span><h2>端点聚合与阈值切尾：砍掉不可信的边，但不能砍散</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑧</span><h2>端点聚合与阈值切尾：砍掉不可信的边，但不能砍散</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>不是每条边都值得信（有的只共现 1 次）；但砍多了会让整张图碎成一地，反而没法用。</p></div>
     <div class="card"><h4>步骤</h4><p>设权重门槛 τ（或"至少出现在几篇文档里"），砍掉低于门槛的边；<br>
@@ -316,7 +320,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 11 ⑧ 对齐 + 冻结指标 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑧</span><h2>对齐与冻结指标：用另一条独立路径给树"照镜子"</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑨</span><h2>对齐与冻结指标：用另一条独立路径给树"照镜子"</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>得证明这棵树不是凭空长出来的。方法：同一份语料、<b>另一条独立路径</b>再建一个结构，两边对照。</p></div>
     <div class="card"><h4>步骤</h4><p>把 star 边聚成"骨架"（类型对共现）；<br>
@@ -336,7 +340,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 12 ⑨ 两跳 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑨</span><h2>两跳验证：没直接证据的边，能不能"绕一跳"找到支持？</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑩</span><h2>两跳验证：没直接证据的边，能不能"绕一跳"找到支持？</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>上面只有 35.7% 的边有直接证据。剩下 64% 能不能通过"中间搭一个桥"（A—M—B）找到支持？</p></div>
     <div class="card"><h4>步骤</h4><p>找中间节点 M，逐级加严判据：<br>
@@ -355,7 +359,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 13 ⑩ 人工评测 ── */
 slides.push(() => `<div class="wl">
-  <div class="shead"><span class="sbadge">步骤 ⑩</span><h2>人工分层评测：请人看一眼"这些边到底对不对"</h2></div>
+  <div class="shead"><span class="sbadge">步骤 ⑪</span><h2>人工分层评测：请人看一眼"这些边到底对不对"</h2></div>
   <div class="g3">
     <div class="card"><h4>动机</h4><p>结构指标再漂亮，也只是内部自洽。必须有人来判断"这条上下位关系是否成立"。</p></div>
     <div class="card"><h4>步骤</h4><p>按<b>证据状态分四层各抽 100 条</b>：随机 / 有直接证据 / 两跳候选 / 无任何证据；<br>
@@ -378,7 +382,7 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（一）：arXiv（计算机论文）的类型树</h2>
   <img class="fig" src="fig/tree_arxiv.png" alt="arXiv 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">读法：<b>根 → 顶层类（L3，全部画出来）→ 中间层类型（L2）</b>；每个类右边是它的 L2 / L1 数量，下方列出它最大的 6 个中间层（括号 = 该中间层下挂多少个细类型），
-  其余合并成「+N 个中间层」。<b>细类型（L1，34,152 个）数量太大，用数字表示不逐个画。</b><br>
+  其余合并成「+N 个中间层」。<b>细类型（L1）数量太大，用数字表示不逐个画。</b><br>同义拼接合并后：L1 34,152 → <b>—</b>　L2 1,051 → <b>—</b><br>
   <span class="dim">一眼能看出的结构特征：<code>method</code> 类只有 15 个中间层却挂了 2,990 个细类型（集中），<code>attribute</code> / <code>process</code> 则是"中间层多、每个不太大"（分散）。</span></div>
 </div>`);
 
@@ -386,14 +390,14 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（二）：CFR（美国联邦法规）的类型树</h2>
   <img class="fig" src="fig/tree_cfr.png" alt="CFR 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">法规域的结构更"扁"：<b>21 个顶层类、354 个中间层、2,562 个细类型</b>。突出的是 <code>document</code>（50 个中间层 / 556 个细类型）与
-  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。</div>
+  <code>obligation</code>（义务，8 个中间层 / 149 个细类型）—— 后者是法律领域特有的顶层类。<br>同义拼接合并后：L1 <b>2,562 → 2,458</b>（-4.06%）、L2 354 → <b>351</b>，结构不变（环 0 · 单连通 · 深度 3）。</div>
 </div>`);
 
 slides.push(() => `<div class="wl" style="max-width:1480px">
   <h2 style="margin-bottom:0.35rem;text-align:center;display:block">三、结果（三）：MultiEURLEX（欧盟法规）的类型树</h2>
   <img class="fig" src="fig/tree_me.png" alt="MultiEURLEX 类型树" style="max-height:64vh;width:auto;max-width:100%">
   <div class="note">规模最大（<b>39,998 个细类型 / 1,354 个中间层</b>），而且长出了自己的类：<code>obligation</code>、<code>regulatory_instrument</code>、
-  <code>market_domain</code>、<code>biological_agent</code> —— <b>这些不是我们给定的，是它自己长出来的</b>，这就是"域内自适应"。</div>
+  <code>market_domain</code>、<code>biological_agent</code> —— <b>这些不是我们给定的，是它自己长出来的</b>，这就是"域内自适应"。<br>同义拼接合并后：L1 39,998 → <b>—</b>　L2 1,354 → <b>—</b></div>
 </div>`);
 
 slides.push(() => `<div class="wl">
@@ -409,15 +413,16 @@ slides.push(() => `<div class="wl">
     <span class="pill gr">法规域集中（document 类占 1/5），论文域分散（最大类 12.7%）</span>
   </div>
   <div class="note">"最大类占比" 是判断顶层分得匀不匀的直观指标：占比越低说明这个域的顶层结构越均衡。<br>
-  <span class="dim">注：CFR / MultiEURLEX 的顶层类是各自域内自适应的结果，三域类表并不相同 —— 这正是"域内自适应"的体现。</span></div>
+  <span class="dim">注：CFR / MultiEURLEX 的顶层类是各自域内自适应的结果，三域类表并不相同 —— 这正是"域内自适应"的体现。</span><br><span class="dim">同义拼接合并后（细类型 / 中间层）：CFR <b>2,562 → 2,458</b> / <b>354 → 351</b>；arXiv <b>—</b>；MultiEURLEX <b>—</b>。</span></div>
 </div>`);
 
 /* ── 17 指标结果 ── */
 slides.push(() => `<div class="wl">
-  <h2>四、结果（四）：评价指标一览</h2>
+  <h2>四、评价指标一览</h2>
   <table>
     <tr><th>指标</th><th>arXiv</th><th>CFR</th><th>MultiEURLEX</th><th>它想说明什么</th></tr>
     <tr><td>树规模（节点 / 细类型）</td><td>34,529 / 34,152</td><td>2,840 / 2,562</td><td>40,544 / 39,998</td><td>长了多大</td></tr>
+    <tr><td><b>树规模（同义合并后）</b></td><td>— / —</td><td><b>2,736 / 2,458</b></td><td>— / —</td><td>同义拼接后的规模</td></tr>
     <tr><td>结构健康：单连通 / 环 / 深度</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>✓ / 0 / ≤3</td><td>树是否自洽</td></tr>
     <tr><td>中间层映射率</td><td>100%</td><td>100%</td><td>100%</td><td>两边用的是同一套节点</td></tr>
     <tr><td>严格可比 is-a 率</td><td>5.0%</td><td>8.3%</td><td>6.1%</td><td>有多少边有资格被外部验证</td></tr>
@@ -468,7 +473,7 @@ slides.push(() => `<div class="wl">
 
 /* ── 20 增量 pipeline 已落地 ── */
 slides.push(() => `<div class="wl" style="max-width:1480px">
-  <h2 style="margin-bottom:0.4rem;text-align:center;display:block">六（续）：增量拼接已经跑起来了 — 本体是这么「长」起来的</h2>
+  <h2 style="margin-bottom:0.4rem;text-align:center;display:block">六、增量拼接落地：本体是这么「长」起来的 — 本体是这么「长」起来的</h2>
   <img class="fig" src="fig/incr_curve.png" alt="增量生长曲线" style="max-height:52vh;width:auto;max-width:100%">
   <div class="strip">
     <span class="pill gr">覆盖率 <b>25.9% → 100%</b>（分 6 批喂入，最后追平全量）</span>
@@ -480,7 +485,7 @@ slides.push(() => `<div class="wl" style="max-width:1480px">
   ③ 邻域重叠 ≥0.7 判同义合并 —— <b>但这一条要加人工终审</b>：本次自动合并 5 个，我逐条复核只有 1 个站得住（<code>parameter_value ≡ hyperparameter_value</code>），
   其余 4 个是错的（如 <code>peer_review ≡ proof_summary</code>）。<b>关掉自动合并后，增量本体的 L1 = 34,152，与全量重建完全相同（缺口 0）</b>，所以默认应该是"只出候选、不自动合"。<br>
   <span class="dim">规模对照：L1 34,152（关合并）/ 34,147（自动合并）vs 全量 34,152；L2 1,065 vs 1,051（多 14 个，分块顺序导致的 L2 集合差异）；
-  新增的 74 个 L2 名字由类表闭集判定，69 个入类、5 个留 concept。</span></div>
+  新长出来的 74 个 L2 名字由类表闭集判定，69 个入类、5 个留 concept。</span></div>
 </div>`);
 
 /* ── 21 结论 ── */
