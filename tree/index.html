@@ -5,12 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>类型本体树浏览器 · Ontology Type Tree Explorer</title>
 <style>
-/* ============================ 主题 ============================ */
+/* ==================== 主题：白底高可视性 ==================== */
 :root{
-  --bg:#0a0e1a; --fg:#f1f5f9; --fg2:#cbd5e1; --fg3:#94a3b8;
-  --line:#334155; --panel:#0f1526; --panel2:#141c30; --bd:#1e293b;
-  --accent:#38bdf8;
-  --c0:#38bdf8; --c1:#34d399; --c2:#f59e0b; --c3:#a78bfa; --c4:#f472b6; --c5:#22d3ee;
+  --bg:#ffffff; --stage:#fbfcfe; --fg:#0f172a; --fg2:#334155; --fg3:#64748b;
+  --bd:#e2e8f0; --hover:#f1f5f9; --accent:#1d4ed8; --accent-bg:#eff6ff;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -21,1175 +19,924 @@ body{
 }
 #app{display:grid;grid-template-rows:auto auto 1fr;height:100%}
 
-/* ============================ 顶栏 ============================ */
-#topbar{
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  padding:9px 14px;background:linear-gradient(180deg,#111a2e,#0d1425);
-  border-bottom:1px solid var(--bd);z-index:20;
-}
-.brand{font-size:14px;font-weight:600;letter-spacing:.2px;white-space:nowrap}
+/* ==================== 顶栏 ==================== */
+#topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 14px;
+  background:#fff;border-bottom:1px solid var(--bd);z-index:30}
+.brand{font-size:14px;font-weight:700;letter-spacing:.2px;white-space:nowrap;color:#0b1220}
 .brand .sub{font-size:11px;color:var(--fg3);font-weight:400;margin-left:6px}
 .group{display:flex;align-items:center;gap:6px}
-.group .glab{font-size:11px;color:var(--fg3);margin-right:2px}
-button,.btn{
-  background:var(--panel2);color:var(--fg2);border:1px solid #26334d;border-radius:6px;
-  padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:.12s;
-}
-button:hover{background:#1c2743;color:var(--fg);border-color:#3b4a6b}
-button.on{background:#12314a;color:#e8f6ff;border-color:var(--accent);box-shadow:0 0 0 1px rgba(56,189,248,.25) inset}
-.zoomgroup{gap:4px;margin-left:auto}
-.zoomgroup .zl{min-width:46px;text-align:center;font-variant-numeric:tabular-nums;color:var(--fg2);font-size:12px}
-#searchwrap{position:relative;flex:0 0 260px}
-#q{
-  width:100%;background:#0b1220;border:1px solid #26334d;border-radius:6px;color:var(--fg);
-  padding:5px 9px;font-size:12.5px;font-family:inherit;outline:none;
-}
-#q:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(56,189,248,.15)}
-#results{
-  position:absolute;top:32px;left:0;right:0;max-height:330px;overflow:auto;z-index:40;
-  background:#0d1424;border:1px solid #26334d;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.6);
-}
-#results .rh{padding:5px 9px;font-size:11px;color:var(--fg3);border-bottom:1px solid var(--bd);position:sticky;top:0;background:#0d1424}
-#results .ritem{padding:5px 9px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;font-size:12.5px;border-bottom:1px solid rgba(30,41,59,.5)}
-#results .ritem:hover,#results .ritem.active{background:#16233d}
+.group .glab{font-size:11.5px;color:var(--fg3);margin-right:2px;white-space:nowrap}
+button,.btn{background:#fff;color:var(--fg2);border:1px solid var(--bd);border-radius:7px;
+  padding:4px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:.12s}
+button:hover{background:var(--hover);color:var(--fg);border-color:#94a3b8}
+button.on{background:var(--accent-bg);color:#12307a;border-color:#93b4f5;font-weight:600;
+  box-shadow:0 0 0 2px rgba(29,78,216,.10)}
+#searchwrap{position:relative;flex:0 0 250px;margin-left:auto}
+#q{width:100%;background:#fff;border:1px solid var(--bd);border-radius:7px;color:var(--fg);
+  padding:5px 9px;font-size:12.5px;font-family:inherit;outline:none}
+#q:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,78,216,.12)}
+#results{position:absolute;top:33px;left:0;right:0;max-height:340px;overflow:auto;z-index:60;
+  background:#fff;border:1px solid var(--bd);border-radius:9px;box-shadow:0 14px 36px rgba(15,23,42,.16)}
+#results .rh{padding:5px 9px;font-size:11px;color:var(--fg3);border-bottom:1px solid var(--bd);
+  position:sticky;top:0;background:#fff}
+#results .ritem{padding:5px 9px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;
+  font-size:12.5px;border-bottom:1px solid #f1f5f9}
+#results .ritem:hover,#results .ritem.active{background:#eff6ff}
 #results .ritem .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,Consolas,monospace}
 #results .ritem .dp{color:var(--fg3);font-size:11px;white-space:nowrap}
-#results .rempty{padding:8px 9px;color:var(--fg3);font-size:12px}
+.zoomgroup{gap:4px}
+.zoomgroup .zl{min-width:48px;text-align:center;font-variant-numeric:tabular-nums;color:var(--fg2);font-size:12.5px}
 .hidden{display:none!important}
 
-/* ============================ 状态栏 ============================ */
-#statusbar{
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-  padding:5px 14px;background:#0b1120;border-bottom:1px solid var(--bd);
-  font-size:11.5px;color:var(--fg3);z-index:15;
-}
-#statusbar b{color:var(--fg2);font-weight:500;font-variant-numeric:tabular-nums}
-#statusbar .pill{background:#131c30;border:1px solid #223049;border-radius:999px;padding:1px 9px;color:var(--fg2)}
-#statusbar .warn{color:#fbbf24}
+/* ==================== 工具栏 ==================== */
+#toolrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:7px 14px;
+  background:#f8fafc;border-bottom:1px solid var(--bd);z-index:20}
+#toolrow .hint{font-size:11.5px;color:var(--fg3);margin-left:4px}
+#toolrow .hint b{color:var(--fg2);font-weight:600}
 
-/* ============================ 主区 ============================ */
-#main{display:grid;grid-template-columns:1fr 344px;min-height:0}
-#stage{position:relative;overflow:hidden;background:
-  radial-gradient(1200px 600px at 30% 0%,#0e1729 0%,var(--bg) 60%);
-  touch-action:none;cursor:grab}
-#stage.dragging{cursor:grabbing}
-#canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none}
-#canvas text{pointer-events:none}
-#canvas.labels-off .labeltx{display:none}
-#links path{stroke:var(--line);stroke-width:1.1;fill:none;shape-rendering:optimizeSpeed}
-#nodes g.node{cursor:pointer}
-#nodes g.node rect{stroke-width:1.2;rx:5}
-#nodes g.node.sel rect{stroke:#fbbf24!important;stroke-width:2.6}
-#nodes g.node.pulse rect{animation:pulse .5s ease-in-out 3}
-@keyframes pulse{0%,100%{stroke:#fbbf24;stroke-width:2.6}50%{stroke:#fde68a;stroke-width:5}}
-#nodes .badge{fill:#0b1220;stroke-width:1.2}
-#nodes .badgetx{font-size:13px;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none}
-#nodes .notetx{font-size:11px;fill:#f59e0b;text-anchor:middle}
-#nodes .labeltx{font-size:13px}
+/* ==================== 画布 ==================== */
+#stage{position:relative;overflow:hidden;background:var(--stage);
+  background-image:radial-gradient(#e8edf5 1px,transparent 1px);background-size:22px 22px}
+#tree{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#tree.drag{cursor:grabbing}
+#levels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#levels .lv{position:absolute;left:0;right:0;height:0;border-top:1px dashed #e2e8f0}
+#levels .lvl{position:absolute;left:6px;font-size:11px;color:#475569;background:rgba(255,255,255,.9);
+  padding:1px 6px;border-radius:5px;white-space:nowrap;border:1px solid #eef2f7}
+#levels .lvl b{color:#0f172a}
 
-/* 浮层 */
-.float{position:absolute;background:rgba(13,20,36,.92);border:1px solid #223049;border-radius:9px;
-  box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(3px)}
-#mmwrap{right:12px;bottom:12px;padding:6px 6px 3px;width:236px}
-#minimap{width:224px;height:146px;display:block;cursor:crosshair;background:#080d18;border-radius:5px;touch-action:none}
-#mmwrap .mmcap{font-size:10px;color:var(--fg3);text-align:center;padding-top:3px}
-#busy{left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 22px;font-size:13px;color:var(--fg2);z-index:60}
-#busy .spin{display:inline-block;width:12px;height:12px;border:2px solid #334155;border-top-color:var(--accent);
-  border-radius:50%;margin-right:8px;vertical-align:-1px;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-#toast{left:50%;bottom:18px;transform:translate(-50%,0);padding:8px 16px;font-size:12.5px;color:var(--fg);
-  opacity:0;transition:opacity .25s;pointer-events:none;z-index:55}
-#toast.show{opacity:1}
-#legend{left:12px;bottom:12px;padding:7px 10px;font-size:11px;color:var(--fg3);line-height:1.9}
-#legend .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-#hint{left:12px;top:12px;padding:7px 11px;font-size:11.5px;color:var(--fg3);max-width:420px;line-height:1.7}
-kbd{background:#1b2540;border:1px solid #2f3d5c;border-radius:4px;padding:0 4px;font-size:11px;color:var(--fg2)}
+/* ==================== 详情面板 ==================== */
+#detail{position:absolute;top:10px;right:10px;width:332px;max-height:calc(100% - 20px);overflow:auto;
+  background:#fff;border:1px solid var(--bd);border-radius:10px;box-shadow:0 12px 32px rgba(15,23,42,.14);
+  padding:11px 12px;z-index:25}
+#detail .dt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700;
+  color:#0b1220;word-break:break-all;line-height:1.35}
+#detail .depthbadge{display:inline-block;margin-top:6px;font-size:11.5px;padding:2px 9px;border-radius:999px;
+  background:var(--accent-bg);color:#12307a;font-weight:600}
+#detail .sec{margin-top:10px;border-top:1px solid var(--bd);padding-top:8px}
+#detail .lab{font-size:11px;color:var(--fg3);margin-bottom:4px}
+#detail .path{font-size:12px;line-height:1.9}
+#detail .pa{font-family:ui-monospace,Menlo,Consolas,monospace;cursor:pointer;color:#1d4ed8;
+  background:#f8fafc;border:1px solid var(--bd);border-radius:5px;padding:1px 5px;display:inline-block;margin:0 1px 3px}
+#detail .pa:hover{background:#eff6ff}
+#detail .pa.cur{background:#12307a;color:#fff;border-color:#12307a}
+#detail .kv{font-variant-numeric:tabular-nums;color:var(--fg2);font-weight:600}
+#detail .row{font-size:12.5px;color:var(--fg2);margin:3px 0}
+#detail .btns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+#detail .xhint{font-size:11.5px;color:var(--fg3);margin-top:8px;line-height:1.5}
+#detail .empty{font-size:12.5px;color:var(--fg3);line-height:1.75}
 
-/* ============================ 右侧详情 ============================ */
-#detail{background:var(--panel);border-left:1px solid var(--bd);overflow:auto;padding:12px 13px;font-size:12.5px}
-#detail h2{margin:0 0 10px;font-size:12px;color:var(--fg3);font-weight:600;letter-spacing:.6px;text-transform:uppercase}
-#detail .empty{color:var(--fg3);line-height:1.9}
-#detail .card{background:var(--panel2);border:1px solid var(--bd);border-radius:8px;padding:9px 11px;margin-bottom:10px}
-#detail .name{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14.5px;color:#e8f6ff;word-break:break-all;line-height:1.4}
-#detail .depthbadge{display:inline-block;margin-top:6px;font-size:11px;padding:1px 8px;border-radius:999px;background:#132a44;color:var(--accent)}
-#detail table{width:100%;border-collapse:collapse}
-#detail td{padding:4px 0;vertical-align:top}
-#detail td.k{color:var(--fg3);width:96px;white-space:nowrap}
-#detail td.v{color:var(--fg2);font-variant-numeric:tabular-nums}
-#detail .path{line-height:2.0;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
-#detail .path .seg{color:var(--fg2);cursor:pointer;border-bottom:1px dashed #3b4a6b}
-#detail .path .seg:hover{color:var(--accent);border-bottom-color:var(--accent)}
-#detail .path .sep{color:#475569;margin:0 3px}
-#detail .path .leaf{color:#fbbf24}
-#detail .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-#detail .mini{font-size:11px;color:var(--fg3);margin-top:8px;line-height:1.8}
-#detail .kv{color:var(--fg2)}
-#js-errors{white-space:pre-wrap}
-@media (max-width:900px){
-  #main{grid-template-columns:1fr}
-  #detail{position:absolute;right:0;top:0;bottom:0;width:320px;z-index:30;box-shadow:-8px 0 24px rgba(0,0,0,.5)}
-  #mmwrap{width:170px}
-  #minimap{width:158px;height:104px}
-  #searchwrap{flex:1 1 160px}
-}
+/* ==================== HUD / toast ==================== */
+#hud{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--fg3);
+  background:rgba(255,255,255,.94);border:1px solid var(--bd);border-radius:8px;padding:4px 9px;z-index:24;
+  font-variant-numeric:tabular-nums}
+#hud b{color:#0f172a;font-weight:700}
+#toast{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);background:#0f172a;color:#fff;
+  font-size:12.5px;padding:7px 14px;border-radius:8px;opacity:0;transition:.22s;pointer-events:none;z-index:70}
+#toast.on{opacity:.94}
+#busyp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.75);font-size:13px;color:var(--fg2);z-index:50}
+
+/* ==================== SVG ==================== */
+.nd rect{stroke-width:1.7}
+.nd text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;fill:#0f172a;
+  pointer-events:none;dominant-baseline:middle;text-anchor:middle}
+.nd{cursor:pointer}
+.nd.sel rect{stroke-width:3.4;filter:drop-shadow(0 2px 6px rgba(29,78,216,.28))}
+.nd.root rect{fill:#12307a}
+.nd.root text{fill:#ffffff;font-weight:700}
+.nd.pulse rect{stroke:#f59e0b;stroke-width:3.4}
+.eg{stroke:#cbd5e1;stroke-width:1.5}
+.eg.chain{stroke:#93b4f5;stroke-width:2}
+.chip rect{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.3;stroke-dasharray:4 3}
+.chip text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;fill:#475569;
+  pointer-events:none;dominant-baseline:middle;text-anchor:middle}
+.chip{cursor:pointer}
+.chip:hover rect{fill:#eff6ff;stroke:#93b4f5}
+.newnd{animation:fadein .22s ease-out}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
 <div id="app">
   <header id="topbar">
-    <div class="brand">类型本体树浏览器<span class="sub">论文／法规语料 → 类型本体（root_concept 起）</span></div>
-
-    <div class="group" id="dombar">
-      <span class="glab">语料域</span>
-      <button data-dom="arxiv" class="on">arXiv</button>
-      <button data-dom="cfr">CFR</button>
-      <button data-dom="me">MultiEURLEX</button>
+    <div class="brand">类型本体树浏览器<span class="sub">跑出来的树，当场看</span></div>
+    <div class="group" id="domgrp">
+      <span class="glab">语料</span>
+      <button data-dom="arxiv">arXiv</button>
+      <button data-dom="cfr">CFR（美国）</button>
+      <button data-dom="me">MultiEURLEX（欧盟）</button>
     </div>
-
-    <div class="group" id="fambar">
-      <span class="glab">树族</span>
-      <button data-fam="deep" class="on">深树（交付物）</button>
+    <div class="group" id="famgrp">
+      <span class="glab">树</span>
+      <button data-fam="deep">深树（交付物）</button>
       <button data-fam="final">三层中间件（对照）</button>
     </div>
-
     <div id="searchwrap">
-      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="搜索类型名，如 algorithm / method">
+      <input id="q" placeholder="搜类型名，如 algorithm / metric" autocomplete="off">
       <div id="results" class="hidden"></div>
-    </div>
-
-    <div class="group zoomgroup">
-      <button id="zoomout" title="缩小 (0.1× 起)">−</button>
-      <span class="zl" id="zoomlabel">100%</span>
-      <button id="zoomin" title="放大 (最高 4×)">+</button>
-      <button id="btn-reset" title="回到根节点／适应窗口">重置视图</button>
-      <button id="btn-spacing" title="切换节点间距">间距：宽松</button>
     </div>
   </header>
 
-  <div id="statusbar">
-    <span class="pill" id="st-tree">—</span>
-    <span>节点 <b id="st-n">0</b></span>
-    <span>边 <b id="st-e">0</b></span>
-    <span>最大深度 <b id="st-d">0</b></span>
-    <span>环 <b id="st-cy">0</b></span>
-    <span>当前渲染 <b id="st-vis">0</b></span>
-    <span id="st-msg" class="warn"></span>
+  <div id="toolrow">
+    <button id="b-chain">展开最深链</button>
+    <button id="b-all">再展开一层</button>
+    <button id="b-collapse">全部收拢</button>
+    <button id="b-fit">适配窗口</button>
+    <span class="group zoomgroup">
+      <button id="b-zo">−</button><span class="zl" id="zl">100%</span><button id="b-zi">+</button>
+    </span>
+    <span class="hint" id="hint"></span>
   </div>
 
-  <div id="main">
-    <div id="stage">
-      <svg id="canvas">
-        <g id="world">
-          <g id="links"></g>
-          <g id="nodes"></g>
-        </g>
-      </svg>
-
-      <div id="hint" class="float">
-        滚轮缩放 · 拖拽平移 · 点 <b>+/−</b> 展开折叠 · 点节点看详情
-        <kbd>Esc</kbd> 关搜索 · 左下总览可点击定位
-      </div>
-
-      <div id="legend" class="float"></div>
-
-      <div id="mmwrap" class="float">
-        <svg id="minimap" viewBox="0 0 224 146" preserveAspectRatio="none"><g id="mmpaths"></g><rect id="mmview" fill="rgba(56,189,248,.12)" stroke="#38bdf8" stroke-width="1.2"></rect></svg>
-        <div class="mmcap">全局总览（点击／拖动定位）</div>
-      </div>
-
-      <div id="toast" class="float"></div>
-      <div id="busy" class="float hidden"><span class="spin"></span><span id="busytx">加载中…</span></div>
-    </div>
-
-    <aside id="detail">
-      <h2>节点详情</h2>
-      <div id="detailbody"><div class="empty">点选树中的任意节点，这里显示全名、距根跳数、完整路径、直接子节点数、后代总数与叶子判定。</div></div>
-    </aside>
-  </div>
+  <main id="stage">
+    <svg id="tree"></svg>
+    <div id="levels"></div>
+    <aside id="detail"></aside>
+    <div id="hud"></div>
+    <div id="toast"></div>
+    <div id="busyp">正在载入数据…</div>
+  </main>
 </div>
 
-<pre id="selftest" style="display:none"></pre>
-<div id="js-errors" style="display:none">NO_JS_ERRORS</div>
-
 <script>
-/* =====================================================================
-   类型本体树浏览器 —— 纯原生 JS + SVG，无任何外网依赖，file:// 直接可用。
-   数据通过 <script src="data/<key>.js"> 按需注入（避免 file:// 下 fetch 受限）。
-   ===================================================================== */
-(function(){
 "use strict";
-
-/* ------------------------- 0. 错误捕获（自测用） ------------------------- */
-var ERRORS = [];
-function noteError(txt){
-  ERRORS.push(txt);
-  var d = document.getElementById('js-errors');
-  if (d) d.textContent = ERRORS.join('\n');
-}
-window.onerror = function(msg, src, line, col){
-  noteError('onerror: ' + msg + ' @' + (src||'').split('/').pop() + ':' + line + ':' + col);
-  return false;
+/* =====================================================================
+   类型本体树浏览器
+   · 白底、自上而下（根在上，往下散开）
+   · 初始收拢成"最深链 + 每层两个兄弟"，点节点即展开/收拢
+   · 每层一条横线 + 左标签（本层总数 / 已显示数）→ 深度一眼可见
+   数据：data/<dom>_<fam>.js → window.TREES[key] = {nodes, parent, stats}
+   ===================================================================== */
+var KEYS = {
+  arxiv:{ label:'arXiv',                deep:'arxiv_deep', final:'arxiv_final', n:34530, n2:31927, d:9 },
+  cfr:  { label:'CFR（美国联邦法规）',   deep:'cfr_deep',   final:'cfr_final',   n:2840,  n2:2737,  d:6 },
+  me:   { label:'MultiEURLEX（欧盟法规）', deep:'me_deep',  final:'me_final',    n:40545, n2:39317, d:10 }
 };
-window.addEventListener('unhandledrejection', function(ev){
-  noteError('unhandledrejection: ' + (ev.reason && ev.reason.message ? ev.reason.message : ev.reason));
-});
-
-/* ------------------------- 1. 常量与状态 ------------------------- */
-var COLORS = ['#38bdf8','#34d399','#f59e0b','#a78bfa','#f472b6','#22d3ee'];
-var LEVEL_H = 132;     // 每层纵向间距
-var NODE_H  = 26;      // 节点方框高
-var FONT    = 13;      // 节点字号
-var CHILD_CAP = 200;   // 单节点最多渲染的子节点数
-var RENDER_CAP = 12000;// 自动展开时允许渲染的节点上限
-var MIN_K = 0.1, MAX_K = 4;
+var FAMLABEL = { deep:'深树（交付物）', final:'三层中间件（对照）' };
+var LEVEL_COLORS = ['#1d4ed8','#7c3aed','#0891b2','#059669','#ca8a04','#db2777','#2563eb','#9333ea','#0d9488','#ea580c','#be123c'];
+var NODE_H = 30, LEVEL_H = 78, HGAP = 16, CHIP_W = 74, PAGE = 12, CHAIN_KIDS = 1;
+var MIN_K = 0.03, MAX_K = 2.5, CAP_VISIBLE = 5000;
+var ERRORS = [];
 var NS = 'http://www.w3.org/2000/svg';
 
-var DOMAINS = [['arxiv','arXiv'],['cfr','CFR'],['me','MultiEURLEX']];
-var FAMILIES = [['deep','深树（交付物）'],['final','三层中间件（对照）']];
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+function noteError(t){ ERRORS.push(t); }
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
 
 var state = {
-  dom: 'arxiv', fam: 'deep', key: 'arxiv_deep',
-  model: null,            // 当前树模型
-  loading: false,
-  compact: false,
-  selected: -1,
-  expanded: new Set(),
-  winOff: new Map(),      // 父节点 -> 子节点显示窗口偏移（用于"定位到被截断的节点"）
-  mmPaths: {}             // depth -> path element
-};
-var view = { k: 1, tx: 0, ty: 0 };
-
-var $ = function(id){ return document.getElementById(id); };
-var canvas = $('canvas'), world = $('world'), gLinks = $('links'), gNodes = $('nodes');
-var stage = $('stage'), busy = $('busy'), toastEl = $('toast'), detailBody = $('detailbody');
-var selftestEl = $('selftest');
-
-var win = window.__tree = {                            // 自测／调试 API
-  version: '1.0',
-  errors: ERRORS,
-  api: {}
+  dom:'arxiv', fam:'deep', key:'arxiv_deep',
+  shown:new Map(), sel:-1, k:1, tx:0, ty:0,
+  items:[], byV:new Map(), W:0, H:0
 };
 
-/* ------------------------- 2. 数据加载（动态 script 注入） ------------------------- */
+/* ===================== 1. 载入 ===================== */
 function loadTree(key, cb, fail){
   if (window.TREES && window.TREES[key]) { cb(window.TREES[key]); return; }
-  var s = document.createElement('script');
-  s.src = 'data/' + key + '.js';
-  s.async = false;
-  s.onload = function(){
+  var sc = document.createElement('script');
+  sc.src = 'data/' + key + '.js';
+  sc.onload = function(){
     if (window.TREES && window.TREES[key]) cb(window.TREES[key]);
-    else if (fail) fail('数据文件里没有 window.TREES["' + key + '"]');
+    else { noteError('数据载入后仍无 ' + key); if (fail) fail(); }
   };
-  s.onerror = function(){ if (fail) fail('无法加载 data/' + key + '.js'); };
-  document.head.appendChild(s);
+  sc.onerror = function(){ noteError('数据文件加载失败 ' + key); if (fail) fail(); };
+  document.head.appendChild(sc);
 }
 
-/* ------------------------- 3. 建模型（CSR 子表 / 深度 / 后代数） ------------------------- */
+/* ===================== 2. 建模 ===================== */
+var m = null;
 function buildModel(raw, key){
-  var t0 = performance.now();
-  var names = raw.nodes, par = raw.parent, n = names.length;
-  var cstart = new Int32Array(n + 1);
-  var i, p;
-  for (i = 0; i < n; i++) { p = par[i]; if (p >= 0) cstart[p + 1]++; }
-  for (i = 0; i < n; i++) cstart[i + 1] += cstart[i];
-  var cursor = new Int32Array(n);
-  for (i = 0; i < n; i++) cursor[i] = cstart[i];
-  var kids = new Int32Array(n);
-  for (i = 0; i < n; i++) { p = par[i]; if (p >= 0) kids[cursor[p]++] = i; }
-
-  var root = 0;
-  for (i = 0; i < n; i++) if (names[i] === 'root_concept') { root = i; break; }
-
-  var depth = new Int32Array(n).fill(-1);
+  var names = raw.nodes, par = raw.parent, n = names.length, i, p;
+  var kids = new Array(n); for (i = 0; i < n; i++) kids[i] = [];
+  var root = -1;
+  for (i = 0; i < n; i++){
+    p = par[i];
+    if (p === -1 || p === undefined || p === null){ if (root < 0) root = i; }
+    else if (p >= 0 && p < n && p !== i) kids[p].push(i);
+  }
+  if (root < 0) root = 0;
+  var depth = new Int32Array(n).fill(-1), order = [], st = [root];
   depth[root] = 0;
-  var stack = [root], order = [];
-  while (stack.length) {
-    var v = stack.pop(); order.push(v);
-    var s = cstart[v], e = cstart[v + 1];
-    for (var c = s; c < e; c++) { depth[kids[c]] = depth[v] + 1; stack.push(kids[c]); }
+  while (st.length){
+    var v = st.pop(); order.push(v);
+    var ch = kids[v];
+    for (i = 0; i < ch.length; i++) if (depth[ch[i]] < 0){ depth[ch[i]] = depth[v] + 1; st.push(ch[i]); }
   }
-  var sub = new Int32Array(n);                      // 后代总数（不含自身）
-  for (i = order.length - 1; i >= 0; i--) {
-    var v2 = order[i], p2 = par[v2];
-    if (p2 >= 0) sub[p2] += sub[v2] + 1;
+  var sub = new Int32Array(n);
+  for (i = order.length - 1; i >= 0; i--){
+    var u = order[i], s = 0, ku = kids[u];
+    for (var j = 0; j < ku.length; j++) s += sub[ku[j]] + 1;
+    sub[u] = s;
   }
-  var maxDepth = 0;
-  for (i = 0; i < n; i++) if (depth[i] > maxDepth) maxDepth = depth[i];
-
-  return {
-    key: key, n: n, names: names, par: par,
-    cstart: cstart, kids: kids, depth: depth, sub: sub,
-    root: root, maxDepth: maxDepth, stats: raw.stats || {},
-    buildMs: performance.now() - t0,
-    lower: null
-  };
-}
-function nKids(m, v){ return m.cstart[v + 1] - m.cstart[v]; }
-function kidRange(m, v){                            // 渲染用的子区间（带上限 + 窗口偏移）
-  var s = m.cstart[v], e = m.cstart[v + 1];
-  var off = state.winOff ? (state.winOff.get(v) || 0) : 0;
-  var a = Math.min(s + off, Math.max(s, e - CHILD_CAP));
-  return [a, Math.min(e, a + CHILD_CAP)];
-}
-function cappedKids(m, v){ var r = kidRange(m, v); return r[1] - r[0]; }
-
-/* ------------------------- 4. 布局（纵向分层 + 叶子槽位） ------------------------- */
-var textWCache = Object.create(null);
-function textW(s){
-  var w = textWCache[s];
-  if (w !== undefined) return w;
-  w = 0;
-  for (var i = 0; i < s.length; i++) {
-    var c = s.charCodeAt(i);
-    w += (c > 0x2E80) ? FONT : FONT * 0.58;
+  var maxDepth = 0, levelCount = [];
+  for (i = 0; i < n; i++){
+    if (depth[i] < 0) continue;
+    if (depth[i] > maxDepth) maxDepth = depth[i];
+    levelCount[depth[i]] = (levelCount[depth[i]] || 0) + 1;
   }
-  textWCache[s] = w;
-  return w;
-}
-function boxW(m, v){
-  var hasKids = nKids(m, v) > 0;
-  return 12 + textW(m.names[v]) + 12 + (hasKids ? 22 : 0);
-}
-function slotW(m, v){
-  return state.compact ? 46 : Math.max(50, boxW(m, v) + 10);
-}
-
-var layout = { order: [], pos: null, x: null, count: 0, ms: 0, b: {x0:0,y0:0,x1:0,y1:0} };
-
-function computeLayout(){
-  var m = state.model, t0 = performance.now();
-  var order = [], pos = new Int32Array(m.n).fill(-1);
-  var stack = [m.root], v, i, s, e, c;
-  while (stack.length) {                            // 前序 DFS（只走已展开的）
-    v = stack.pop();
-    pos[v] = order.length; order.push(v);
-    if (state.expanded.has(v)) {
-      s = kidRange(m, v)[0]; e = kidRange(m, v)[1];
-      for (c = e - 1; c >= s; c--) stack.push(m.kids[c]);
-    }
-  }
-  var n = order.length;
-  var x = new Float64Array(n);
-  var vsize = new Int32Array(m.n);
-  var cur = 0;
-  for (i = n - 1; i >= 0; i--) {                    // 逆前序：叶子排槽位，父节点居中
-    v = order[i];
-    if (state.expanded.has(v)) {
-      s = kidRange(m, v)[0]; e = kidRange(m, v)[1];
-      if (e > s) {
-        var fpos = i + 1, off = 0, mn = Infinity, mx = -Infinity;
-        for (c = s; c < e; c++) {
-          var cp = fpos + off, cx = x[cp];
-          if (cx < mn) mn = cx;
-          if (cx > mx) mx = cx;
-          off += vsize[m.kids[c]];
-        }
-        x[i] = (mn + mx) / 2; vsize[v] = 1 + off;
-        continue;
+  var deepest = root;
+  for (i = 0; i < n; i++) if (depth[i] > depth[deepest]) deepest = i;
+  var chain = [], v = deepest;
+  while (v >= 0){ chain.push(v); if (v === root) break; v = par[v]; }
+  chain.reverse();
+  var chainNext = new Map();
+  for (i = 0; i + 1 < chain.length; i++) chainNext.set(chain[i], chain[i + 1]);
+  var ordKids = new Array(n);
+  for (i = 0; i < n; i++){
+    var kk = kids[i].slice(), cn = chainNext.get(i);
+    if (cn !== undefined){
+      var others = [];
+      for (var t2 = 0; t2 < kk.length; t2++) if (kk[t2] !== cn) others.push(kk[t2]);
+      var half = Math.floor(others.length / 2);
+      if (i === root && half < Math.min(kk.length, PAGE)){   // 根节点：主链放中间，树形好看
+        kk = others.slice(0, half).concat([cn]).concat(others.slice(half));
+      } else {                                              // 其余节点：主链放首位 → 只显示 1 个时露的就是主链，链不会断
+        kk = [cn].concat(others);
       }
     }
-    vsize[v] = 1; x[i] = cur; cur += slotW(m, v);
+    ordKids[i] = kk;
   }
-  var b = { x0: Infinity, y0: 0, x1: -Infinity, y1: 0 };
-  for (i = 0; i < n; i++) {
-    v = order[i];
-    var hw = boxW(m, v) / 2, y = m.depth[v] * LEVEL_H;
-    if (x[i] - hw < b.x0) b.x0 = x[i] - hw;
-    if (x[i] + hw > b.x1) b.x1 = x[i] + hw;
-    if (y > b.y1) b.y1 = y;
+  return { key:key, names:names, parent:par, kids:kids, ordKids:ordKids, root:root, n:n,
+    depth:depth, sub:sub, maxDepth:maxDepth, levelCount:levelCount, chain:chain, chainNext:chainNext,
+    stats:(raw.stats || {}) };
+}
+function shownOf(v){ return state.shown.get(v) || 0; }
+
+/* ===================== 3. 可见树 + 布局 ===================== */
+var _cv = document.createElement('canvas'), _cx = _cv.getContext('2d');
+var NAMEFONT = '13px ui-monospace,Menlo,Consolas,monospace';
+function textW(s){ _cx.font = NAMEFONT; return _cx.measureText(s).width; }
+function nodeW(v){ return Math.max(88, Math.min(340, textW(m.names[v]) + 28)); }
+
+function buildVisible(){
+  var budget = CAP_VISIBLE, over = false;
+  function rec(v, d){
+    if (budget-- <= 0){ over = true; return null; }
+    var it = { t:'n', v:v, d:d, kids:[], w:nodeW(v) };
+    var ord = m.ordKids[v], sh = Math.min(shownOf(v), ord.length), i;
+    for (i = 0; i < sh && !over; i++){ var c = rec(ord[i], d + 1); if (c) it.kids.push(c); }
+    if (ord.length > sh && !over) it.kids.push({ t:'c', v:v, d:d + 1, from:sh, n:ord.length - sh, kids:[], w:CHIP_W });
+    return it;
   }
-  if (n === 0) b = { x0: 0, y0: 0, x1: 0, y1: 0 };
-  layout.order = order; layout.pos = pos; layout.x = x; layout.count = n;
-  layout.b = b; layout.ms = performance.now() - t0;
+  var rootIt = rec(m.root, 0);
+  return { root:rootIt, over:over };
+}
+function layout(root){
+  var cursor = 0, flat = [], pend = [], itemByV = new Map();
+  (function assign(x){
+    if (x.t !== 'n') return;
+    var ch = x.kids, reals = [], i;
+    for (i = 0; i < ch.length; i++) if (ch[i].t === 'n') reals.push(ch[i]);
+    for (i = 0; i < reals.length; i++) assign(reals[i]);
+    if (!reals.length){ x.x = cursor + x.w / 2; cursor += x.w + HGAP; }
+    else {
+      x.x = (reals[0].x + reals[reals.length - 1].x) / 2;      // 只按真实子节点居中 → 主链竖直
+      cursor = Math.max(cursor, x.x + x.w / 2 + HGAP);
+    }
+    x.y = x.d * LEVEL_H + NODE_H / 2;
+    flat.push(x); itemByV.set(x.v, x);
+    for (i = 0; i < ch.length; i++) if (ch[i].t === 'c') pend.push(ch[i]);
+  })(root);
+  var byLevel = {};
+  for (var j = 0; j < flat.length; j++){ var it = flat[j]; (byLevel[it.d] = byLevel[it.d] || []).push(it); }
+  for (var k = 0; k < pend.length; k++){
+    var c = pend[k], p = itemByV.get(c.v);
+    if (!p) continue;
+    c.d = p.d; c.y = p.y;
+    var x = p.x + p.w / 2 + 8 + CHIP_W / 2, list = byLevel[c.d] || [], moved = true, guard = 0;
+    while (moved && guard++ < 80){
+      moved = false;
+      for (var q = 0; q < list.length; q++){
+        var o = list[q];
+        if (Math.abs(o.x - x) < (o.w + CHIP_W) / 2 + 6){ x = o.x + (o.w + CHIP_W) / 2 + 6; moved = true; break; }
+      }
+    }
+    c.x = x; flat.push(c);
+  }
+  return flat;
 }
 
-/* ------------------------- 5. 渲染（元素池 + 增量更新） ------------------------- */
-var pool = new Map();     // 节点下标 -> {g, rect, tx, badge, btx, note, stamp}
-var stamp = 0;
-var selEl = null;
-
-function createNodeEl(v){
-  var m = state.model, name = m.names[v];
-  var col = COLORS[m.depth[v] % COLORS.length];
-  var w = boxW(m, v);
+/* ===================== 4. 渲染 ===================== */
+var svg = null, gWorld = null, gEdge = null, gNode = null;
+var mapNode = new Map(), mapEdge = new Map(), mapChip = new Map();
+function initSVG(){
+  svg = $('tree');
+  svg.setAttribute('xmlns', NS);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  gWorld = document.createElementNS(NS, 'g'); svg.appendChild(gWorld);
+  gEdge = document.createElementNS(NS, 'g'); gWorld.appendChild(gEdge);
+  gNode = document.createElementNS(NS, 'g'); gWorld.appendChild(gNode);
+  mapNode.clear(); mapEdge.clear(); mapChip.clear();
+}
+function mkNode(x){
   var g = document.createElementNS(NS, 'g');
-  g.setAttribute('class', 'node');
-  g.setAttribute('data-node', v);
-  g.setAttribute('data-depth', m.depth[v]);
-
-  var rect = document.createElementNS(NS, 'rect');
-  rect.setAttribute('x', -w / 2); rect.setAttribute('y', -NODE_H / 2);
-  rect.setAttribute('width', w); rect.setAttribute('height', NODE_H);
-  rect.setAttribute('rx', 5);
-  rect.setAttribute('fill', m.depth[v] === 0 ? '#13324a' : 'rgba(20,28,48,.95)');
-  rect.setAttribute('stroke', col);
-
+  g.setAttribute('class', 'nd');
+  var rc = document.createElementNS(NS, 'rect');
+  rc.setAttribute('rx', '7'); rc.setAttribute('height', NODE_H);
   var tx = document.createElementNS(NS, 'text');
-  tx.setAttribute('class', 'labeltx');
-  tx.setAttribute('x', -w / 2 + 10);
-  tx.setAttribute('y', 0);
-  tx.setAttribute('dominant-baseline', 'central');
-  tx.setAttribute('fill', col);
-  tx.textContent = name;
-
-  g.appendChild(rect); g.appendChild(tx);
-
-  var hasKids = nKids(m, v) > 0;
-  var badge = null, btx = null;
-  if (hasKids) {
-    badge = document.createElementNS(NS, 'circle');
-    badge.setAttribute('class', 'badge');
-    badge.setAttribute('r', 8.5);
-    badge.setAttribute('cx', w / 2 - 11);
-    badge.setAttribute('cy', 0);
-    badge.setAttribute('stroke', col);
-    badge.setAttribute('data-badge', '1');
-    btx = document.createElementNS(NS, 'text');
-    btx.setAttribute('class', 'badgetx');
-    btx.setAttribute('x', w / 2 - 11);
-    btx.setAttribute('y', 0);
-    btx.setAttribute('fill', col);
-    btx.setAttribute('data-badge', '1');
-    g.appendChild(badge); g.appendChild(btx);
-  }
-  var note = document.createElementNS(NS, 'text');
-  note.setAttribute('class', 'notetx');
-  note.setAttribute('y', NODE_H / 2 + 13);
-  note.setAttribute('display', 'none');
-  g.appendChild(note);
-
-  gNodes.appendChild(g);
-  var rec = { g: g, rect: rect, tx: tx, btx: btx, badge: badge, note: note, stamp: 0, btxt: null, ntxt: null };
-  pool.set(v, rec);
-  return rec;
+  g.appendChild(rc); g.appendChild(tx);
+  g.__rect = rc; g.__text = tx;
+  g.addEventListener('click', function(ev){ ev.stopPropagation(); onNodeClick(x.v); });
+  mapNode.set(x.v, g);
+  return g;
 }
-
+function mkChip(x){
+  var g = document.createElementNS(NS, 'g');
+  g.setAttribute('class', 'chip');
+  var rc = document.createElementNS(NS, 'rect');
+  rc.setAttribute('rx', '9'); rc.setAttribute('height', 22);
+  var tx = document.createElementNS(NS, 'text');
+  g.appendChild(rc); g.appendChild(tx);
+  g.__rect = rc; g.__text = tx;
+  g.addEventListener('click', function(ev){ ev.stopPropagation(); onChipClick(x); });
+  mapChip.set(x.v + ':' + x.from, g);
+  return g;
+}
 function render(){
-  var m = state.model;
-  computeLayout();
-  var order = layout.order, x = layout.x, n = layout.count;
-  stamp++;
-  var i, v, el;
-
-  /* 连线：单条 path 承载全部边 */
-  var d = ['M'];
-  for (i = 0; i < n; i++) {
-    v = order[i];
-    var p = m.par[v];
-    if (p < 0) continue;
-    var cx = x[i], cy = m.depth[v] * LEVEL_H;
-    d.push(cx.toFixed(1), ',', (cy - NODE_H / 2).toFixed(1),
-           'L', x[layout.pos[p]].toFixed(1), ',', (m.depth[p] * LEVEL_H + NODE_H / 2).toFixed(1));
-  }
-  gLinks.innerHTML = '';
-  if (n > 1) {
-    var path = document.createElementNS(NS, 'path');
-    path.setAttribute('d', d.join(''));
-    path.setAttribute('data-links', n - 1);
-    gLinks.appendChild(path);
-  }
-
-  /* 节点 */
-  for (i = 0; i < n; i++) {
-    v = order[i];
-    el = pool.get(v) || createNodeEl(v);
-    var yy = m.depth[v] * LEVEL_H;
-    el.g.setAttribute('transform', 'translate(' + x[i].toFixed(1) + ',' + yy + ')');
-    el.g.style.display = '';
-    el.stamp = stamp;
-    if (el.badge) {
-      var want = state.expanded.has(v) ? '−' : '+';
-      if (el.btxt !== want) { el.btx.textContent = want; el.btxt = want; }
+  if (!m) return;
+  var vis = buildVisible();
+  state.items = layout(vis.root);
+  state.byV = new Map();
+  var i, x;
+  for (i = 0; i < state.items.length; i++){ x = state.items[i]; if (x.t === 'n') state.byV.set(x.v, x); }
+  /* ---- 边 ---- */
+  var keepE = new Set();
+  for (i = 0; i < state.items.length; i++){
+    x = state.items[i];
+    if (x === vis.root) continue;
+    if (x.t === 'c') continue;                         // +N 徽标不画连线（贴在本节点旁）
+    var pv = m.parent[x.v];
+    var pk = 'e:n' + x.v;
+    var pit = state.byV.get(pv);
+    if (!pit) continue;
+    keepE.add(pk);
+    var ln = mapEdge.get(pk);
+    if (!ln){
+      ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('class', 'eg' + (x.t === 'n' && m.chainNext.get(pv) === x.v ? ' chain' : ''));
+      gEdge.appendChild(ln); mapEdge.set(pk, ln);
     }
-    /* 「…还有 N 个」提示 */
-    var tot = nKids(m, v), shown = cappedKids(m, v), off = state.winOff.get(v) || 0;
-    if (tot > shown && state.expanded.has(v)) {
-      var nt = (off > 0 ? '第 ' + (off + 1) + '–' + (off + shown) + ' 个 ｜ ' : '') +
-               '…还有 ' + (tot - shown) + ' 个（共 ' + tot + ' 个子节点）';
-      if (el.ntxt !== nt) { el.note.textContent = nt; el.ntxt = nt; }
-      el.note.setAttribute('display', '');
-    } else if (el.ntxt) {
-      el.note.setAttribute('display', 'none');
-    }
+    ln.setAttribute('x1', pit.x.toFixed(1)); ln.setAttribute('y1', (pit.d * LEVEL_H + NODE_H).toFixed(1));
+    ln.setAttribute('x2', x.x.toFixed(1)); ln.setAttribute('y2', (x.d * LEVEL_H - (x.t === 'c' ? 11 : 0)).toFixed(1));
   }
-  pool.forEach(function(rec, idx){
-    if (rec.stamp !== stamp) rec.g.style.display = 'none';
-  });
-
-  $('st-vis').textContent = n.toLocaleString('en-US');
-  applyView();
-  renderMinimap();
+  mapEdge.forEach(function(el, k){ if (!keepE.has(k)){ el.remove(); mapEdge.delete(k); } });
+  /* ---- 节点 ---- */
+  var keepN = new Set();
+  for (i = 0; i < state.items.length; i++){
+    x = state.items[i];
+    if (x.t !== 'n') continue;
+    keepN.add(x.v);
+    var g = mapNode.get(x.v), isNew = false;
+    if (!g){ g = mkNode(x); isNew = true; }
+    var col = LEVEL_COLORS[x.d % LEVEL_COLORS.length];
+    var isRoot = (x.v === m.root), isSel = (state.sel === x.v);
+    g.setAttribute('class', 'nd' + (isRoot ? ' root' : '') + (isSel ? ' sel' : ''));
+    g.__rect.setAttribute('fill', isRoot ? '#12307a' : (isSel ? '#eff6ff' : '#ffffff'));
+    g.__rect.setAttribute('stroke', isRoot ? '#12307a' : col);
+    g.__rect.setAttribute('x', (x.x - x.w / 2).toFixed(1));
+    g.__rect.setAttribute('y', (x.d * LEVEL_H).toFixed(1));
+    g.__rect.setAttribute('width', x.w.toFixed(1));
+    var inner = x.w - 16, tw = textW(m.names[x.v]);
+    if (tw > inner){ g.__text.setAttribute('textLength', inner.toFixed(1)); g.__text.setAttribute('lengthAdjust', 'spacingAndGlyphs'); }
+    else { g.__text.removeAttribute('textLength'); g.__text.removeAttribute('lengthAdjust'); }
+    g.__text.setAttribute('x', x.x.toFixed(1));
+    g.__text.setAttribute('y', (x.d * LEVEL_H + NODE_H / 2 + 1).toFixed(1));
+    g.__text.textContent = m.names[x.v];
+    if (isNew){ g.classList.add('newnd'); gNode.appendChild(g); }
+  }
+  mapNode.forEach(function(el, v){ if (!keepN.has(v)){ el.remove(); mapNode.delete(v); } });
+  /* ---- +N chip ---- */
+  var keepC = new Set();
+  for (i = 0; i < state.items.length; i++){
+    x = state.items[i];
+    if (x.t !== 'c') continue;
+    var ck = x.v + ':' + x.from; keepC.add(ck);
+    var cg = mapChip.get(ck), isNewC = false;
+    if (!cg){ cg = mkChip(x); isNewC = true; }
+    cg.__rect.setAttribute('x', (x.x - CHIP_W / 2).toFixed(1));
+    cg.__rect.setAttribute('y', (x.y - 11).toFixed(1));
+    cg.__rect.setAttribute('width', CHIP_W);
+    cg.__text.setAttribute('x', x.x.toFixed(1));
+    cg.__text.setAttribute('y', (x.y + 1).toFixed(1));
+    cg.__text.textContent = '+' + x.n;
+    if (isNewC){ cg.classList.add('newnd'); gNode.appendChild(cg); }
+  }
+  mapChip.forEach(function(el, k){ if (!keepC.has(k)){ el.remove(); mapChip.delete(k); } });
+  if (vis.over) toast('内容太多已截断，请逐层展开');
+  drawLevels(); drawHUD(); applyView();
+}
+function bbox(){
+  var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (var i = 0; i < state.items.length; i++){
+    var x = state.items[i], h = (x.t === 'n' ? NODE_H : 0);
+    x0 = Math.min(x0, x.x - x.w / 2); x1 = Math.max(x1, x.x + x.w / 2);
+    y0 = Math.min(y0, x.d * LEVEL_H); y1 = Math.max(y1, x.d * LEVEL_H + h);
+  }
+  return { x0:x0, x1:x1, y0:y0, y1:y1, w:Math.max(1, x1 - x0), h:Math.max(1, y1 - y0) };
 }
 
-/* ------------------------- 6. 视图变换（缩放/平移） ------------------------- */
-function clampK(k){ return Math.max(MIN_K, Math.min(MAX_K, k)); }
+/* ===================== 5. 视口 ===================== */
 function applyView(){
-  world.setAttribute('transform', 'translate(' + view.tx.toFixed(2) + ',' + view.ty.toFixed(2) + ') scale(' + view.k.toFixed(4) + ')');
-  $('zoomlabel').textContent = Math.round(view.k * 100) + '%';
-  canvas.classList.toggle('labels-off', view.k < 0.42);
-  updateMMView();
+  gWorld.setAttribute('transform', 'translate(' + state.tx.toFixed(1) + ',' + state.ty.toFixed(1) + ') scale(' + state.k.toFixed(4) + ')');
+  $('zl').textContent = Math.round(state.k * 100) + '%';
+  updateLevelsPos();
 }
-function zoomAt(px, py, targetK){
-  var k = clampK(targetK);
-  var r = canvas.getBoundingClientRect();
-  var sx = px - r.left, sy = py - r.top;
-  var wx = (sx - view.tx) / view.k, wy = (sy - view.ty) / view.k;
-  view.k = k;
-  view.tx = sx - wx * k;
-  view.ty = sy - wy * k;
+function clampK(k){ return Math.max(MIN_K, Math.min(MAX_K, k)); }
+function fit(){
+  if (!state.items.length) return;
+  var b = bbox();
+  var W = $('stage').clientWidth, H = $('stage').clientHeight;
+  var padL = 170, padR = 44, padT = 40, padB = 26;
+  state.k = clampK(Math.min((W - padL - padR) / b.w, (H - padT - padB) / b.h));
+  state.tx = padL + (W - padL - padR) / 2 - ((b.x0 + b.x1) / 2) * state.k;
+  state.ty = padT - b.y0 * state.k;
   applyView();
+}
+function viewOn(v){          // 展开后：尽量让"刚展开的那一排"整排可见；不够就缩小到刚好放得下（不低于 0.5）
+  var it = state.byV.get(v); if (!it) return;
+  var x0 = it.x - it.w / 2, x1 = it.x + it.w / 2, i, x;
+  var dk = it.d + 1;
+  for (i = 0; i < state.items.length; i++){
+    x = state.items[i];
+    if (x.t === 'n' && x.d === dk && m.parent[x.v] === v){ x0 = Math.min(x0, x.x - x.w / 2); x1 = Math.max(x1, x.x + x.w / 2); }
+    else if (x.t === 'c' && x.v === v){ x0 = Math.min(x0, x.x - x.w / 2); x1 = Math.max(x1, x.x + x.w / 2); }
+  }
+  var W = $('stage').clientWidth, avail = W - 36;
+  var kFit = clampK(avail / Math.max(180, x1 - x0));
+  state.k = clampK(Math.min(state.k, Math.max(0.5, kFit)));
+  state.tx = W / 2 - ((x0 + x1) / 2) * state.k;
+  state.ty = $('stage').clientHeight * 0.24 - it.y * state.k;
+  applyView();
+}
+function ensureVisible(){
+  var b = bbox(), W = $('stage').clientWidth, H = $('stage').clientHeight;
+  if (b.w * state.k > W * 0.99 || b.h * state.k > H * 0.99) fit();
 }
 function zoomStep(f){
-  var r = canvas.getBoundingClientRect();
-  zoomAt(r.left + r.width / 2, r.top + r.height / 2, view.k * f);
+  var W = $('stage').clientWidth, H = $('stage').clientHeight;
+  var k2 = clampK(state.k * f);
+  state.tx = W / 2 - (W / 2 - state.tx) * (k2 / state.k);
+  state.ty = H / 2 - (H / 2 - state.ty) * (k2 / state.k);
+  state.k = k2; applyView();
 }
-function resetView(quiet){
-  var b = layout.b, W = stage.clientWidth, H = stage.clientHeight, pad = 48;
-  var wSpan = Math.max(1, b.x1 - b.x0), hSpan = Math.max(1, b.y1 - b.y0);
-  var kFit = Math.min((W - 2 * pad) / wSpan, (H - 2 * pad) / hSpan);
-  var k = clampK(kFit);
-  view.k = k;
-  if (k > kFit + 1e-9) {                 // 被 0.1× 下限夹住：根节点置顶居中
-    var rx = 0;
-    var rpos = layout.pos[state.model.root];
-    if (rpos >= 0) rx = layout.x[rpos];
-    view.tx = W / 2 - rx * k;
-    view.ty = H * 0.10;
-    if (!quiet) toast('树太宽，已按最小缩放 0.1× 显示；可拖拽或点左下总览定位');
-  } else {
-    view.tx = W / 2 - (b.x0 + b.x1) / 2 * k;
-    view.ty = H / 2 - (b.y0 + b.y1) / 2 * k;
-  }
-  applyView();
+function zoomAt(px, py, k2){
+  k2 = clampK(k2);
+  state.tx = px - (px - state.tx) * (k2 / state.k);
+  state.ty = py - (py - state.ty) * (k2 / state.k);
+  state.k = k2; applyView();
 }
-function centerOnNode(v, minK){
-  var pos = layout.pos[v];
-  if (pos < 0) return false;
-  if (minK && view.k < minK) view.k = clampK(minK);
-  var W = stage.clientWidth, H = stage.clientHeight;
-  view.tx = W / 2 - layout.x[pos] * view.k;
-  view.ty = H * 0.42 - state.model.depth[v] * LEVEL_H * view.k;
-  applyView();
-  return true;
-}
-
-/* ------------------------- 7. 缩略总览 ------------------------- */
-var mmBounds = null;
-function renderMinimap(){
-  var b = layout.b, W = 224, H = 146, pad = 5;
-  var wSpan = Math.max(1, b.x1 - b.x0), hSpan = Math.max(1, b.y1 - b.y0);
-  var sx = (W - 2 * pad) / wSpan, sy = (H - 2 * pad) / hSpan;
-  mmBounds = { sx: sx, sy: sy, x0: b.x0, y0: b.y0, pad: pad };
-  var m = state.model, order = layout.order, x = layout.x;
-  var byDepth = Object.create(null), i, v;
-  for (i = 0; i < order.length; i++) {
-    v = order[i];
-    var dep = m.depth[v];
-    (byDepth[dep] || (byDepth[dep] = [])).push(i);
-  }
-  var g = $('mmpaths');
-  for (var depS in byDepth) {
-    var dep2 = +depS, arr = byDepth[depS], dd = ['M'];
-    for (i = 0; i < arr.length; i++) {
-      var q = arr[i];
-      dd.push((pad + (x[q] - b.x0) * sx).toFixed(1), ',', (pad + (m.depth[order[q]] * LEVEL_H - b.y0) * sy).toFixed(1), 'h1.1');
-    }
-    var el = state.mmPaths[dep2];
-    if (!el) {
-      el = document.createElementNS(NS, 'path');
-      el.setAttribute('stroke', COLORS[dep2 % COLORS.length]);
-      el.setAttribute('stroke-width', dep2 === 0 ? 2.4 : 1.2);
-      el.setAttribute('stroke-linecap', 'round');
-      state.mmPaths[dep2] = el;
-      g.appendChild(el);
-    }
-    el.setAttribute('d', dd.join(''));
-  }
-  for (var k in state.mmPaths) {
-    if (!byDepth[k]) state.mmPaths[k].setAttribute('d', '');
-  }
-  updateMMView();
-}
-function updateMMView(){
-  if (!mmBounds) return;
-  var r = $('mmview');
-  var vx0 = -view.tx / view.k, vy0 = -view.ty / view.k;
-  var vx1 = vx0 + stage.clientWidth / view.k, vy1 = vy0 + stage.clientHeight / view.k;
-  var W = 224, H = 146, pad = mmBounds.pad;
-  var x = pad + (vx0 - mmBounds.x0) * mmBounds.sx;
-  var y = pad + (vy0 - mmBounds.y0) * mmBounds.sy;
-  var w = (vx1 - vx0) * mmBounds.sx, h = (vy1 - vy0) * mmBounds.sy;
-  r.setAttribute('x', Math.max(0, Math.min(W, x)));
-  r.setAttribute('y', Math.max(0, Math.min(H, y)));
-  r.setAttribute('width', Math.max(1, Math.min(W, w)));
-  r.setAttribute('height', Math.max(1, Math.min(H, h)));
-}
-function mmToWorld(ev){
-  var mm = $('minimap'), r = mm.getBoundingClientRect();
-  var px = (ev.clientX - r.left) / r.width * 224, py = (ev.clientY - r.top) / r.height * 146;
-  return { x: (px - mmBounds.pad) / mmBounds.sx + mmBounds.x0,
-           y: (py - mmBounds.pad) / mmBounds.sy + mmBounds.y0 };
-}
-
-/* ------------------------- 8. 展开 / 折叠 ------------------------- */
-function expandNode(v){
-  if (!state.model || nKids(state.model, v) === 0) return false;
-  state.expanded.add(v); return true;
-}
-function collapseNode(v){
-  if (!state.expanded.has(v)) return false;
-  var m = state.model, stack = [v];
-  state.expanded.delete(v);
-  while (stack.length) {                      // 子树里所有已展开标记一并清掉
-    var u = stack.pop();
-    var s = kidRange(m, u)[0], e = kidRange(m, u)[1];
-    for (var c = s; c < e; c++) {
-      var kd = m.kids[c];
-      if (state.expanded.has(kd)) { state.expanded.delete(kd); stack.push(kd); }
-    }
-  }
-  return true;
-}
-function toggleNode(v){
-  var t0 = performance.now();
-  var changed = state.expanded.has(v) ? collapseNode(v) : expandNode(v);
-  if (!changed) return;
-  render();
-  var ms = performance.now() - t0;
-  if (ms > 300) toast('重排耗时 ' + ms.toFixed(0) + ' ms（' + layout.count.toLocaleString('en-US') + ' 个节点）');
-  if (state.selected === v) showDetail(v);
-}
-function revealNode(v){
-  var m = state.model, chain = [], u = v;
-  while (u >= 0) { chain.push(u); u = m.par[u]; }
-  /* 若目标落在某个祖先的"截断窗口"之外，把该父节点的窗口平移过去，保证目标能被画出来 */
-  for (var i = 0; i < chain.length - 1; i++) {
-    var c = chain[i], p = chain[i + 1];
-    var s = m.cstart[p], e = m.cstart[p + 1], k = -1;
-    for (var q = s; q < e; q++) { if (m.kids[q] === c) { k = q - s; break; } }
-    if (k >= CHILD_CAP) state.winOff.set(p, Math.floor(k / CHILD_CAP) * CHILD_CAP);
-    else state.winOff.delete(p);
-  }
-  for (var j = chain.length - 1; j > 0; j--) expandNode(chain[j]);
-  render();
-  centerOnNode(v, 0.55);
-  selectNode(v, true);
-}
-/* iterations = 额外展开的层数；iterations=1 → 可见 3 层：根 → 顶层类 → 它们的子节点 */
-function autoExpand(iterations){
-  var m = state.model;
-  state.expanded.clear(); state.expanded.add(m.root);
-  var frontier = [m.root], total = 1, note = '';
-  for (var d = 0; d < iterations; d++) {
-    var next = [], i, j;
-    for (i = 0; i < frontier.length; i++) {
-      var v = frontier[i];
-      var s = kidRange(m, v)[0], e = kidRange(m, v)[1];
-      for (j = s; j < e; j++) next.push(m.kids[j]);
-    }
-    if (total + next.length > RENDER_CAP) {
-      note = '初始只展开到第 ' + (d + 1) + ' 层（渲染上限 ' + RENDER_CAP.toLocaleString('en-US') + '，可手动点 + 继续）';
-      break;
-    }
-    for (i = 0; i < next.length; i++) state.expanded.add(next[i]);
-    total += next.length;
-    frontier = next;
-    if (!next.length) break;
-  }
-  $('st-msg').textContent = note;
-  return note;
-}
-
-/* ------------------------- 9. 详情面板 ------------------------- */
-function showDetail(v){
-  var m = state.model, name = m.names[v], dep = m.depth[v];
-  var nk = nKids(m, v), col = COLORS[dep % COLORS.length];
-  var chain = [], u = v;
-  while (u >= 0) { chain.push(u); u = m.par[u]; }
-  chain.reverse();
-  var segs = chain.map(function(q, i){
-    var cls = 'seg' + (i === chain.length - 1 ? ' leaf' : '');
-    return '<span class="' + cls + '" data-goto="' + q + '">' + esc(m.names[q]) + '</span>';
-  }).join('<span class="sep">›</span>');
-  var childInfo = nk > CHILD_CAP
-    ? nk.toLocaleString('en-US') + '（本页渲染前 ' + CHILD_CAP + ' 个）'
-    : nk.toLocaleString('en-US');
-  detailBody.innerHTML =
-    '<div class="card">' +
-      '<div class="name">' + esc(name) + '</div>' +
-      '<div class="depthbadge" style="color:' + col + '">距根 ' + dep + ' 跳 · 第 ' + (dep + 1) + ' 层</div>' +
-    '</div>' +
-    '<div class="card"><table>' +
-      '<tr><td class="k">直接子节点</td><td class="v">' + childInfo + '</td></tr>' +
-      '<tr><td class="k">后代总数</td><td class="v">' + m.sub[v].toLocaleString('en-US') + '</td></tr>' +
-      '<tr><td class="k">是否叶子</td><td class="v">' + (nk === 0 ? '是（无子类型）' : '否') + '</td></tr>' +
-      '<tr><td class="k">展开状态</td><td class="v">' + (state.expanded.has(v) ? '已展开' : '已折叠') + '</td></tr>' +
-      '<tr><td class="k">节点下标</td><td class="v">#' + v + '</td></tr>' +
-    '</table>' +
-    '<div class="row">' +
-      '<button data-act="expand">展开此节点</button>' +
-      '<button data-act="collapse">折叠子树</button>' +
-      '<button data-act="center">定位居中</button>' +
-      '<button data-act="root">回到根节点</button>' +
-    '</div></div>' +
-    '<div class="card"><h2>从根到该节点的完整路径</h2><div class="path">' + segs + '</div></div>' +
-    '<div class="mini">点击路径中的任意一段可跳转；树中共 <span class="kv">' + m.n.toLocaleString('en-US') +
-    '</span> 个类型节点，最大深度 <span class="kv">' + m.maxDepth + '</span> 跳。</div>';
-}
-function esc(s){
-  return String(s).replace(/[&<>"']/g, function(c){
-    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
-  });
-}
-function selectNode(v, pulse){
-  if (selEl) { selEl.classList.remove('sel'); selEl.classList.remove('pulse'); }
-  state.selected = v;
-  var rec = pool.get(v);
-  if (rec) {
-    rec.g.classList.add('sel');
-    if (pulse) {
-      rec.g.classList.remove('pulse');
-      void rec.g.getBoundingClientRect();
-      rec.g.classList.add('pulse');
-    }
-    selEl = rec.g;
-  } else selEl = null;
-  showDetail(v);
-}
-
-/* ------------------------- 10. 搜索 ------------------------- */
-var searchTimer = null;
-function doSearch(q){
-  var m = state.model, out = [];
-  if (!q) return { total: 0, items: [] };
-  if (!m.lower) m.lower = m.names.map(function(s){ return s.toLowerCase(); });
-  var needle = q.toLowerCase(), total = 0;
-  for (var i = 0; i < m.n; i++) {
-    if (m.lower[i].indexOf(needle) >= 0) {
-      total++;
-      if (out.length < 400) out.push(i);
-    }
-  }
-  out.sort(function(a, b){
-    var pa = m.lower[a].indexOf(needle) === 0 ? 0 : 1, pb = m.lower[b].indexOf(needle) === 0 ? 0 : 1;
-    if (pa !== pb) return pa - pb;
-    if (m.names[a].length !== m.names[b].length) return m.names[a].length - m.names[b].length;
-    return m.depth[a] - m.depth[b];
-  });
-  return { total: total, items: out.slice(0, 20) };
-}
-function renderResults(res, q){
-  var box = $('results');
-  if (!q) { box.classList.add('hidden'); box.innerHTML = ''; return; }
-  var html = '<div class="rh">命中 <b>' + res.total.toLocaleString('en-US') + '</b> 个类型' +
-             (res.total > res.items.length ? '，显示前 ' + res.items.length + ' 个' : '') + '</div>';
-  if (!res.items.length) html += '<div class="rempty">没有匹配「' + esc(q) + '」的类型名</div>';
-  res.items.forEach(function(v){
-    html += '<div class="ritem" data-goto="' + v + '"><span class="nm">' + esc(state.model.names[v]) +
-            '</span><span class="dp">' + state.model.depth[v] + ' 跳</span></div>';
-  });
-  box.innerHTML = html;
-  box.classList.remove('hidden');
-}
-$('q').addEventListener('input', function(){
-  var q = this.value.trim();
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(function(){
-    var res = doSearch(q);
-    renderResults(res, q);
-    win.api.lastSearch = { q: q, total: res.total, shown: res.items.length,
-                           names: res.items.slice(0, 5).map(function(v){ return state.model.names[v]; }) };
-  }, 90);
-});
-$('results').addEventListener('click', function(ev){
-  var it = ev.target.closest('[data-goto]');
+function centerOn(v, minK){
+  var it = state.byV.get(v);
   if (!it) return;
-  revealNode(+it.getAttribute('data-goto'));
-  $('results').classList.add('hidden');
-});
-document.addEventListener('keydown', function(ev){
-  if (ev.key === 'Escape') { $('results').classList.add('hidden'); }
-});
-
-/* ------------------------- 11. 交互：平移/缩放/点选 ------------------------- */
-var pointers = new Map(), drag = null, pinch0 = null, dragMoved = false;
-
-canvas.addEventListener('pointerdown', function(ev){
-  if (ev.button !== undefined && ev.button !== 0 && ev.pointerType === 'mouse') return;
-  canvas.setPointerCapture(ev.pointerId);
-  pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-  if (pointers.size === 1) {
-    drag = { x: ev.clientX, y: ev.clientY, tx: view.tx, ty: view.ty };
-    dragMoved = false;
-    stage.classList.add('dragging');
-  } else if (pointers.size === 2) {
-    var p = Array.from(pointers.values());
-    pinch0 = { d: dist(p[0], p[1]), mid: mid(p[0], p[1]), k: view.k, tx: view.tx, ty: view.ty,
-               w: screenToWorld(p[0], p[1]) };
-    drag = null;
-  }
-});
-canvas.addEventListener('pointermove', function(ev){
-  if (!pointers.has(ev.pointerId)) return;
-  pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-  if (pointers.size === 2 && pinch0) {
-    var p = Array.from(pointers.values()), d = dist(p[0], p[1]), m2 = mid(p[0], p[1]);
-    var k = clampK(pinch0.k * (d / Math.max(1, pinch0.d)));
-    var r = canvas.getBoundingClientRect();
-    var w = { x: (p[0].x - r.left - pinch0.tx) / pinch0.k, y: (p[0].y - r.top - pinch0.ty) / pinch0.k };
-    view.k = k;
-    view.tx = (m2.x - r.left) - w.x * k;
-    view.ty = (m2.y - r.top) - w.y * k;
-    dragMoved = true;
-    applyView();
-  } else if (drag) {
-    var dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
-    if (Math.abs(dx) + Math.abs(dy) > 4) dragMoved = true;
-    view.tx = drag.tx + dx; view.ty = drag.ty + dy;
-    applyView();
-  }
-});
-function endPointer(ev){
-  pointers.delete(ev.pointerId);
-  if (pointers.size < 2) pinch0 = null;
-  if (pointers.size === 0) { drag = null; stage.classList.remove('dragging'); }
+  if (minK && state.k < minK) state.k = clampK(minK);
+  state.tx = $('stage').clientWidth / 2 - it.x * state.k;
+  state.ty = $('stage').clientHeight * 0.45 - it.y * state.k;
+  applyView();
 }
-canvas.addEventListener('pointerup', endPointer);
-canvas.addEventListener('pointercancel', endPointer);
-canvas.addEventListener('pointerleave', function(ev){ if (!pointers.has(ev.pointerId)) return; });
-
-canvas.addEventListener('wheel', function(ev){
-  ev.preventDefault();
-  zoomAt(ev.clientX, ev.clientY, view.k * Math.exp(-ev.deltaY * 0.0016));
-}, { passive: false });
-
-canvas.addEventListener('click', function(ev){
-  if (dragMoved) { dragMoved = false; return; }
-  var t = ev.target;
-  var g = t.closest ? t.closest('[data-node]') : null;
-  if (!g) return;
-  var v = +g.getAttribute('data-node');
-  if (t.closest('[data-badge]')) toggleNode(v);
-  else selectNode(v, false);
-});
-detailBody.addEventListener('click', function(ev){
-  var b = ev.target.closest('[data-act]');
-  if (b && state.selected >= 0) {
-    var act = b.getAttribute('data-act'), v = state.selected;
-    if (act === 'expand') { expandNode(v); render(); showDetail(v); }
-    else if (act === 'collapse') { collapseNode(v); render(); showDetail(v); }
-    else if (act === 'center') { revealNode(v); }
-    else if (act === 'root') { revealNode(state.model.root); }
-    return;
+function viewOn(v){          // 展开后：尽量让"刚展开的那一排"整排可见；不够就缩小到刚好放得下（不低于 0.5）
+  var it = state.byV.get(v); if (!it) return;
+  var x0 = it.x - it.w / 2, x1 = it.x + it.w / 2, i, x;
+  var dk = it.d + 1;
+  for (i = 0; i < state.items.length; i++){
+    x = state.items[i];
+    if (x.t === 'n' && x.d === dk && m.parent[x.v] === v){ x0 = Math.min(x0, x.x - x.w / 2); x1 = Math.max(x1, x.x + x.w / 2); }
+    else if (x.t === 'c' && x.v === v){ x0 = Math.min(x0, x.x - x.w / 2); x1 = Math.max(x1, x.x + x.w / 2); }
   }
-  var s = ev.target.closest('[data-goto]');
-  if (s) revealNode(+s.getAttribute('data-goto'));
-});
+  var W = $('stage').clientWidth, avail = W - 36;
+  var kFit = clampK(avail / Math.max(180, x1 - x0));
+  state.k = clampK(Math.min(state.k, Math.max(0.5, kFit)));
+  state.tx = W / 2 - ((x0 + x1) / 2) * state.k;
+  state.ty = $('stage').clientHeight * 0.24 - it.y * state.k;
+  applyView();
+}
+function ensureVisible(){
+  var b = bbox(), W = $('stage').clientWidth, H = $('stage').clientHeight;
+  if (b.w * state.k > W * 0.99 || b.h * state.k > H * 0.99) fit();
+}
 
-/* 总览点击定位 */
-(function(){
-  var mm = $('minimap'), down = false;
-  function go(ev){
-    if (!mmBounds) return;
-    var w = mmToWorld(ev);
-    view.tx = stage.clientWidth / 2 - w.x * view.k;
-    view.ty = stage.clientHeight / 2 - w.y * view.k;
-    applyView();
+/* ===================== 6. 层级标尺 / HUD ===================== */
+var levelRows = [];
+function drawLevels(){
+  var box = $('levels'), need = (m ? m.maxDepth + 1 : 0);
+  while (levelRows.length < need){
+    var ln = document.createElement('div'); ln.className = 'lv';
+    var lab = document.createElement('div'); lab.className = 'lvl';
+    box.appendChild(ln); box.appendChild(lab);
+    levelRows.push({ ln:ln, lab:lab });
   }
-  mm.addEventListener('pointerdown', function(ev){ down = true; mm.setPointerCapture(ev.pointerId); go(ev); });
-  mm.addEventListener('pointermove', function(ev){ if (down) go(ev); });
-  mm.addEventListener('pointerup', function(){ down = false; });
-})();
-
-/* 工具栏 */
-$('zoomin').addEventListener('click', function(){ zoomStep(1.25); });
-$('zoomout').addEventListener('click', function(){ zoomStep(1 / 1.25); });
-$('btn-reset').addEventListener('click', function(){ resetView(false); });
-$('btn-spacing').addEventListener('click', function(){
-  state.compact = !state.compact;
-  this.textContent = '间距：' + (state.compact ? '紧凑' : '宽松');
-  this.classList.toggle('on', state.compact);
-  render();
-});
-document.getElementById('dombar').addEventListener('click', function(ev){
-  var b = ev.target.closest('button[data-dom]'); if (!b) return;
-  state.dom = b.getAttribute('data-dom'); syncButtons(); switchTree();
-});
-document.getElementById('fambar').addEventListener('click', function(ev){
-  var b = ev.target.closest('button[data-fam]'); if (!b) return;
-  state.fam = b.getAttribute('data-fam'); syncButtons(); switchTree();
-});
-function syncButtons(){
-  [].forEach.call(document.querySelectorAll('#dombar button'), function(b){
-    b.classList.toggle('on', b.getAttribute('data-dom') === state.dom);
-  });
-  [].forEach.call(document.querySelectorAll('#fambar button'), function(b){
-    b.classList.toggle('on', b.getAttribute('data-fam') === state.fam);
-  });
+  var perLevel = [];
+  for (var i = 0; i < state.items.length; i++){ var x = state.items[i]; if (x.t === 'n') perLevel[x.d] = (perLevel[x.d] || 0) + 1; }
+  for (i = 0; i < levelRows.length; i++){
+    var on = i < need;
+    levelRows[i].ln.style.display = on ? 'block' : 'none';
+    levelRows[i].lab.style.display = on ? 'block' : 'none';
+    if (!on) continue;
+    levelRows[i].lab.innerHTML = '第 <b>' + (i + 1) + '</b> 层' + (i === 0 ? '（根）' : '') +
+      ' ｜ <b>' + fmt(m.levelCount[i] || 0) + '</b> 个 · 显示 <b>' + fmt(perLevel[i] || 0) + '</b>';
+  }
+  updateLevelsPos();
 }
-window.addEventListener('resize', function(){ applyView(); updateMMView(); });
-
-/* ------------------------- 12. 小工具 ------------------------- */
-function dist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
-function mid(a, b){ return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
-function screenToWorld(p){
-  var r = canvas.getBoundingClientRect();
-  return { x: (p.x - r.left - view.tx) / view.k, y: (p.y - r.top - view.ty) / view.k };
+function updateLevelsPos(){
+  if (!m) return;
+  var H = $('stage').clientHeight;
+  for (var i = 0; i < m.maxDepth + 1 && i < levelRows.length; i++){
+    var y = state.ty + i * LEVEL_H * state.k;
+    var show = (y > -34 && y < H + 34);
+    levelRows[i].ln.style.top = y.toFixed(1) + 'px';
+    levelRows[i].lab.style.top = (y + 4).toFixed(1) + 'px';
+    levelRows[i].ln.style.opacity = show ? 1 : 0;
+    levelRows[i].lab.style.opacity = show ? 1 : 0;
+  }
 }
-var toastTimer = null;
+function drawHUD(){
+  var nv = 0, hidden = 0;
+  for (var i = 0; i < state.items.length; i++){
+    var x = state.items[i];
+    if (x.t === 'n') nv++; else hidden += x.n;
+  }
+  $('hud').innerHTML = '<b>' + KEYS[state.dom].label + '</b> · ' + FAMLABEL[state.fam] +
+    ' ｜ 类型节点 <b>' + fmt(m.n) + '</b> · 最大深度 <b>' + m.maxDepth + ' 跳</b>' +
+    ' ｜ 已展开 <b>' + fmt(nv) + '</b> 个，另有 <b>' + fmt(hidden) + '</b> 个收在 +N 里';
+}
+
+/* ===================== 7. 交互 ===================== */
 function toast(msg){
-  toastEl.textContent = msg;
-  toastEl.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 3200);
+  var t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t.__t); t.__t = setTimeout(function(){ t.classList.remove('on'); }, 2200);
 }
-function setBusy(on, txt){
-  busy.classList.toggle('hidden', !on);
-  if (txt) $('busytx').textContent = txt;
+function onNodeClick(v){
+  var ord = m.ordKids[v];
+  if (!ord.length){ select(v); showDetail(v); return; }
+  var was = shownOf(v);
+  if (was > 0) state.shown.set(v, 0);
+  else state.shown.set(v, Math.min(ord.length, PAGE));
+  select(v); render(); showDetail(v);
+  if (shownOf(v) > 0) viewOn(v);
 }
-function renderLegend(){
-  var m = state.model;
-  var html = '';
-  for (var d = 0; d <= Math.min(m.maxDepth, 11); d++) {
-    html += '<div><span class="sw" style="background:' + COLORS[d % COLORS.length] + '"></span>第 ' + (d + 1) + ' 层（距根 ' + d + ' 跳）</div>';
+function onChipClick(x){
+  var ord = m.ordKids[x.v], cur = shownOf(x.v);
+  var nx = Math.min(ord.length, Math.max(cur + PAGE, x.from + PAGE));
+  if (nx === cur) return;
+  state.shown.set(x.v, nx);
+  render(); viewOn(x.v);
+}
+function expandTo(v, count){ state.shown.set(v, Math.min(m.ordKids[v].length, count)); }
+function toggle(v){
+  var ord = m.ordKids[v]; if (!ord.length) return;
+  state.shown.set(v, shownOf(v) > 0 ? 0 : Math.min(ord.length, PAGE));
+  render();
+}
+function chainExpand(){
+  state.shown.clear();
+  for (var i = 0; i < m.chain.length; i++){
+    var v = m.chain[i], ord = m.ordKids[v];
+    if (ord.length) state.shown.set(v, Math.min(ord.length, i === 0 ? PAGE : CHAIN_KIDS));
   }
-  $('legend').innerHTML = html;
+  state.sel = -1; $('detail').innerHTML = emptyDetail();
+  render(); fit();
 }
-
-/* ------------------------- 13. 切换 / 初始化 ------------------------- */
-function switchTree(){
-  var key = state.dom + '_' + state.fam;
-  state.key = key;
-  if (state.loading) return;
-  var have = window.TREES && window.TREES[key];
-  if (!have) { state.loading = true; setBusy(true, '加载数据 data/' + key + '.js …'); }
-  loadTree(key, function(raw){
-    state.loading = false;
-    setBusy(false);
-    mount(raw, key);
-  }, function(err){
-    state.loading = false; setBusy(false);
-    noteError(err);
-    toast('加载失败：' + err);
+function collapseAll(){
+  state.shown.clear();
+  if (m.ordKids[m.root].length) state.shown.set(m.root, Math.min(m.ordKids[m.root].length, PAGE));
+  state.sel = -1; select(-1); $('detail').innerHTML = emptyDetail();
+  render(); fit();
+}
+function expandOneMore(){
+  var list = state.items.slice(), grew = 0, hadHidden = false;
+  for (var i = 0; i < list.length; i++){
+    var x = list[i];
+    if (x.t !== 'n') continue;
+    var ord = m.ordKids[x.v], sh = shownOf(x.v);
+    if (sh < ord.length){ hadHidden = true; state.shown.set(x.v, Math.min(ord.length, sh + PAGE)); grew++; }
+  }
+  if (!grew){ toast('已经全展开了'); return false; }
+  render();
+  return true;
+}
+function select(v){
+  state.sel = v;
+  mapNode.forEach(function(g, k){
+    var isRoot = (k === m.root), isSel = (k === v);
+    g.classList.toggle('sel', isSel);
+    g.__rect.setAttribute('fill', isRoot ? '#12307a' : (isSel ? '#eff6ff' : '#ffffff'));
+    g.__rect.setAttribute('stroke', isRoot ? '#12307a' : LEVEL_COLORS[m.depth[k] % LEVEL_COLORS.length]);
   });
 }
-function mount(raw, key){
-  var t0 = performance.now();
-  cancelSel();
-  pool.forEach(function(rec){ if (rec.g.parentNode) rec.g.parentNode.removeChild(rec.g); });
-  pool.clear();
-  gLinks.innerHTML = '';
-  selEl = null; state.selected = -1;
-  $('mmpaths').innerHTML = ''; state.mmPaths = {};
-
-  state.model = buildModel(raw, key);
-  var m = state.model;
-  detailBody.innerHTML = '<div class="empty">点选树中的任意节点，这里显示全名、距根跳数、完整路径、直接子节点数、后代总数与叶子判定。</div>';
-
-  var note = autoExpand(1);                     // 初始展开到第 3 层（可见深度 0/1/2）
+function emptyDetail(){
+  return '<div class="empty">点任意节点看它的<b>全名、距根几跳、完整路径、子节点与后代数</b>，' +
+    '并在下面直接展开或收拢它。<br><br>左栏每一行是一层，写着<b>本层共多少个 / 已显示多少个</b> —— ' +
+    '往右端能看到第 9 层（arXiv）、第 10 层（欧盟）就说明这棵树确实是深的。</div>';
+}
+function showDetail(v){
+  var box = $('detail'), path = [], u = v;
+  while (u >= 0){ path.push(u); if (u === m.root) break; u = m.parent[u]; }
+  path.reverse();
+  var ord = m.ordKids[v], sh = shownOf(v), kidsN = ord.length;
+  var html = '<div class="dt">' + esc(m.names[v]) + '</div>';
+  html += '<div class="depthbadge">距根 ' + m.depth[v] + ' 跳 · 第 ' + (m.depth[v] + 1) + ' 层</div>';
+  html += '<div class="sec"><div class="lab">从根到它的完整路径（可点）</div><div class="path">';
+  for (var i = 0; i < path.length; i++){
+    html += '<span class="pa' + (path[i] === v ? ' cur' : '') + '" data-go="' + path[i] + '">' + esc(m.names[path[i]]) + '</span>';
+    if (i + 1 < path.length) html += '<span style="color:#94a3b8"> › </span>';
+  }
+  html += '</div></div>';
+  html += '<div class="sec">' +
+    '<div class="row">直接子节点：<span class="kv">' + fmt(kidsN) + '</span> 个' +
+      (kidsN ? '（当前显示 <span class="kv">' + fmt(Math.min(sh, kidsN)) + '</span> 个）' : '') + '</div>' +
+    '<div class="row">全部后代：<span class="kv">' + fmt(m.sub[v]) + '</span> 个</div>' +
+    '<div class="row">是否叶子：<span class="kv">' + (kidsN ? '否' : '是') + '</span></div></div>';
+  html += '<div class="btns">';
+  if (kidsN && sh < kidsN) html += '<button data-act="exp">展开 +30</button>';
+  if (kidsN && sh < kidsN) html += '<button data-act="expall">展开全部（' + kidsN + '）</button>';
+  if (sh) html += '<button data-act="col">收拢</button>';
+  html += '<button data-act="center">居中</button></div>';
+  if (m.chainNext.get(v) !== undefined){
+    html += '<div class="xhint">它在这棵树的最深链上，往下还有 ' + (m.maxDepth - m.depth[v]) + ' 跳。</div>';
+  }
+  box.innerHTML = html;
+  box.querySelectorAll('[data-go]').forEach(function(el){
+    el.addEventListener('click', function(){ goTo(parseInt(el.getAttribute('data-go'), 10)); });
+  });
+  box.querySelectorAll('[data-act]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var a = el.getAttribute('data-act');
+      if (a === 'exp') state.shown.set(v, Math.min(kidsN, sh + PAGE));
+      else if (a === 'expall') state.shown.set(v, kidsN);
+      else if (a === 'col') state.shown.set(v, 0);
+      else if (a === 'center'){ centerOn(v, Math.max(state.k, 0.85)); return; }
+      render(); showDetail(v);
+      if (a === 'expall' || a === 'exp') viewOn(v);
+    });
+  });
+}
+function revealTo(v){
+  var path = [], u = v;
+  while (u >= 0){ path.push(u); if (u === m.root) break; u = m.parent[u]; }
+  path.reverse();
+  for (var i = 0; i + 1 < path.length; i++){
+    var a = path[i], c = path[i + 1], idx = m.ordKids[a].indexOf(c), cur = shownOf(a);
+    if (cur <= idx) state.shown.set(a, Math.min(m.ordKids[a].length, Math.ceil((idx + 1) / PAGE) * PAGE));
+  }
   render();
-  resetView(true);
-  renderLegend();
+}
+function goTo(v){
+  revealTo(v); select(v); showDetail(v); centerOn(v, Math.max(state.k, 0.85));
+  var g = mapNode.get(v);
+  if (g){ g.classList.add('pulse'); setTimeout(function(){ g.classList.remove('pulse'); }, 1200); }
+}
+function findByName(q){
+  q = (q || '').trim().toLowerCase();
+  if (!q) return [];
+  var res = [];
+  for (var i = 0; i < m.n; i++){
+    var p = m.names[i].toLowerCase().indexOf(q);
+    if (p >= 0) res.push({ v:i, p:p, L:m.names[i].length });
+  }
+  res.sort(function(a, b){ return (a.p - b.p) || (a.L - b.L); });
+  return res;
+}
+function showResults(res, q){
+  var box = $('results');
+  if (!q){ box.classList.add('hidden'); return; }
+  if (!res.length){ box.innerHTML = '<div class="rh">没有匹配的类型名</div>'; box.classList.remove('hidden'); return; }
+  var html = '<div class="rh">匹配 ' + fmt(res.length) + ' 个，显示前 ' + Math.min(60, res.length) + ' 个（点一条＝定位过去）</div>';
+  for (var i = 0; i < Math.min(60, res.length); i++){
+    var it = res[i];
+    html += '<div class="ritem" data-v="' + it.v + '"><span class="nm">' + esc(m.names[it.v]) +
+      '</span><span class="dp">' + m.depth[it.v] + ' 跳</span></div>';
+  }
+  box.innerHTML = html; box.classList.remove('hidden');
+  box.querySelectorAll('.ritem').forEach(function(el){
+    el.addEventListener('click', function(){
+      var v = parseInt(el.getAttribute('data-v'), 10);
+      box.classList.add('hidden'); goTo(v);
+    });
+  });
+}
 
-  var famLabel = '', d0 = '';
-  FAMILIES.forEach(function(f){ if (f[0] === state.fam) famLabel = f[1]; });
-  DOMAINS.forEach(function(d){ if (d[0] === state.dom) d0 = d[1]; });
-  $('st-tree').textContent = d0 + ' · ' + famLabel;
-  $('st-n').textContent = m.n.toLocaleString('en-US');
-  $('st-e').textContent = (m.stats.n_edges || (m.n - 1)).toLocaleString('en-US');
-  $('st-d').textContent = m.maxDepth;
-  $('st-cy').textContent = (m.stats.cycles === undefined ? 0 : m.stats.cycles);
-  win.api.state = { key: key, n: m.n, visible: layout.count, maxDepth: m.maxDepth,
-                    buildMs: +m.buildMs.toFixed(1), layoutMs: +layout.ms.toFixed(1),
-                    mountMs: +(performance.now() - t0).toFixed(1), note: note };
-  if (note) toast(note);
-  return win.api.state;
-}
-function cancelSel(){
-  if (selEl) { selEl.classList.remove('sel'); selEl.classList.remove('pulse'); }
+/* ===================== 8. 指针 / 键盘 ===================== */
+function initPointer(){
+  var drag = false, lx = 0, ly = 0, moved = 0;
+  svg.addEventListener('pointerdown', function(ev){
+    if (ev.button !== 0) return;
+    drag = true; moved = 0; lx = ev.clientX; ly = ev.clientY;
+    svg.classList.add('drag');
+    try { svg.setPointerCapture(ev.pointerId); } catch(e){}
+  });
+  svg.addEventListener('pointermove', function(ev){
+    if (!drag) return;
+    var dx = ev.clientX - lx, dy = ev.clientY - ly;
+    lx = ev.clientX; ly = ev.clientY; moved += Math.abs(dx) + Math.abs(dy);
+    state.tx += dx; state.ty += dy; applyView();
+  });
+  svg.addEventListener('pointerup', function(ev){
+    drag = false; svg.classList.remove('drag');
+    try { svg.releasePointerCapture(ev.pointerId); } catch(e){}
+  });
+  svg.addEventListener('click', function(ev){
+    if (moved > 5) return;
+    if (ev.target === svg){ state.sel = -1; select(-1); $('detail').innerHTML = emptyDetail(); }
+  });
+  svg.addEventListener('wheel', function(ev){
+    ev.preventDefault();
+    var r = $('stage').getBoundingClientRect();
+    zoomAt(ev.clientX - r.left, ev.clientY - r.top, state.k * Math.pow(1.0016, -ev.deltaY));
+  }, { passive:false });
+  window.addEventListener('keydown', function(ev){
+    if (ev.target.tagName === 'INPUT') return;
+    if (ev.key === '+' || ev.key === '=') zoomStep(1.18);
+    else if (ev.key === '-' || ev.key === '_') zoomStep(1 / 1.18);
+    else if (ev.key === '0') fit();
+  });
+  window.addEventListener('resize', function(){ drawLevels(); });
 }
 
-/* ------------------------- 14. 自测模式（#selftest） ------------------------- */
-function visibleEls(){
-  var arr = gNodes.querySelectorAll('g[data-node]');
-  var out = [];
-  for (var i = 0; i < arr.length; i++) if (arr[i].style.display !== 'none') out.push(arr[i]);
-  return out;
+/* ===================== 9. 挂载 / 切换 ===================== */
+function mount(key, cb){
+  loadTree(key, function(raw){
+    m = buildModel(raw, key);
+    state.key = key; state.sel = -1; state.shown.clear();
+    initSVG();
+    $('detail').innerHTML = emptyDetail();
+    chainExpand();
+    syncBtns();
+    $('busyp').classList.add('hidden');
+    if (cb) cb();
+  }, function(){
+    $('busyp').textContent = '数据加载失败：' + key + '（请确认 data/ 目录完整）';
+  });
 }
-function runSelfTest(keys, done){
-  var report = { version: win.version, errorsBefore: ERRORS.slice(), cases: [], apiErrors: null };
-  var i = 0;
+function syncBtns(){
+  document.querySelectorAll('#domgrp button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-dom') === state.dom); });
+  document.querySelectorAll('#famgrp button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-fam') === state.fam); });
+  $('hint').innerHTML = '点节点＝展开/收拢 · 拖拽平移 · 滚轮缩放 · 点虚线框 <b>+N</b> 显示更多子节点';
+}
+function switchTree(dom, fam){
+  state.dom = dom; state.fam = fam;
+  state.shown.clear(); state.sel = -1;
+  $('busyp').classList.remove('hidden');
+  syncBtns();
+  mount(KEYS[dom][fam], function(){
+    var c = KEYS[dom];
+    if (c.n !== m.n) toast('规模与预期不一致：' + fmt(m.n) + ' 节点 / 深 ' + m.maxDepth + ' 跳');
+  });
+}
+
+/* ===================== 10. 自测 ===================== */
+function countVis(){ var n = 0; for (var i = 0; i < state.items.length; i++) if (state.items[i].t === 'n') n++; return n; }
+function selftest(done){
+  var out = { checks:[], errors:[], ok:true };
+  function ck(name, cond, info){ out.checks.push({ name:name, pass:!!cond, info:(info === undefined ? null : info) }); if (!cond) out.ok = false; }
+  var bg = (getComputedStyle(document.body).backgroundColor.match(/\d+/g) || [0,0,0]).map(Number);
+  var lum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;
+  ck('白底主题（body 亮度 > 0.8）', lum > 0.8, { bg:bg, lum:Math.round(lum * 1000) / 1000 });
+  var order = [['arxiv','deep'],['cfr','deep'],['me','deep'],['arxiv','final'],['cfr','final'],['me','final']], oi = 0;
   function next(){
-    if (i >= keys.length) { finish(); return; }
-    var key = keys[i++];
-    var dom = key.split('_')[0], fam = key.split('_')[1];
-    state.dom = dom; state.fam = fam; syncButtons();
-    var t0 = performance.now();
-    loadTree(key, function(raw){
-      var mountMs = 0;
-      state.loading = false;
-      var st = mount(raw, key);
-      mountMs = st.mountMs;
-      var c = { key: key, mountMs: mountMs, buildMs: st.buildMs, layoutMs: st.layoutMs,
-                n_nodes: st.n, visible_after_init: visibleEls().length, init_note: st.note,
-                steps: [] };
-      /* --- 检查 1：初始渲染出的带 data-node 的 SVG 元素数 --- */
-      c.steps.push({ name: '初始节点元素数(>5)', ok: c.visible_after_init > 5, value: c.visible_after_init });
-      /* --- 检查 2：找一个已折叠且有子节点的可见节点，模拟点击 + 徽标 --- */
-      var vis = visibleEls(), target = null;
-      for (var j = 0; j < vis.length; j++) {
-        var v = +vis[j].getAttribute('data-node');
-        if (nKids(state.model, v) > 0 && !state.expanded.has(v)) { target = { el: vis[j], v: v }; break; }
+    if (oi >= order.length){
+      out.errors = ERRORS.slice(0, 6);
+      if (ERRORS.length) out.ok = false;
+      done(out); return;
+    }
+    var s = order[oi++], tag = s[0] + '/' + s[1];
+    var dEl = document.querySelector('#domgrp button[data-dom="' + s[0] + '"]');
+    var fEl = document.querySelector('#famgrp button[data-fam="' + s[1] + '"]');
+    ck(tag + ' 按钮存在', !!(dEl && fEl));
+    state.dom = s[0]; state.fam = s[1]; syncBtns();
+    mount(KEYS[s[0]][s[1]], function(){
+      var expD = (s[1] === 'deep' ? KEYS[s[0]].d : 3);
+      var wantN = (s[1] === 'deep' ? KEYS[s[0]].n : KEYS[s[0]].n2);
+      ck(tag + ' 节点数', m.n === wantN, { got:m.n, want:wantN });
+      ck(tag + ' 最大深度 ' + expD + ' 跳', m.maxDepth === expD, { got:m.maxDepth });
+      var v0 = countVis();
+      ck(tag + ' 初始是收拢的', v0 <= 60, { visible:v0 });
+      var nChips = 0;
+      for (i = 0; i < state.items.length; i++) if (state.items[i].t === 'c') nChips++;
+      ck(tag + ' 收拢内容有 +N 徽标提示', nChips > 0, { chips:nChips });
+      // 层级标尺
+      ck(tag + ' 标尺 ' + (m.maxDepth + 1) + ' 行', levelRows.length >= m.maxDepth + 1, { rows:levelRows.length });
+      ck(tag + ' 标尺最后一层有计数', /显示/.test(levelRows[m.maxDepth].lab.innerHTML), { txt:levelRows[m.maxDepth].lab.innerHTML.slice(0, 40) });
+      ck(tag + ' 标尺 y 随深度递增', parseFloat(levelRows[1].ln.style.top) > parseFloat(levelRows[0].ln.style.top));
+      ck(tag + ' 标尺多余行已隐藏', levelRows.length <= m.maxDepth + 1 || levelRows[m.maxDepth + 1].ln.style.display === 'none',
+        { rows:levelRows.length, need:m.maxDepth + 1 });
+      // 最深节点可展开到最深
+      state.shown.clear();
+      for (var i = 0; i < m.chain.length; i++){ var cv = m.chain[i]; if (m.ordKids[cv].length) state.shown.set(cv, Math.min(m.ordKids[cv].length, PAGE)); }
+      render();
+      var deepV = m.chain[m.chain.length - 1], found = state.byV.get(deepV);
+      ck(tag + ' 最深节点可见且在第 ' + (m.maxDepth + 1) + ' 层', !!found && found.d === m.maxDepth,
+        { visible:!!found, d:(found ? found.d : -1) });
+      // 点节点展开 → 可见数增加；再点同一节点 → 收拢
+      collapseAll();
+      var target = null;
+      for (i = 0; i < state.items.length; i++){
+        var x = state.items[i];
+        if (x.t === 'n' && shownOf(x.v) === 0 && m.ordKids[x.v].length > 0){ target = x.v; break; }
       }
-      var before = vis.length, afterExpand = -1;
-      if (target) {
-        var badge = target.el.querySelector('[data-badge]');
-        badge.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        afterExpand = visibleEls().length;
+      var b1 = countVis();
+      if (target !== null) onNodeClick(target);
+      var b2 = countVis();
+      ck(tag + ' 点收拢的节点可展开（可见数增加）', target !== null && b2 > b1,
+        { node:(target === null ? null : m.names[target]), before:b1, after:b2 });
+      if (target !== null) onNodeClick(target);
+      ck(tag + ' 再点一次可收拢（可见数回落）', countVis() < b2, { after:countVis() });
+      // 再展开一层按钮
+      var hadHidden = false;
+      for (i = 0; i < state.items.length; i++){
+        x = state.items[i];
+        if (x.t === 'n' && shownOf(x.v) < m.ordKids[x.v].length) hadHidden = true;
       }
-      c.steps.push({ name: '点击展开徽标后节点数增加', ok: !!target && afterExpand > before,
-                     before: before, after: afterExpand,
-                     node: target ? state.model.names[target.v] : null });
-      /* --- 检查 3：折叠回去 --- */
-      if (target) {
-        var badge2 = target.el.querySelector('[data-badge]');
-        badge2.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      var b3 = countVis(), grew = expandOneMore(), b4 = countVis();
+      ck(tag + ' 再展开一层', (!hadHidden) || (grew && b4 > b3), { hadHidden:hadHidden, grew:grew, before:b3, after:b4 });
+      collapseAll();
+      ck(tag + ' 全部收拢后只剩根与第一层', countVis() <= 40, { visible:countVis() });
+      // 搜索定位
+      var probe = null;
+      for (i = 0; i < state.items.length; i++){ if (state.items[i].t === 'n' && m.names[state.items[i].v].length >= 8){ probe = m.names[state.items[i].v].slice(0, 8); break; } }
+      var res = findByName(probe || 'a');
+      ck(tag + ' 搜索「' + probe + '」有命中', res.length > 0, { hits:res.length, algorithmHits:findByName('algorithm').length });
+      if (res.length){
+        goTo(res[0].v);
+        var it2 = state.byV.get(res[0].v);
+        ck(tag + ' 搜索结果定位成功', state.sel === res[0].v && !!it2, { sel:state.sel, visible:!!it2, zoom:Math.round(state.k * 100) + '%' });
       }
-      var afterCollapse = visibleEls().length;
-      c.steps.push({ name: '再点一次折叠回原状', ok: afterCollapse === before, after: afterCollapse });
-      /* --- 检查 4：真实存在的名字搜索 --- */
-      var q = 'algorithm';
-      if (state.model.lowerHits === undefined) {
-        var probe = doSearch(q);
-        if (!probe.total) q = 'procedure';
-      }
-      var res = doSearch(q);
-      c.steps.push({ name: '搜索词返回命中列表', ok: res.total > 0, query: q,
-                     total_hits: res.total, shown: res.items.length,
-                     top5: res.items.slice(0, 5).map(function(v){ return state.model.names[v] + '(深度' + state.model.depth[v] + ')'; }) });
-      /* --- 检查 5：搜索框 UI 真的渲染出条目 --- */
-      $('q').value = q;
-      renderResults(res, q);
-      c.steps.push({ name: '搜索结果下拉渲染条目', ok: $('results').querySelectorAll('.ritem').length > 0,
-                     items: $('results').querySelectorAll('.ritem').length });
-      /* --- 检查 6：点第一条结果可以定位 --- */
-      if (res.items.length) {
-        var first = res.items[0];
-        revealNode(first);
-        var rec = pool.get(first);
-        c.steps.push({ name: '点击搜索结果可展开并选中', ok: !!rec && rec.g.classList.contains('sel'),
-                       node: state.model.names[first], zoom: +view.k.toFixed(3),
-                       visible_now: visibleEls().length });
-      }
-      /* --- 检查 7：缩放范围 --- */
-      zoomAt(0, 0, 99); var kMax = view.k;
-      zoomAt(0, 0, 0.000001); var kMin = view.k;
-      c.steps.push({ name: '缩放范围 0.1×–4×', ok: kMax === 4 && Math.abs(kMin - 0.1) < 1e-9,
-                     kMax: kMax, kMin: kMin });
-      resetView(true);
-      c.steps.push({ name: '重置视图后缩放', ok: view.k >= 0.1 && view.k <= 4, k: +view.k.toFixed(4) });
-      /* --- 检查 8：详情面板 --- */
-      if (res.items.length) {
-        selectNode(res.items[0], false);
-        var hasName = detailBody.querySelector('.name') && detailBody.querySelector('.name').textContent.length > 0;
-        var pathSegs = detailBody.querySelectorAll('.path .seg').length;
-        c.steps.push({ name: '详情面板显示名称与路径', ok: !!hasName && pathSegs >= 1, path_segments: pathSegs,
-                       name_shown: detailBody.querySelector('.name') ? detailBody.querySelector('.name').textContent : null,
-                       depth_shown: detailBody.querySelector('.depthbadge') ? detailBody.querySelector('.depthbadge').textContent : null });
-      }
-      /* --- 检查 9：单节点子节点 >200 时只渲染前 200 --- */
-      var big = -1;
-      for (var t = 0; t < state.model.n; t++) if (nKids(state.model, t) > CHILD_CAP) { big = t; break; }
-      if (big >= 0) {
-        revealNode(big);
-        expandNode(big); render();                    // 展开后才会出现截断提示
-        var noteEl = null, recs = pool.get(big);
-        if (recs) noteEl = recs.note;
-        var shownNotes = [];
-        if (noteEl && noteEl.getAttribute('display') !== 'none') shownNotes.push(noteEl.textContent);
-        c.steps.push({ name: '子节点 >200 时截断并提示', ok: shownNotes.length > 0,
-                       node: state.model.names[big], kids: nKids(state.model, big), note: shownNotes[0] || null });
-      }
-      c.errorsAfter = ERRORS.slice();
-      report.cases.push(c);
-      resetView(true);
-      setTimeout(next, 30);
-    }, function(err){
-      noteError(err);
-      report.cases.push({ key: key, error: err });
-      setTimeout(next, 30);
+      // 缩放边界
+      zoomAt(200, 200, 99); var hi = state.k; zoomAt(200, 200, 0.0001); var lo = state.k;
+      ck(tag + ' 缩放钳制在 ' + MIN_K + '–' + MAX_K, hi <= MAX_K + 1e-6 && lo >= MIN_K - 1e-6, { hi:hi, lo:lo });
+      fit();
+      next();
     });
   }
-  function finish(){
-    report.errorsFinal = ERRORS.slice();
-    report.ok = report.errorsFinal.length === 0 &&
-      report.cases.every(function(c){
-        return !c.error && c.steps.every(function(s){ return s.ok !== false; });
-      });
-    report.elapsedMs = +(performance.now() - T000).toFixed(0);
-    selftestEl.style.display = 'block';
-    selftestEl.textContent = 'SELFTEST_JSON_BEGIN\n' + JSON.stringify(report, null, 1) + '\nSELFTEST_JSON_END';
-    var d = $('js-errors');
-    d.textContent = ERRORS.length ? ERRORS.join('\n') : 'NO_JS_ERRORS';
-    if (done) done(report);
-  }
-  var T000 = performance.now();
   next();
 }
 
-/* ------------------------- 15. 启动 ------------------------- */
-function boot(){
-  var hash = decodeURIComponent(location.hash.replace(/^#/, ''));
-  var parts = hash.split(/[=,]/).filter(Boolean);
-  var selftestMode = parts.indexOf('selftest') >= 0;
-  var testKeys = null;
-  if (parts.length > 1) {
-    var cand = parts[1];
-    if (cand === 'all') {
-      testKeys = [];
-      DOMAINS.forEach(function(d){ FAMILIES.forEach(function(f){ testKeys.push(d[0] + '_' + f[0]); }); });
-    } else if (cand.indexOf('_') > 0) {
-      testKeys = [cand];
-      state.dom = cand.split('_')[0]; state.fam = cand.split('_')[1];
-      syncButtons();
+/* ===================== 11. 启动 ===================== */
+function bindUI(){
+  document.querySelectorAll('#domgrp button').forEach(function(b){
+    b.addEventListener('click', function(){ switchTree(b.getAttribute('data-dom'), state.fam); });
+  });
+  document.querySelectorAll('#famgrp button').forEach(function(b){
+    b.addEventListener('click', function(){ switchTree(state.dom, b.getAttribute('data-fam')); });
+  });
+  $('b-chain').addEventListener('click', chainExpand);
+  $('b-all').addEventListener('click', function(){ expandOneMore(); });
+  $('b-collapse').addEventListener('click', collapseAll);
+  $('b-fit').addEventListener('click', fit);
+  $('b-zi').addEventListener('click', function(){ zoomStep(1.18); });
+  $('b-zo').addEventListener('click', function(){ zoomStep(1 / 1.18); });
+  var qt = null;
+  $('q').addEventListener('input', function(){
+    clearTimeout(qt);
+    qt = setTimeout(function(){ showResults(findByName($('q').value), $('q').value.trim()); }, 130);
+  });
+  $('q').addEventListener('keydown', function(ev){
+    if (ev.key === 'Enter'){
+      var res = findByName($('q').value);
+      if (res.length){ $('results').classList.add('hidden'); goTo(res[0].v); }
     }
-  }
-  if (selftestMode) {
-    win.api.selftest = runSelfTest;
-    /* 自测模式下把结果写进 DOM，供 --dump-dom 抓取 */
-    var t0 = performance.now();
-    runSelfTest(testKeys || [state.key], function(){
-      selftestEl.setAttribute('data-done', '1');
-      selftestEl.setAttribute('data-elapsed-ms', String(Math.round(performance.now() - t0)));
-    });
-    return;
-  }
-  syncButtons();
-  switchTree();
+    if (ev.key === 'Escape') $('results').classList.add('hidden');
+  });
+  document.addEventListener('click', function(ev){
+    if (!ev.target.closest('#searchwrap')) $('results').classList.add('hidden');
+  });
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-else boot();
-
-/* 供外部／无头脚本调用的接口 */
-win.api.mount = mount;
-win.api.render = render;
-win.api.resetView = resetView;
-win.api.visibleCount = function(){ return visibleEls().length; };
-win.api.search = doSearch;
-win.api.reveal = revealNode;
-win.api.expand = expandNode;
-win.api.collapse = collapseNode;
-win.api.select = selectNode;
-win.api.toggle = toggleNode;
-win.api.model = function(){ return state.model; };
-win.api.view = function(){ return { k: view.k, tx: view.tx, ty: view.ty }; };
-win.api.layoutInfo = function(){
-  return { count: layout.count, posOf: function(i){ return layout.pos[i]; }, ms: layout.ms,
-           bounds: layout.b, expandedSize: state.expanded.size };
-};
-win.api.keys = function(){ return Object.keys(window.TREES || {}); };
-win.api.state = null;
-})();
+function expose(){
+  window.__tree = {
+    state:state,
+    model:function(){ return m; },
+    visibleCount:countVis,
+    levels:function(){ return levelRows.map(function(r){ return r.lab.innerHTML.replace(/<[^>]+>/g, ''); }); },
+    mount:mount, switchTree:switchTree,
+    expand:function(v){ expandTo(v, PAGE); render(); },
+    toggle:toggle, chainExpand:chainExpand, expandOneMore:expandOneMore, collapseAll:collapseAll,
+    collapse:function(v){ state.shown.set(v, 0); render(); },
+    reveal:function(name){ var r = findByName(name); if (r.length){ goTo(r[0].v); return r[0].v; } return -1; },
+    search:findByName, goTo:goTo, fit:fit, zoom:function(k){ state.k = clampK(k); applyView(); },
+    bg:function(){ return getComputedStyle(document.body).backgroundColor; },
+    errors:function(){ return ERRORS.slice(); },
+    selftest:selftest
+  };
+}
+function boot(){
+  expose(); initSVG(); initPointer(); bindUI();
+  var want = location.hash.match(/#(\w+)_(deep|final)\b/);
+  if (want){ state.dom = want[1]; state.fam = want[2]; }
+  syncBtns();
+  switchTree(state.dom, state.fam);
+  if (location.hash.indexOf('selftest') >= 0){
+    setTimeout(function(){
+      selftest(function(out){
+        var pre = document.createElement('pre');
+        pre.id = 'selftest-out';
+        pre.textContent = 'SELFTEST_JSON_BEGIN' + JSON.stringify(out) + 'SELFTEST_JSON_END';
+        document.body.appendChild(pre);
+      });
+    }, 800);
+  }
+}
+window.addEventListener('error', function(e){ noteError('JS: ' + (e.message || 'unknown')); });
+boot();
 </script>
 </body>
 </html>
